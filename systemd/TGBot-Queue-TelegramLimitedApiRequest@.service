@@ -1,0 +1,14 @@
+[Unit]
+Description=TGBot Queue TelegramLimitedApiRequest %i
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/bin/php artisan queue:work --queue=TelegramLimitedApiRequest
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target
