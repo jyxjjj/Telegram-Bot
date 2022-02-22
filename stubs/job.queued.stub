@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Jobs\BaseQueue;
+use Illuminate\Queue\Middleware\RateLimitedWithRedis;
+
+class {{ class }} extends BaseQueue
+{
+    public function __construct()
+    {
+
+    }
+
+    public function handle()
+    {
+
+    }
+}
