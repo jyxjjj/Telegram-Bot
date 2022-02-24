@@ -9,6 +9,3 @@ Restart=on-failure
 RestartSec=5s
 ExecStart=/usr/bin/php artisan queue:work
 LimitNOFILE=1048576
-
-[Install]
-WantedBy=multi-user.target
