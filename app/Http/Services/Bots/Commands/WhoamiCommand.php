@@ -16,7 +16,7 @@ class WhoamiCommand extends UserCommand
 
     public function execute(): ServerResponse
     {
-        dispatch(new WhoamiCommandHanlder($this->getMessage()));
+        WhoamiCommandHanlder::dispatch($this->getMessage());
         return Request::emptyResponse();
     }
 }

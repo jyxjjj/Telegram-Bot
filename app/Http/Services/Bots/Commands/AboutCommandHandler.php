@@ -20,6 +20,6 @@ class AboutCommandHandler extends BaseQueue
     {
         $data = [];
         DESMG::about($data, $this->chatId);
-        dispatch(new SendMessageJob($data, null, 0));
+        SendMessageJob::dispatch($data, null, 0);
     }
 }

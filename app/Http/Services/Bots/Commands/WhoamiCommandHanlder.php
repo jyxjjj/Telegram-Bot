@@ -3,7 +3,6 @@
 namespace App\Http\Services\Bots\Commands;
 
 use App\Http\Services\Bots\BotCommon;
-use App\Http\Services\Bots\Jobs\SendMessageJob;
 use App\Http\Services\Bots\Jobs\SendPhotoJob;
 use App\Jobs\BaseQueue;
 use Longman\TelegramBot\Entities\Message;
@@ -58,11 +57,11 @@ EOF;
                 $file_id = $photo->getFileId();
                 $data['photo'] = $file_id;
                 $data['caption'] = $caption;
-                dispatch(new SendPhotoJob($data));
+                SendPhotoJob::dispatch($data);
                 return;
             }
         }
         $data['text'] = $caption;
-        dispatch(new SendMessageJob($data));
+        SendPhotoJob::dispatch($data);
     }
 }

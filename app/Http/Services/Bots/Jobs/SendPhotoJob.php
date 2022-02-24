@@ -40,7 +40,7 @@ class SendPhotoJob extends TelegramBaseQueue
                 'message_id' => $messageId,
             ];
             if ($this->delete !== 0) {
-                dispatch(new DeleteMessageJob($data, $this->delete));
+                DeleteMessageJob::dispatch($data, $this->delete);
             }
         } else {
             $this->release(1);

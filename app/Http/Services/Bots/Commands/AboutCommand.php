@@ -16,7 +16,7 @@ class AboutCommand extends UserCommand
 
     public function execute(): ServerResponse
     {
-        dispatch(new AboutCommandHandler($this->getMessage()->getChat()->getId()));
+        AboutCommandHandler::dispatch($this->getMessage()->getChat()->getId());
         return Request::emptyResponse();
     }
 }

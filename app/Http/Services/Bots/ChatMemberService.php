@@ -30,13 +30,13 @@ class ChatMemberService extends BaseService
             if ($chatId == -1001091256481) {
                 $data = [];
                 ZaiHuaBot::newMemberMessage($data, $chatId, $newChatMemberName, $newChatMemberId);
-                dispatch(new SendMessageJob($data, null, 10));
+                SendMessageJob::dispatch($data, null, 10);
             } else {
                 $shouldBan = UserNameChecker::check($chatId, $newChatMemberName);
                 if ($shouldBan) {
                     $data = [];
                     BanUser::banChatMember($data, $chatId, $newChatMemberId, now()->getTimestamp() + 31622400);
-                    dispatch(new BanChatMemberJob($data));
+                    BanChatMemberJob::dispatch($data);
                 }
             }
         }
