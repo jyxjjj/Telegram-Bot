@@ -19,29 +19,29 @@ class ZaiHuaBot
 🍜 饿了么、美团外卖每日红包 [地址](https://mai.zaihua.me)
 💊 如若被机器人误杀，请 [联系](https://t.me/zaihua) 解封";
         $data['text'] = $text;
-        $zaihua_contribute = new InlineKeyboardButton([
+        $zaihuaContribute = new InlineKeyboardButton([
             'text' => '📮科技花投稿',
             'url' => 'https://t.me/zaihuabot',
         ]);
-        $zaihua_channel = new InlineKeyboardButton([
+        $zaihuaChannel = new InlineKeyboardButton([
             'text' => '📣科技花频道',
             'url' => 'https://t.me/TestFlightCN',
         ]);
-        $zaihua_jd = new InlineKeyboardButton([
+        $zaihuaJd = new InlineKeyboardButton([
             'text' => '🧲京东优选',
             'url' => 'https://t.me/zaihuajd',
         ]);
-        $zaihua_tb = new InlineKeyboardButton([
+        $zaihuaTb = new InlineKeyboardButton([
             'text' => '🚧淘宝优选',
             'url' => 'https://t.me/zaihuatb',
         ]);
-        $zaihua_wool = new InlineKeyboardButton([
+        $zaihuaWool = new InlineKeyboardButton([
             'text' => '🎊京豆',
             'url' => 'https://t.me/zhwool',
         ]);
         $data['reply_markup'] = new InlineKeyboard([]);
-        $data['reply_markup']->addRow($zaihua_contribute, $zaihua_channel);
-        $data['reply_markup']->addRow($zaihua_jd, $zaihua_tb);
-        $data['reply_markup']->addRow($zaihua_wool);
+        $data['reply_markup']->addRow($zaihuaContribute, $zaihuaChannel);
+        $data['reply_markup']->addRow($zaihuaJd, $zaihuaTb);
+        $data['reply_markup']->addRow($zaihuaWool);
     }
 }
