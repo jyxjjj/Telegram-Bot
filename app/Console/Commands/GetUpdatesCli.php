@@ -37,7 +37,10 @@ class GetUpdatesCli extends Command
                         ],
                     ]);
                     foreach ($updates as $update) {
+                        $time1 = now()->getTimestampMs();
                         UpdateHandleService::handle($update, $telegram);
+                        $time2 = now()->getTimestampMs();
+                        self::info("Update handle time: " . ($time2 - $time1));
                     }
                     usleep(500 * 1000);
                 } catch (Exception $e) {
