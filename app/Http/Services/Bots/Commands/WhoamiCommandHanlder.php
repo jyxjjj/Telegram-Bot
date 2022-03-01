@@ -7,7 +7,6 @@ use App\Http\Services\Bots\Jobs\SendPhotoJob;
 use App\Jobs\BaseQueue;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\UserProfilePhotos;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 class WhoamiCommandHanlder extends BaseQueue
@@ -20,13 +19,9 @@ class WhoamiCommandHanlder extends BaseQueue
         $this->message = $message;
     }
 
-    /**
-     * @throws TelegramException
-     */
     public function handle()
     {
-        $botCommon = new BotCommon;
-        $botCommon->newTelegram();
+        new BotCommon;
         $message = $this->message;
         $from = $message->getFrom();
         $user_id = $from->getId();

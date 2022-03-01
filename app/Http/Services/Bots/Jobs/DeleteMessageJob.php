@@ -3,7 +3,6 @@
 namespace App\Http\Services\Bots\Jobs;
 
 use App\Http\Services\Bots\BotCommon;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 class DeleteMessageJob extends TelegramBaseQueue
@@ -17,13 +16,9 @@ class DeleteMessageJob extends TelegramBaseQueue
         $this->delay($delay);
     }
 
-    /**
-     * @throws TelegramException
-     */
     public function handle()
     {
-        $botCommon = new BotCommon;
-        $botCommon->newTelegram();
+        new BotCommon;
         $serverResponse = Request::deleteMessage($this->data);
         if (!$serverResponse->isOk()) {
             $this->release(1);

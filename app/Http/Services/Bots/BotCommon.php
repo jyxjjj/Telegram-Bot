@@ -25,6 +25,9 @@ class BotCommon extends BaseService
     private Client $request_client;
     private Telegram $telegram;
 
+    /**
+     * @throws TelegramException
+     */
     public function __construct()
     {
         $this->api_base_uri = env('TELEGRAM_API_BASE_URI');
@@ -43,14 +46,6 @@ class BotCommon extends BaseService
             'proxy' => $this->proxy,
             'timeout' => 10,
         ]);
-    }
-
-    /**
-     * @return Telegram
-     * @throws TelegramException
-     */
-    public function newTelegram(): Telegram
-    {
         $this->telegram = new Telegram($this->bot_api_key, $this->bot_username);
         Request::setClient($this->request_client);
         $this->telegram->enableAdmin($this->admin_user_id);
@@ -58,6 +53,13 @@ class BotCommon extends BaseService
         $this->telegram->setDownloadPath(storage_path('app/telegram'));
         $this->telegram->setUploadPath(storage_path('app/telegram'));
         $this->telegram->addCommandsPath(app_path('Http/Services/Bots/Commands'));
+    }
+
+    /**
+     * @return Telegram
+     */
+    public function getTelegram(): Telegram
+    {
         return $this->telegram;
     }
 
@@ -85,5 +87,10 @@ class BotCommon extends BaseService
     {
         $updates = $this->telegram->handleGetUpdates($data, $timeout);
         return $updates->getResult();
+    }
+
+    public function clearUpdates()
+    {
+        Request::getUpdates(['offset' => -1,]);
     }
 }

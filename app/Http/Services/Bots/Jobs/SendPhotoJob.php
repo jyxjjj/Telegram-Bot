@@ -4,7 +4,6 @@ namespace App\Http\Services\Bots\Jobs;
 
 use App\Http\Services\Bots\BotCommon;
 use Longman\TelegramBot\Entities\Message;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 class SendPhotoJob extends TelegramBaseQueue
@@ -23,13 +22,9 @@ class SendPhotoJob extends TelegramBaseQueue
         $this->delete = $delete;
     }
 
-    /**
-     * @throws TelegramException
-     */
     public function handle()
     {
-        $botCommon = new BotCommon;
-        $botCommon->newTelegram();
+        new BotCommon;
         $serverResponse = Request::sendPhoto($this->data);
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */

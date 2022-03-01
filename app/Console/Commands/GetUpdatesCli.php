@@ -22,9 +22,10 @@ class GetUpdatesCli extends Command
     {
         try {
             $botCommon = new BotCommon;
-            $telegram = $botCommon->newTelegram();
+            $telegram = $botCommon->getTelegram();
             while (true) {
                 try {
+                    $botCommon->clearUpdates();
                     $updates = $botCommon->getUpdates([
                         'allowed_updates' => [
                             'message',
