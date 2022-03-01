@@ -27,6 +27,7 @@ class GetUpdatesCli extends Command
             do {
                 try {
                     usleep(500 * 1000);
+                    $time1 = now()->getTimestampMs();
                     $updates = $botCommon->getUpdates([
                         'timeout' => 20,
                         'allowed_updates' => [
@@ -39,6 +40,8 @@ class GetUpdatesCli extends Command
                             'chat_join_request',
                         ],
                     ]);
+                    $time2 = now()->getTimestampMs();
+                    self::info("Get updates time: " . ($time2 - $time1));
                     foreach ($updates as $update) {
                         $time1 = now()->getTimestampMs();
                         UpdateHandleService::handle($update, $telegram);
