@@ -23,10 +23,12 @@ class GetUpdatesCli extends Command
         try {
             $botCommon = new BotCommon;
             $telegram = $botCommon->getTelegram();
-            while (true) {
+            $botCommon->clearUpdates();
+            do {
                 try {
-                    $botCommon->clearUpdates();
+                    usleep(500 * 1000);
                     $updates = $botCommon->getUpdates([
+                        'timeout' => 20,
                         'allowed_updates' => [
                             'message',
                             'edited_message',
@@ -43,7 +45,6 @@ class GetUpdatesCli extends Command
                         $time2 = now()->getTimestampMs();
                         self::info("Update handle time: " . ($time2 - $time1));
                     }
-                    usleep(500 * 1000);
                 } catch (Exception $e) {
                     $this->logError($e);
                     try {
@@ -52,7 +53,7 @@ class GetUpdatesCli extends Command
                         $this->logError($e);
                     }
                 }
-            }
+            } while (true);
         } catch (Exception $e) {
             $this->logError($e);
         }

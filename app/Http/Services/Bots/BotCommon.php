@@ -44,7 +44,7 @@ class BotCommon extends BaseService
         $this->request_client = new Client([
             'base_uri' => $this->api_base_uri,
             'proxy' => $this->proxy,
-            'timeout' => 10,
+            'timeout' => 60,
         ]);
         $this->telegram = new Telegram($this->bot_api_key, $this->bot_username);
         Request::setClient($this->request_client);
