@@ -11,9 +11,6 @@ class {className} extends TelegramBaseQueue
 {
     private array $data;
 
-    /**
-     * @param array $data
-     */
     public function __construct(array $data)
     {
         parent::__construct();
