@@ -3,9 +3,7 @@
 namespace App\Http\Services\Bots;
 
 use App\Http\Services\BaseService;
-use Longman\TelegramBot\Entities\ChatMember\ChatMember;
 use Longman\TelegramBot\Entities\Message;
-use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
 class TextMessageHandleService extends BaseService

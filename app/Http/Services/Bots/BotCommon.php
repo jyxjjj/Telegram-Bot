@@ -56,14 +56,6 @@ class BotCommon extends BaseService
     }
 
     /**
-     * @return Telegram
-     */
-    public function getTelegram(): Telegram
-    {
-        return $this->telegram;
-    }
-
-    /**
      * @throws TelegramException
      */
     public function enableMysql()
@@ -78,6 +70,19 @@ class BotCommon extends BaseService
     }
 
     /**
+     * @return Telegram
+     */
+    public function getTelegram(): Telegram
+    {
+        return $this->telegram;
+    }
+
+    public function clearUpdates()
+    {
+        Request::getUpdates(['offset' => -1,]);
+    }
+
+    /**
      * @param array|null $data
      * @param int|null $timeout
      * @return Update[]
@@ -87,10 +92,5 @@ class BotCommon extends BaseService
     {
         $updates = $this->telegram->handleGetUpdates($data, $timeout);
         return $updates->getResult();
-    }
-
-    public function clearUpdates()
-    {
-        Request::getUpdates(['offset' => -1,]);
     }
 }
