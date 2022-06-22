@@ -1,3 +1,5 @@
 #!/bin/bash
-cp /www/wwwroot/TelegramBot/supervisor/TelegramBot-Queue-default.conf /etc/supervisor/conf.d/
-cp /www/wwwroot/TelegramBot/supervisor/TelegramBot-Queue-TelegramLimitedApiRequest.conf /etc/supervisor/conf.d/
+rm -f /etc/supervisord.d/TelegramBot-Queue-default.ini
+rm -f /etc/supervisord.d/TelegramBot-Queue-TelegramLimitedApiRequest.ini
+cp /www/wwwroot/TelegramBot/supervisor/TelegramBot-Queue-default.ini /etc/supervisord.d/
+cp /www/wwwroot/TelegramBot/supervisor/TelegramBot-Queue-TelegramLimitedApiRequest.ini /etc/supervisord.d/
