@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Bots\Jobs;
+namespace App\Http\Jobs;
 
 use App\Jobs\BaseQueue;
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Bots\Plugins;
+namespace App\Http\Services;
 
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
