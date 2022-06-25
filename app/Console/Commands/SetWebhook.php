@@ -49,7 +49,7 @@ class SetWebhook extends Command
         $content = file_get_contents($filename);
         $origin = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         self::info("Origin: $origin");
-        self::info("Setting secret token to $data");
+        self::info("New: $data");
         $content = preg_replace(
             "/^HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN=$origin/m",
             "HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN=$data",
