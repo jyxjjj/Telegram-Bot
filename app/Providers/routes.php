@@ -15,6 +15,6 @@ Route::group(
         'prefix' => 'api',
     ],
     function () {
-        Route::get("/webhook", 'IndexController@webhook');
+        Route::post("/webhook", 'IndexController@webhook');
     }
 );
