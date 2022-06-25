@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('command:logClean 3')->hourly()->runInBackground()->withoutOverlapping(120);
     }
 
     protected function commands()

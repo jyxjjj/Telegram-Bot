@@ -1,30 +1,29 @@
 <?php
 
-$date = date('Y-m/d');
-$path1 = storage_path("logs/$date.log");
-$path2 = storage_path("logs/$date.sql.log");
-$path3 = storage_path("logs/$date.emergency.log");
-$dir = dirname($path1);
-is_dir($dir) || mkdir($dir, 0775, true);
+use App\Common\Log\LogFormatter;
 
-return [
-    'default' => 'single',
-    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
-    'channels' => [
-        'single' => [
-            'driver' => 'single',
-            'name' => 'single',
-            'path' => $path1,
-            'level' => 'debug',
-            'bubble' => false,
-            'permission' => 0644,
-            'locking' => false,
-        ],
-        'emergency' => [
-            'name' => 'emergency',
-            'path' => $path3,
-            'level' => 'debug',
-            'permission' => 0644,
-        ]
-    ],
+$logging = [];
+$channels = [
+    'single',
+    'sql',
+    'perf',
+    'deprecations',
+    'emergency'
 ];
+
+$date = date('Y-m-d');
+foreach ($channels as $channel) {
+    $logging['channels'][$channel]['driver'] = 'single';
+    $logging['channels'][$channel]['name'] = $channel;
+    $logging['channels'][$channel]['path'] = storage_path("logs/$date.$channel.log");
+    $logging['channels'][$channel]['formatter'] = LogFormatter::class;
+    $logging['channels'][$channel]['level'] = 'debug';
+    $logging['channels'][$channel]['permission'] = 0644;
+    $logging['channels'][$channel]['bubble'] = false;
+    $logging['channels'][$channel]['locking'] = false;
+}
+
+$logging['default'] = 'single';
+$logging['deprecations'] = 'deprecations';
+
+return $logging;
