@@ -8,6 +8,7 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     protected $dontReport = [
+        '\Symfony\Component\Console\Exception\CommandNotFoundException',
     ];
     protected $dontFlash = [
     ];
