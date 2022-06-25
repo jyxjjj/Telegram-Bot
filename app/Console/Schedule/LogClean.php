@@ -63,9 +63,9 @@ class LogClean extends Command
     {
         $arr = [];
         for ($i = 0; $i > -$int; $i--) {
-            $filename = date('Y-m/d', strtotime("$i days"));
+            $filename = date('Y-m-d', strtotime("$i days"));
             $filename = storage_path("logs/$filename");
-            $arr[] = $filename . '.log';
+            $arr[] = $filename . '.single.log';
             $arr[] = $filename . '.sql.log';
             $arr[] = $filename . '.perf.log';
             $arr[] = $filename . '.deprecations.log';
