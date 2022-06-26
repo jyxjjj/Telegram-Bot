@@ -32,11 +32,13 @@ class WebhookJob extends BaseQueue
         $telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
         $telegram->setDownloadPath(storage_path('app/telegram'));
         $telegram->setUploadPath(storage_path('app/telegram'));
-        $telegram->setCommandsPath(app_path('Http/Services/Commands'));
+        $telegram->setCommandsPath(app_path('Http/Services/Commands/UserCommands'));
         $update = new Update($data, $telegram->getBotUsername());
+        if ($telegram->isAdmin($update->getMessage()->getFrom()->getId())) {
+            $telegram->addCommandsPath(app_path('Http/Services/Commands/AdminCommands'));
+        }
         $updateId = $update->getUpdateId();
         Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), now()->addMinutes(5));
-        $telegram->processUpdate($update);
         UpdateHandleService::handle($update, $telegram);
     }
 }
