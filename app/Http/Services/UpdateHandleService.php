@@ -15,7 +15,6 @@ class UpdateHandleService extends BaseService
     {
         $updateId = $update->getUpdateId();
         $updateType = $update->getUpdateType();
-        dump($updateType);
         switch ($updateType) {
             case Update::TYPE_MESSAGE:
                 // 任何类型的新传入消息--文本、照片、贴纸等。
