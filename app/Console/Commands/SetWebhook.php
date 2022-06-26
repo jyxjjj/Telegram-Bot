@@ -11,7 +11,7 @@ use Longman\TelegramBot\Request;
 
 class SetWebhook extends Command
 {
-    protected $signature = 'command:SetWebhook';
+    protected $signature = 'command:SetWebhook {--u|update-token}';
     protected $description = 'Set Webhook https://core.telegram.org/bots/api#setwebhook';
 
     public function handle(): int
@@ -27,9 +27,19 @@ class SetWebhook extends Command
             'chat_member',
             'chat_join_request',
         ];
-        $secret_token = UUID::generateUniqueID();
+        $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
+        if ($this->option('update-token')) {
+            $secret_token = UUID::generateUniqueID();
+            $this->setSecret($secret_token);
+        } else {
+            if (strlen($origin_token) < 64) {
+                $secret_token = UUID::generateUniqueID();
+                $this->setSecret($secret_token);
+            } else {
+                $secret_token = $origin_token;
+            }
+        }
         self::info("Secret token: $secret_token");
-        $this->setSecret($secret_token);
         try {
             Client::getTelegram();
             $result = Request::setWebhook([
