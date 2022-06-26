@@ -6,6 +6,7 @@ use DESMG\UUID;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
 class SetWebhook extends Command
@@ -30,11 +31,13 @@ class SetWebhook extends Command
         self::info("Secret token: $secret_token");
         $this->setSecret($secret_token);
         try {
-            $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
-            $result = $telegram->setWebhook($url, [
+            new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
+            $result = Request::setWebhook([
+                'url' => $url,
                 'max_connections' => $max_connections,
                 'allowed_updates' => $allowed_updates,
                 'drop_pending_updates' => true,
+                'secret_token' => $secret_token,
             ]);
             self::info($result->getDescription());
         } catch (TelegramException $e) {

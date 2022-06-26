@@ -19,6 +19,6 @@ class IndexController extends BaseController
 
     public function webhook(Request $request): void
     {
-        Log::debug('webhook', [$request->all(), $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN')]);
+        Log::debug('webhook', [$request->all(), $request->server()]);
     }
 }
