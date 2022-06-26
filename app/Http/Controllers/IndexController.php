@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\WebhookJob;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,7 @@ class IndexController extends BaseController
         $request_token = $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         if ($request_token == $origin_token) {
-            $this->dispatch(new WebhookJob($request->all()));
+            $this->dispatch(new WebhookJob($request->all(), Carbon::make(LARAVEL_START)));
             return $this->json([
                 'code' => 0,
                 'msg' => 'success',
