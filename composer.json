@@ -19,7 +19,7 @@
         "guzzlehttp/guzzle": "^7.4.5",
         "laravel/framework": "^9.18.0",
         "laravel/tinker": "^2.7.2",
-        "longman/telegram-bot": "^0.75.0",
+        "longman/telegram-bot": "^0.77.1",
         "nunomaduro/collision": "^6.2.0",
         "spatie/laravel-ignition": "^1.3.1"
     },
