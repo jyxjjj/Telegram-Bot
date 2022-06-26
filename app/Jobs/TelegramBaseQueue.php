@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Jobs;
+namespace App\Jobs;
 
-use App\Jobs\BaseQueue;
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 
 class TelegramBaseQueue extends BaseQueue

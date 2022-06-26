@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Common;
+namespace App\Http\Services;
 
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;

@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Http\Services\Bots\Jobs;
-
-use App\Http\Services\Bots\BotCommon;
+namespace App\Jobs;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
@@ -22,7 +20,5 @@ class {className} extends TelegramBaseQueue
      */
     public function handle()
     {
-        $botCommon = new BotCommon;
-        $botCommon->newTelegram();
     }
 }
