@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Common\Client;
 use Illuminate\Console\Command;
 use Longman\TelegramBot\Entities\WebhookInfo;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
-use Longman\TelegramBot\Telegram;
 
 class GetWebhookInfo extends Command
 {
@@ -16,7 +16,7 @@ class GetWebhookInfo extends Command
     public function handle(): int
     {
         try {
-            new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
+            Client::getTelegram();
             $request = Request::getWebhookInfo();
             if (!$request->isOk()) {
                 throw new TelegramException($request->getDescription());

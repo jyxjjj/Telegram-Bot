@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Common\Client;
 use DESMG\UUID;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
-use Longman\TelegramBot\Telegram;
 
 class SetWebhook extends Command
 {
@@ -31,7 +31,7 @@ class SetWebhook extends Command
         self::info("Secret token: $secret_token");
         $this->setSecret($secret_token);
         try {
-            new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
+            Client::getTelegram();
             $result = Request::setWebhook([
                 'url' => $url,
                 'max_connections' => $max_connections,
