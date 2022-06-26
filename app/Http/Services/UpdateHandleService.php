@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Telegram;
 
@@ -14,6 +15,7 @@ class UpdateHandleService extends BaseService
     public static function handle(Update $update, Telegram $telegram)
     {
         $updateId = $update->getUpdateId();
+        Cache::put("UpdateStartTime_$updateId", COMMAND_START, now()->addMinutes(5));
         $updateType = $update->getUpdateType();
         switch ($updateType) {
             case Update::TYPE_MESSAGE:
