@@ -20,7 +20,8 @@ class IndexController extends BaseController
         $request_token = $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         if ($request_token == $origin_token) {
-            $this->dispatch(new WebhookJob($request->all(), Carbon::make(LARAVEL_START)));
+            $now = Carbon::createFromTimestamp(LARAVEL_START);
+            $this->dispatch(new WebhookJob($request->all(), $now));
             return $this->json([
                 'code' => 0,
                 'msg' => 'success',
