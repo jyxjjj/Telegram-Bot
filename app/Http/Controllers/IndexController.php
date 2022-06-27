@@ -32,10 +32,6 @@ class IndexController extends BaseController
             $telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
             $telegram->setDownloadPath(storage_path('app/telegram'));
             $telegram->setUploadPath(storage_path('app/telegram'));
-            $telegram->setCommandsPath(app_path('Http/Services/Commands/UserCommands'));
-            if ($telegram->isAdmin($update->getMessage()->getFrom()->getId())) {
-                $telegram->addCommandsPath(app_path('Http/Services/Commands/AdminCommands'));
-            }
             $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
             Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), now()->addMinutes(5));

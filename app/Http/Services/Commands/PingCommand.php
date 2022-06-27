@@ -1,23 +1,26 @@
 <?php
 
-namespace App\Http\Services\Commands\UserCommands;
+namespace App\Http\Services\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
 class PingCommand
 {
-    protected string $name = 'ping';
-    protected string $description = 'Show the latency to the bot server';
-    protected string $usage = '/ping';
-    protected string $version = '1.0.0';
-    protected bool $private = false;
+    public string $name = 'ping';
+    public string $description = 'Show the latency to the bot server';
+    public string $usage = '/ping';
+    public string $version = '1.0.0';
+    public bool $admin = false;
+    public bool $private = false;
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        Log::debug($message->getDate());
         $startTime = Carbon::createFromTimestamp($message->getDate());
         $endTime = Cache::get("TelegramUpdateStartTime_$updateId");
         $latency = $endTime - $startTime;
@@ -25,7 +28,6 @@ class PingCommand
             'chat_id' => $message->getChat()->getId(),
             'text' => "Pong! Latency: $latency ms",
         ];
-        $serverResponse = Request::sendMessage($data);
-        $description = $serverResponse->getDescription();
+        Request::sendMessage($data);
     }
 }
