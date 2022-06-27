@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
@@ -20,14 +20,18 @@ class PingCommand
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        Log::debug($message->getDate());
-        $startTime = Carbon::createFromTimestamp($message->getDate());
-        $endTime = Cache::get("TelegramUpdateStartTime_$updateId");
-        $latency = $endTime - $startTime;
+        $sendTime = $message->getDate();
+        $sendTime = Carbon::createFromTimestamp($sendTime)->getTimestampMs();
+        $startTime = Cache::get("TelegramUpdateStartTime_$updateId");
+        $startTime = Carbon::createFromTimestampMs($startTime)->getTimestampMs();
+        $endTime = Carbon::now()->getTimestampMs();
+        $server_latency = $startTime - $sendTime;
+        $message_latency = $endTime - $startTime;
         $data = [
             'chat_id' => $message->getChat()->getId(),
-            'text' => "Pong! Latency: $latency ms",
+            'text' => "Send time: $sendTime\nStart time: $startTime\nEnd time: $endTime\nServer Latency: $server_latency ms\nMessage latency: $message_latency ms",
         ];
+        BotCommon::getTelegram();
         Request::sendMessage($data);
     }
 }
