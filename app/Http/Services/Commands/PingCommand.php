@@ -29,7 +29,7 @@ class PingCommand
         $message_latency = $endTime - $startTime;
         $data = [
             'chat_id' => $message->getChat()->getId(),
-            'text' => "Send time: $sendTime\nStart time: $startTime\nEnd time: $endTime\nServer Latency: $server_latency ms\nMessage latency: $message_latency ms",
+            'text' => "Send time: $sendTime\nStart time: $startTime\nEnd time: $endTime\nServer latency: $server_latency ms\nMessage latency: $message_latency ms",
         ];
         BotCommon::getTelegram();
         Request::sendMessage($data);
