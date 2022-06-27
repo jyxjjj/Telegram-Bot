@@ -27,7 +27,6 @@ class CommandHandleService extends BaseService
             if (class_exists($command_class, false)) {
                 $command_class = new $command_class($message, $telegram, $updateId);
                 if ($command_class->name == $message->getCommand()) {
-                    Log::debug('isAdmin', [$telegram->getAdminList(), $telegram->isAdmin($message->getFrom()->getId()), $command_class->admin,]);
                     $command_class->execute($message, $telegram, $updateId);
                 }
             }
