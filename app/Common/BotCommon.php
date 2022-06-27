@@ -24,6 +24,9 @@ class BotCommon
     public static function getTelegram(): Telegram
     {
         $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
+        $telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
+        $telegram->setDownloadPath(storage_path('app/telegram'));
+        $telegram->setUploadPath(storage_path('app/telegram'));
         Request::setClient(self::getClient());
         return $telegram;
     }
