@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Common\Client;
+use App\Common\BotCommon;
 use Illuminate\Console\Command;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
@@ -15,7 +15,7 @@ class DeleteWebhook extends Command
     public function handle(): int
     {
         try {
-            Client::getTelegram();
+            BotCommon::getTelegram();
             $result = Request::deleteWebhook(['drop_pending_updates' => true]);
             self::info($result->getDescription());
         } catch (TelegramException $e) {

@@ -2,9 +2,7 @@
 
 namespace App\Http\Services;
 
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
 class MessageHandleService extends BaseService
@@ -13,15 +11,13 @@ class MessageHandleService extends BaseService
      * @param Message $message
      * @param Telegram $telegram
      * @param int $updateId
-     * @throws TelegramException
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId)
     {
         $messageType = $message->getType();
         switch ($messageType) {
             case 'command':
-                Log::debug('', [$telegram->getCommandsList()]);
-                $telegram->executeCommand($message->getCommand());
+                CommandHandleService::handle($message, $telegram, $updateId);
                 break;
             case 'text':
                 TextMessageHandleService::handle($message, $telegram, $updateId);

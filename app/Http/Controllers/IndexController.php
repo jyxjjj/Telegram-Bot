@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\BotCommon;
 use App\Jobs\WebhookJob;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
+use Longman\TelegramBot\Entities\Update;
+use Longman\TelegramBot\Exception\TelegramException;
 
 class IndexController extends BaseController
 {
@@ -15,13 +19,27 @@ class IndexController extends BaseController
         return $this->plain(request()->server('HTTP_CF_CONNECTING_IP') . ' (' . request()->server('HTTP_CF_IPCOUNTRY') . ')');
     }
 
+    /**
+     * @throws TelegramException
+     */
     public function webhook(Request $request): JsonResponse
     {
         $request_token = $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         if ($request_token == $origin_token) {
+            $telegram = BotCommon::getTelegram();
+            $update = new Update($request->all(), $telegram->getBotUsername());
+            $telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
+            $telegram->setDownloadPath(storage_path('app/telegram'));
+            $telegram->setUploadPath(storage_path('app/telegram'));
+            $telegram->setCommandsPath(app_path('Http/Services/Commands/UserCommands'));
+            if ($telegram->isAdmin($update->getMessage()->getFrom()->getId())) {
+                $telegram->addCommandsPath(app_path('Http/Services/Commands/AdminCommands'));
+            }
+            $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
-            $this->dispatch(new WebhookJob($request->all(), $now));
+            Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), now()->addMinutes(5));
+            $this->dispatch(new WebhookJob($update, $telegram, $updateId));
             return $this->json([
                 'code' => 0,
                 'msg' => 'success',

@@ -2,43 +2,34 @@
 
 namespace App\Jobs;
 
-use App\Common\Client;
 use App\Http\Services\UpdateHandleService;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Update;
-use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Telegram;
 
 class WebhookJob extends BaseQueue
 {
-    private array $data;
-    private Carbon $now;
-
-    public function __construct(array $data, Carbon $now)
-    {
-        parent::__construct();
-        $this->data = $data;
-        $this->now = $now;
-    }
+    private Update $update;
+    private Telegram $telegram;
+    private int $updateId;
 
     /**
-     * @throws TelegramException
+     * @param Update $update
+     * @param Telegram $telegram
+     * @param int $updateId
      */
+    public function __construct(Update $update, Telegram $telegram, int $updateId)
+    {
+        parent::__construct();
+        $this->update = $update;
+        $this->telegram = $telegram;
+        $this->updateId = $updateId;
+    }
+
     public function handle()
     {
-        $data = $this->data;
-        $now = $this->now;
-        $telegram = Client::getTelegram();
-        $telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
-        $telegram->setDownloadPath(storage_path('app/telegram'));
-        $telegram->setUploadPath(storage_path('app/telegram'));
-        $telegram->setCommandsPath(app_path('Http/Services/Commands/UserCommands'));
-        $update = new Update($data, $telegram->getBotUsername());
-        if ($telegram->isAdmin($update->getMessage()->getFrom()->getId())) {
-            $telegram->addCommandsPath(app_path('Http/Services/Commands/AdminCommands'));
-        }
-        $updateId = $update->getUpdateId();
-        Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), now()->addMinutes(5));
-        UpdateHandleService::handle($update, $telegram);
+        $update = $this->update;
+        $telegram = $this->telegram;
+        $updateId = $this->updateId;
+        UpdateHandleService::handle($update, $telegram, $updateId);
     }
 }

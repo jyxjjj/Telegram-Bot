@@ -3,7 +3,6 @@
 namespace App\Http\Services;
 
 use Longman\TelegramBot\Entities\Update;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
 class UpdateHandleService extends BaseService
@@ -11,11 +10,10 @@ class UpdateHandleService extends BaseService
     /**
      * @param Update $update
      * @param Telegram $telegram
-     * @throws TelegramException
+     * @param int $updateId
      */
-    public static function handle(Update $update, Telegram $telegram)
+    public static function handle(Update $update, Telegram $telegram, int $updateId)
     {
-        $updateId = $update->getUpdateId();
         $updateType = $update->getUpdateType();
         switch ($updateType) {
             case Update::TYPE_MESSAGE:

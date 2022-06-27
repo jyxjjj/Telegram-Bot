@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Common\Client;
+use App\Common\BotCommon;
 use DESMG\UUID;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -41,7 +41,7 @@ class SetWebhook extends Command
         }
         self::info("Secret token: $secret_token");
         try {
-            Client::getTelegram();
+            BotCommon::getTelegram();
             $result = Request::setWebhook([
                 'url' => $url,
                 'max_connections' => $max_connections,

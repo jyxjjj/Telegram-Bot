@@ -2,15 +2,16 @@
 
 namespace App\Common;
 
+use GuzzleHttp\Client;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
-class Client
+class BotCommon
 {
-    private static function getClient(): \GuzzleHttp\Client
+    private static function getClient(): Client
     {
-        return new \GuzzleHttp\Client([
+        return new Client([
             'base_uri' => env('TELEGRAM_API_BASE_URI'),
             'proxy' => env('TELEGRAM_PROXY'),
             'timeout' => 60,
