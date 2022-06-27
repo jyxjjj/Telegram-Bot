@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
@@ -28,6 +27,7 @@ class CommandHandleService extends BaseService
                 $command_class = new $command_class($message, $telegram, $updateId);
                 if ($command_class->name == $message->getCommand()) {
                     $command_class->execute($message, $telegram, $updateId);
+                    return;
                 }
             }
         }
