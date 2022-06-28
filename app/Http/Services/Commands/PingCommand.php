@@ -49,7 +49,7 @@ class PingCommand
         ];
         for ($i = 1; $i <= count($IPs); $i++) {
             $ping = $this->ping($IPs[$i - 1]);
-            $data['text'] .= "DC$i latency: $ping ms\n";
+            $data['text'] .= "DC$i latency: `$ping ms`\n";
         }
         $data['text'] = substr($data['text'], 0, -1);
         BotCommon::getTelegram();
