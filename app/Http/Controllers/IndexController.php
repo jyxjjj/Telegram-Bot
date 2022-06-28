@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 
@@ -32,7 +31,7 @@ class IndexController extends BaseController
             $update = new Update($request->all(), $telegram->getBotUsername());
             $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
-            Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), now()->addMinutes(5));
+            Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), Carbon::now()->addMinutes(5));
             $this->dispatch(new WebhookJob($update, $telegram, $updateId));
             return $this->json([
                 'code' => 0,
