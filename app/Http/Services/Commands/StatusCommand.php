@@ -40,8 +40,8 @@ class StatusCommand extends BaseCommand
         } else {
             $cpuUsage = 'Unknown';
         }
-        $data['text'] .= "Num of Cores: `$cpuNums`\n";
-        $data['text'] .= "CPU Usage: `$cpuUsage%`\n";
+        $data['text'] .= "*Num of Cores:* `$cpuNums`\n";
+        $data['text'] .= "*CPU Usage:* `$cpuUsage%`\n";
         $memInfo = file_get_contents('/proc/meminfo');
         $memInfo = explode("\n", $memInfo);
         $memTotal = $this->getMemTotal($memInfo);
@@ -51,10 +51,10 @@ class StatusCommand extends BaseCommand
         $memTotal = number_format($memTotal / 1024 / 1024, 2, '.', '');
         $memFree = number_format($memFree / 1024 / 1024, 2, '.', '');
         $memUsed = number_format($memUsed / 1024 / 1024, 2, '.', '');
-        $data['text'] .= "Total Memory: `$memTotal GiB`\n";
-        $data['text'] .= "Free Memory: `$memFree GiB`\n";
-        $data['text'] .= "Used Memory: `$memUsed GiB`\n";
-        $data['text'] .= "Memory Usage: `$memUsage%`\n";
+        $data['text'] .= "*Total Memory:* `$memTotal GiB`\n";
+        $data['text'] .= "*Free Memory:* `$memFree GiB`\n";
+        $data['text'] .= "*Used Memory:* `$memUsed GiB`\n";
+        $data['text'] .= "*Memory Usage:* `$memUsage%`\n";
         $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new SendMessageJob($data));
     }
