@@ -14,5 +14,5 @@ abstract class BaseCommand
     public bool $admin = false;
     public bool $private = false;
 
-    abstract function execute(Message $message, Telegram $telegram, int $updateId): void;
+    public abstract function execute(Message $message, Telegram $telegram, int $updateId): void;
 }
