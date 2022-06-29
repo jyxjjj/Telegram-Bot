@@ -3,6 +3,7 @@
 namespace App\Http\Services\Commands;
 
 use App\Http\Services\BaseCommand;
+use App\Jobs\DeleteMessageWithKeyJob;
 use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use Carbon\Carbon;
@@ -62,6 +63,7 @@ class PingCommand extends BaseCommand
         }
         $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
+        $this->dispatch(new DeleteMessageWithKeyJob($data, $key));
     }
 
     /**

@@ -18,7 +18,7 @@ class SendMessageJob extends TelegramBaseQueue
      * @param array|null $extras
      * @param int $delete
      */
-    public function __construct(array $data, ?array $extras = null, int $delete = 15)
+    public function __construct(array $data, ?array $extras = null, int $delete = 30)
     {
         parent::__construct();
         $this->data = $data;
