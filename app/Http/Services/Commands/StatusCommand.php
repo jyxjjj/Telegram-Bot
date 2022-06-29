@@ -55,6 +55,8 @@ class StatusCommand extends BaseCommand
         $data['text'] .= "*Free Memory:* `$memFree GiB`\n";
         $data['text'] .= "*Used Memory:* `$memUsed GiB`\n";
         $data['text'] .= "*Memory Usage:* `$memUsage%`\n";
+        $uptime = $this->getUptime();
+        $data['text'] .= "*Uptime:* `$uptime`\n";
         $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new SendMessageJob($data));
     }
@@ -188,5 +190,24 @@ class StatusCommand extends BaseCommand
             }
         }
         return 0;
+    }
+
+    /**
+     * @return string
+     */
+    private function getUptime(): string
+    {
+        $uptime = file_get_contents('/proc/uptime');
+        $uptime = explode(' ', $uptime);
+        $uptime = $uptime[0];
+        $uptime = explode('.', $uptime);
+        $uptime = $uptime[0];
+        $days = floor($uptime / 86400);
+        $uptime %= 86400;
+        $hours = floor($uptime / 3600);
+        $uptime %= 3600;
+        $minutes = floor($uptime / 60);
+        $seconds = $uptime % 60;
+        return "$days D $hours:$minutes:$seconds";
     }
 }
