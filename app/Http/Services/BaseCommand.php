@@ -2,11 +2,14 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
 abstract class BaseCommand
 {
+    use DispatchesJobs;
+
     public string $name;
     public string $description;
     public string $usage;

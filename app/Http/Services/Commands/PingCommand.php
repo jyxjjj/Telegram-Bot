@@ -7,15 +7,12 @@ use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use Carbon\Carbon;
 use DESMG\UUID;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
 class PingCommand extends BaseCommand
 {
-    use DispatchesJobs;
-
     public string $name = 'ping';
     public string $description = 'Show the latency to the bot server';
     public string $usage = '/ping';
