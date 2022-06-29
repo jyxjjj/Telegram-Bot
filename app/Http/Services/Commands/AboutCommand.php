@@ -16,6 +16,12 @@ class AboutCommand extends BaseCommand
     public string $description = 'About';
     public string $usage = '/about';
 
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
@@ -32,17 +38,17 @@ class AboutCommand extends BaseCommand
             'allow_sending_without_reply' => true,
             'text' => '',
         ];
-        $data['text'] .= "龙缘特种工业集团龙缘科技Telegram机器人\n";
+        $data['text'] .= "龙缘特种工业集团机器人\n";
         $data['text'] .= "龙缘科技 版权所有\n";
         $data['text'] .= sprintf("Copyright (C) %s\n", date('Y'));
         $data['text'] .= "DESMG All rights reserved.\n";
         $data['text'] .= "DESMG Main API(DESMG)\n";
-        $data['text'] .= "当前版本: $version\n";
-        $data['text'] .= "版本更新时间: $date\n";
-        $data['text'] .= sprintf("当前时间: %s\n", date('Y-m-d H:i:s'));
-        $data['text'] .= sprintf("设备名称: %s\n", php_uname('n'));
-        $data['text'] .= sprintf("系统版本: %s %s %s\n", php_uname('s'), php_uname('r'), php_uname('m'));
-        $data['text'] .= sprintf("PHP版本: %s %s %s\n", PHP_VERSION, PHP_SAPI, PHP_OS);
+        $data['text'] .= "Version: `$version`\n";
+        $data['text'] .= "Updated: `$date`\n";
+        $data['text'] .= sprintf("System Time: `%s`\n", date('Y-m-d H:i:s'));
+        $data['text'] .= sprintf("Device Name: `%s`\n", php_uname('n'));
+        $data['text'] .= sprintf("System Version: `%s %s %s`\n", php_uname('s'), php_uname('r'), php_uname('m'));
+        $data['text'] .= sprintf("PHP Version: `%s %s %s`\n", PHP_VERSION, PHP_SAPI, PHP_OS);
         $data['text'] = substr($data['text'], 0, -1);
         $data['reply_markup'] = new InlineKeyboard([]);
         $personal = new InlineKeyboardButton([
