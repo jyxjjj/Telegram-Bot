@@ -9,22 +9,22 @@ use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class SendMessageWithSerialJob extends TelegramBaseQueue
+class SendMessageWithKeyJob extends TelegramBaseQueue
 {
     private array $data;
-    private string $serial;
+    private string $key;
     private ?array $extras;
 
     /**
      * @param array $data
-     * @param string $serial
+     * @param string $key
      * @param array|null $extras
      */
-    public function __construct(array $data, string $serial, ?array $extras = null)
+    public function __construct(array $data, string $key, ?array $extras = null)
     {
         parent::__construct();
         $this->data = $data;
-        $this->serial = $serial;
+        $this->key = $key;
         $this->extras = $extras;
     }
 
@@ -39,7 +39,7 @@ class SendMessageWithSerialJob extends TelegramBaseQueue
             /** @var Message $sendResult */
             $sendResult = $serverResponse->getResult();
             $messageId = $sendResult->getMessageId();
-            Cache::put('SendMessageSerial_' . $this->serial, $messageId, Carbon::now()->addMinutes(5));
+            Cache::put($this->key, $messageId, Carbon::now()->addMinutes(5));
         } else {
             $this->release(1);
         }
