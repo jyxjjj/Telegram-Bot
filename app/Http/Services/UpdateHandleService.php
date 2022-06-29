@@ -11,8 +11,9 @@ class UpdateHandleService extends BaseService
      * @param Update $update
      * @param Telegram $telegram
      * @param int $updateId
+     * @return void
      */
-    public static function handle(Update $update, Telegram $telegram, int $updateId)
+    public static function handle(Update $update, Telegram $telegram, int $updateId): void
     {
         $updateType = $update->getUpdateType();
         switch ($updateType) {

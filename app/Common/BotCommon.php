@@ -9,6 +9,9 @@ use Longman\TelegramBot\Telegram;
 
 class BotCommon
 {
+    /**
+     * @return Client
+     */
     private static function getClient(): Client
     {
         return new Client([
@@ -19,6 +22,7 @@ class BotCommon
     }
 
     /**
+     * @return Telegram
      * @throws TelegramException
      */
     public static function getTelegram(): Telegram

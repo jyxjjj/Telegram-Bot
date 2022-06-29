@@ -7,7 +7,13 @@ use Longman\TelegramBot\Telegram;
 
 class TextMessageHandleService extends BaseService
 {
-    public static function handle(Message $message, Telegram $telegram, int $updateId)
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     */
+    public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $messageId = $message->getMessageId();
         $messageType = $message->getType();

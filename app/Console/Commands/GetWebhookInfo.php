@@ -13,6 +13,9 @@ class GetWebhookInfo extends Command
     protected $signature = 'command:GetWebhookInfo';
     protected $description = 'Get Webhook Info https://core.telegram.org/bots/api#getwebhookinfo';
 
+    /**
+     * @return int
+     */
     public function handle(): int
     {
         try {

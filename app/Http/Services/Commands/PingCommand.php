@@ -7,6 +7,7 @@ use App\Http\Services\BaseCommand;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 
@@ -16,6 +17,13 @@ class PingCommand extends BaseCommand
     public string $description = 'Show the latency to the bot server';
     public string $usage = '/ping';
 
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     * @throws TelegramException
+     */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         BotCommon::getTelegram();
@@ -70,6 +78,10 @@ class PingCommand extends BaseCommand
         Request::editMessageText($data);
     }
 
+    /**
+     * @param $host
+     * @return int
+     */
     private function ping($host): int
     {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);

@@ -10,7 +10,13 @@ use RegexIterator;
 
 class CommandHandleService extends BaseService
 {
-    public static function handle(Message $message, Telegram $telegram, int $updateId)
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     */
+    public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $path = app_path('Http/Services/Commands');
         $files = new RegexIterator(

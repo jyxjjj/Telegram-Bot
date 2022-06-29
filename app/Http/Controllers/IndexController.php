@@ -14,12 +14,17 @@ use Longman\TelegramBot\Exception\TelegramException;
 
 class IndexController extends BaseController
 {
+    /**
+     * @return Response
+     */
     public function index(): Response
     {
         return $this->plain(request()->server('HTTP_CF_CONNECTING_IP') . ' (' . request()->server('HTTP_CF_IPCOUNTRY') . ')');
     }
 
     /**
+     * @param Request $request
+     * @return JsonResponse
      * @throws TelegramException
      */
     public function webhook(Request $request): JsonResponse

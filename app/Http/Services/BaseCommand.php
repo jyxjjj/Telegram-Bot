@@ -14,5 +14,11 @@ abstract class BaseCommand
     public bool $admin = false;
     public bool $private = false;
 
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     */
     public abstract function execute(Message $message, Telegram $telegram, int $updateId): void;
 }

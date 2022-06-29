@@ -12,11 +12,19 @@ class BaseController extends Controller
 {
     use DispatchesJobs;
 
+    /**
+     * @param array $data
+     * @return JsonResponse
+     */
     final protected function json(array $data = []): JsonResponse
     {
         return response()->json($data);
     }
 
+    /**
+     * @param $str
+     * @return Response
+     */
     final protected function plain($str): Response
     {
         return response($str, 200, Config::PLAIN_HEADER);

@@ -11,8 +11,9 @@ class MessageHandleService extends BaseService
      * @param Message $message
      * @param Telegram $telegram
      * @param int $updateId
+     * @return void
      */
-    public static function handle(Message $message, Telegram $telegram, int $updateId)
+    public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $messageType = $message->getType();
         switch ($messageType) {

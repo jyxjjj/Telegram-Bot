@@ -12,6 +12,9 @@ class DeleteWebhook extends Command
     protected $signature = 'command:DeleteWebhook';
     protected $description = 'Delete Webhook https://core.telegram.org/bots/api#deletewebhook';
 
+    /**
+     * @return int
+     */
     public function handle(): int
     {
         try {

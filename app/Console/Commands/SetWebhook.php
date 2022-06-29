@@ -14,6 +14,9 @@ class SetWebhook extends Command
     protected $signature = 'command:SetWebhook {--u|update-token}';
     protected $description = 'Set Webhook https://core.telegram.org/bots/api#setwebhook';
 
+    /**
+     * @return int
+     */
     public function handle(): int
     {
         $url = env('APP_URL') . '/api/webhook';
@@ -56,6 +59,10 @@ class SetWebhook extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @param string $data
+     * @return void
+     */
     protected function setSecret(string $data): void
     {
         $filename = App::environmentFilePath();
