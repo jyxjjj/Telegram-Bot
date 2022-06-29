@@ -35,13 +35,13 @@ class PingCommand extends BaseCommand
             'allow_sending_without_reply' => true,
             'text' => 'Calculating...',
         ];
-        $result = Request::sendMessage($data);
-        if (!$result->isOk()) {
+        $serverResponse = Request::sendMessage($data);
+        if (!$serverResponse->isOk()) {
             return;
         }
-        $result = $result->getResult();
-        /** @var Message $result */
-        $messageId = $result->getMessageId();
+        /** @var Message $sendResult */
+        $sendResult = $serverResponse->getResult();
+        $messageId = $sendResult->getMessageId();
         $data = [
             'chat_id' => $chatId,
             'message_id' => $messageId,
