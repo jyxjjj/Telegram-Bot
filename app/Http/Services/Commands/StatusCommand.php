@@ -108,33 +108,11 @@ class StatusCommand extends BaseCommand
         $times2['user'] -= $times2['guest'];
         $times2['nice'] -= $times2['guestnice'];
         $stat = [
-            'user' => $times2['user'] - $times1['user'],
-            'nice' => $times2['nice'] - $times1['nice'],
-            'system' => $times2['system'] - $times1['system'],
-            'idle' => $times2['idle'] - $times1['idle'],
-            'ioWait' => $times2['ioWait'] - $times1['ioWait'],
-            'irq' => $times2['irq'] - $times1['irq'],
-            'softIrq' => $times2['softIrq'] - $times1['softIrq'],
-            'steal' => $times2['steal'] - $times1['steal'],
-            'guest' => $times2['guest'] - $times1['guest'],
-            'guestnice' => $times2['guestnice'] - $times1['guestnice'],
-            'systemAllTime' =>
-                $times2['system']
-                + $times2['irq']
-                + $times2['softIrq']
-                - $times1['system']
-                - $times1['irq']
-                - $times1['softIrq'],
             'idleAllTime' =>
                 $times2['idle']
                 + $times2['ioWait']
                 - $times1['idle']
                 - $times1['ioWait'],
-            'guestAllTime' =>
-                $times2['guest']
-                + $times2['guestnice']
-                - $times1['guest']
-                - $times1['guestnice'],
             'totalTime' =>
                 $times2['user']
                 + $times2['nice']
