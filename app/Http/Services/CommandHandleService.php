@@ -19,11 +19,11 @@ class CommandHandleService extends BaseService
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        $isAdmin = !$telegram->isAdmin($message->getFrom()->getId());
-        $notPrivate = !$message->getChat()->isPrivateChat();
-        $sendCommand = $message->getCommand();
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
+        $notAdmin = !$telegram->isAdmin($message->getFrom()->getId());
+        $notPrivate = !$message->getChat()->isPrivateChat();
+        $sendCommand = $message->getCommand();
         $path = app_path('Http/Services/Commands');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
@@ -44,7 +44,7 @@ class CommandHandleService extends BaseService
             if ($command_class->name != $sendCommand) { // Detect if command matches
                 continue;
             }
-            if ($command_class->admin && $isAdmin) {// Detect if command is admin only
+            if ($command_class->admin && $notAdmin) {// Detect if command is admin only
                 $data = [
                     'chat_id' => $chatId,
                     'parse_mode' => 'Markdown',
