@@ -4,7 +4,7 @@ A PHP Laravel Telegram Bot
 
 # License
 
-[GPL-3.0-Only](LICENSE)
+[GPL-3.0-Only](LICENSE) <img src="https://github.com/jyxjjj/jyxjjj/blob/main/resources/images/GPL-3.0-only.svg" alt="GNU GPL VERSION 3(GPL-3.0-only)" width="30%" align="center">
 
 # Versions
 
