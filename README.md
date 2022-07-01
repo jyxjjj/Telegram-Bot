@@ -79,16 +79,28 @@ php artisan command:DeleteWebhook
 
 #### Restart Queue Workers
 
+If you edited anything, you may need to restart queue workers,
+
+to make sure they are using the new configuration,
+
+or the new codes to be run.
+
+Otherwise, they may update to the latest configurations and codes after 3600 seconds at most.
+
+So you can send the signal to restart queue workers,
+
+via the laravel official command:
+
 ```bash
 php artisan queue:restart
 ```
 
-Or
+Or force restart with supervisor(not recommended):
 
 ```bash
 supervisor/restart.sh
 ```
 
-Or
+Or you can let bot call the laravel official command:
 
 > Send a message to the bot with the command ```/restart```
