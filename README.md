@@ -2,6 +2,12 @@
 
 A PHP Laravel Telegram Bot
 
+# License
+
+[GPL-3.0-Only](LICENSE)
+
+# Versions
+
 [![Fedora](https://img.shields.io/badge/Fedora-36-blue.svg?style=flat-square)](https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso)
 
 [![Nginx](https://img.shields.io/badge/Nginx-^1.23.0-brightgreen.svg?style=flat-square)](https://nginx.org/en/download.html)
@@ -20,6 +26,13 @@ A PHP Laravel Telegram Bot
 [![jemalloc](https://img.shields.io/badge/jemalloc-^5.2.1-blue.svg?style=flat-square)](https://github.com/jemalloc/jemalloc/releases)
 
 # Install
+
+I recommend using systemd to manage laravel queue workers,
+and systemd-timer to manage laravel schedules.
+
+This is a doc of supervisor + crontab version that laravel recommended.
+
+You can do anything you want.
 
 ```bash
 dnf update --refresh -y
@@ -80,15 +93,12 @@ php artisan command:DeleteWebhook
 #### Restart Queue Workers
 
 If you edited anything, you may need to restart queue workers,
-
 to make sure they are using the new configuration,
-
 or the new codes to be run.
 
 Otherwise, they may update to the latest configurations and codes after 3600 seconds at most.
 
 So you can send the signal to restart queue workers,
-
 via the laravel official command:
 
 ```bash
@@ -104,3 +114,13 @@ supervisor/restart.sh
 Or you can let bot call the laravel official command:
 
 > Send a message to the bot with the command ```/restart```
+
+# Authors
+
+[@jyxjjj](https://t.me/jyxjjj)
+
+[@bluebird_tg](https://t.me/bluebird_tg)
+
+# Donate
+
+Alipay <img src="resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
