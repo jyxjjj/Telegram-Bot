@@ -61,7 +61,6 @@ class PingCommand extends BaseCommand
             $ping = $this->ping($IP);
             $data['text'] .= "*DC$i($IP) Latency:* `$ping ms`\n";
         }
-        $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
         $this->dispatch(new DeleteMessageWithKeyJob($data, $key));
     }

@@ -51,7 +51,6 @@ class AboutCommand extends BaseCommand
         $data['text'] .= sprintf("*Device Name:* `%s`\n", php_uname('n'));
         $data['text'] .= sprintf("*System Version:* `%s %s %s`\n", php_uname('s'), php_uname('r'), php_uname('m'));
         $data['text'] .= sprintf("*PHP Version:* `%s %s %s`\n", PHP_VERSION, PHP_SAPI, PHP_OS);
-        $data['text'] = substr($data['text'], 0, -1);
         $data['reply_markup'] = new InlineKeyboard([]);
         $personal = new InlineKeyboardButton([
             'text' => '个人频道',

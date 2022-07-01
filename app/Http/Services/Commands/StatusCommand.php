@@ -57,7 +57,6 @@ class StatusCommand extends BaseCommand
         $data['text'] .= "*Memory Usage:* `$memUsage%`\n";
         $uptime = $this->getUptime();
         $data['text'] .= "*Uptime:* `$uptime`\n";
-        $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new SendMessageJob($data));
     }
 

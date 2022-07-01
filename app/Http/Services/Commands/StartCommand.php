@@ -32,7 +32,6 @@ class StartCommand extends BaseCommand
         ];
         $data['text'] .= "Hello, I am here alive.\n";
         $data['text'] .= "Type /help to get the help.\n";
-        $data['text'] = substr($data['text'], 0, -1);
         $this->dispatch(new SendMessageJob($data));
     }
 }
