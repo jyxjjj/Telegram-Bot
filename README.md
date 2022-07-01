@@ -123,4 +123,4 @@ Or you can let bot call the laravel official command:
 
 # Donate
 
-Alipay <img src="resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
+Alipay <img src="https://github.com/jyxjjj/jyxjjj/blob/main/resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
