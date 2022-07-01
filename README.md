@@ -4,7 +4,6 @@ A PHP Laravel Telegram Bot
 
 [![Fedora](https://img.shields.io/badge/Fedora-36-blue.svg?style=flat-square)](https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso)
 
-
 [![Nginx](https://img.shields.io/badge/Nginx-^1.23.0-brightgreen.svg?style=flat-square)](https://nginx.org/en/download.html)
 [![GCC](https://img.shields.io/badge/GCC-^12.1-yellow.svg?style=flat-square)](https://gcc.gnu.org/onlinedocs/)
 [![OpenSSL](https://img.shields.io/badge/OpenSSL-^3.0.3-red.svg?style=flat-square)](https://www.openssl.org/source/)
@@ -25,9 +24,13 @@ A PHP Laravel Telegram Bot
 ```bash
 dnf update --refresh -y
 dnf install supervisor podman* cockpit* --refresh -y
+systemctl enable --now supervisord.service
+systemctl enable --now nginx.service
+systemctl enable --now php-fpm.service
+systemctl enable --now container-mariadb.service
+systemctl enable --now container-redis.service
 
 composer install
-vim .env
 chown -R www:www .
 chmod -R 755 .
 chmod -R 777 bootstrap/cache/
@@ -39,6 +42,9 @@ chown www:www .user.ini
 chmod 644 .user.ini
 chattr +i .user.ini
 
+php artisan key:generate
+vim .env
+
 vim supervisor/TelegramBot-Queue-default.ini
 vim supervisor/TelegramBot-Queue-TelegramLimitedApiRequest.ini
 chmod +X supervisor/init.sh
@@ -47,21 +53,42 @@ supervisor/init.sh
 supervisor/restart.sh
 ```
 
-## GetWebHookInfo
+#### Database Migration
+
+```bash
+php artisan migrate
+```
+
+#### GetWebHookInfo
 
 ```bash
 php artisan command:GetWebhookInfo
 ```
 
-## SetWebhook
+#### SetWebhook
 
 ```bash
 php artisan command:SetWebhook
 ```
 
-## DeleteWebhook
+#### DeleteWebhook
 
 ```bash
 php artisan command:DeleteWebhook
 ```
 
+#### Restart Queue Workers
+
+```bash
+php artisan queue:restart
+```
+
+Or
+
+```bash
+supervisor/restart.sh
+```
+
+Or
+
+> Send a message to the bot with the command ```/restart```
