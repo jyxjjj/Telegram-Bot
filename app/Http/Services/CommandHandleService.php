@@ -2,8 +2,10 @@
 
 namespace App\Http\Services;
 
+use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -16,12 +18,13 @@ class CommandHandleService extends BaseService
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws TelegramException
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = $message->getChat()->getId();
-        $messageId = $message->getMessageId();
-        $notAdmin = !$telegram->isAdmin($message->getFrom()->getId());
+        $chatId = BotCommon::getSender($message);
+        $messageId = BotCommon::getMessageId($message);
+        $notAdmin = !BotCommon::isAdmin($message);
         $notPrivate = !$message->getChat()->isPrivateChat();
         $sendCommand = $message->getCommand();
         $path = app_path('Http/Services/Commands');
