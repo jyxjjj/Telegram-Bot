@@ -11,7 +11,7 @@ use Longman\TelegramBot\Telegram;
 class BotCommon
 {
     /**
-     * @var Telegram|null
+     * @var ?Telegram
      */
     public static ?Telegram $telegram = null;
 
