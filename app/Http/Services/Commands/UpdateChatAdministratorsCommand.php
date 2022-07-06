@@ -47,10 +47,15 @@ class UpdateChatAdministratorsCommand extends BaseCommand
         /** @var ChatMember[] $admins */
         $admins = $response->getResult();
         try {
+            TChatAdmins::clearAdmin($chatId);
+            $i = 0;
             foreach ($admins as $admin) {
+                $i++;
                 TChatAdmins::addAdmin($chatId, $admin->getUser()->getId());
             }
             $data['text'] .= "Updated chat administrators successfully.\n";
+            $data['text'] .= "This group is a $chatType.\n";
+            $data['text'] .= "There are $i admins in this group.\n";
         } catch (Exception $e) {
             Log::debug($e->getMessage());
             $data['text'] .= "*Error({$e->getCode()}):* {$e->getFile()}:{$e->getLine()}\n";

@@ -26,6 +26,15 @@ class TChatAdmins extends Model
 
     /**
      * @param $chat_id
+     * @return int
+     */
+    public static function clearAdmin($chat_id): int
+    {
+        return self::query()->where('chat_id', $chat_id)->delete();
+    }
+
+    /**
+     * @param $chat_id
      * @param $admin_id
      * @return Builder|Model
      */
