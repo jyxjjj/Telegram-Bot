@@ -46,9 +46,9 @@ class BotCommon
 
     /**
      * @param Message $message
-     * @return string
+     * @return int
      */
-    public static function getSender(Message $message): string
+    public static function getSender(Message $message): int
     {
         return $message->getFrom()->getId();
     }
@@ -108,9 +108,12 @@ class BotCommon
     }
 
     /**
+     * @param Message $message
+     * @param ?Telegram $telegram
+     * @return bool
      * @throws TelegramException
      */
-    public static function isAdmin(Message $message, Telegram $telegram = null): string
+    public static function isAdmin(Message $message, ?Telegram $telegram = null): bool
     {
         if ($telegram) {
             return $telegram->isAdmin(self::getSender($message));
