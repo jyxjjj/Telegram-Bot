@@ -22,7 +22,7 @@ class CommandHandleService extends BaseService
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = BotCommon::getSender($message);
+        $senderId = BotCommon::getSender($message);
         $messageId = BotCommon::getMessageId($message);
         $notAdmin = !BotCommon::isAdmin($message);
         $notPrivate = !$message->getChat()->isPrivateChat();
@@ -49,7 +49,7 @@ class CommandHandleService extends BaseService
             }
             if ($command_class->admin && $notAdmin) {// Detect if command is admin only
                 $data = [
-                    'chat_id' => $chatId,
+                    'chat_id' => $senderId,
                     'parse_mode' => 'Markdown',
                     'disable_web_page_preview' => true,
                     'allow_sending_without_reply' => true,
@@ -61,7 +61,7 @@ class CommandHandleService extends BaseService
             }
             if ($command_class->private && $notPrivate) {// Detect if command is private only
                 $data = [
-                    'chat_id' => $chatId,
+                    'chat_id' => $senderId,
                     'parse_mode' => 'Markdown',
                     'disable_web_page_preview' => true,
                     'allow_sending_without_reply' => true,
