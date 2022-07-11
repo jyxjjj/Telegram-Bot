@@ -5,12 +5,12 @@ namespace App\Http\Services\Commands;
 use App\Http\Models\TChatAdmins;
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\ChatMember\ChatMember;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
+use Throwable;
 
 class UpdateChatAdministratorsCommand extends BaseCommand
 {
@@ -56,7 +56,7 @@ class UpdateChatAdministratorsCommand extends BaseCommand
             $data['text'] .= "Updated chat administrators successfully.\n";
             $data['text'] .= "This group is a $chatType.\n";
             $data['text'] .= "There are $i admins in this group.\n";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Log::debug($e->getMessage());
             $data['text'] .= "*Error({$e->getCode()}):* {$e->getFile()}:{$e->getLine()}\n";
         }

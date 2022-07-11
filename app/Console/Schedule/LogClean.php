@@ -2,8 +2,8 @@
 
 namespace App\Console\Schedule;
 
-use Exception;
 use Illuminate\Console\Command;
+use Throwable;
 
 class LogClean extends Command
 {
@@ -49,7 +49,7 @@ class LogClean extends Command
                 }
             }
             return self::SUCCESS;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->error($e->getMessage());
             //            $code = $e->getCode();
             //            if ($code == 0) {

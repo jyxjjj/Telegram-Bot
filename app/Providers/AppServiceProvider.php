@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
 //            try {
 //                $query = vsprintf($query, $sql->bindings);
 //                Log::channel('sql')->info($query, [__FILE__, __LINE__]);
-//            } catch (Exception $e) {
+//            } catch (Throwable $e) {
 //                Log::channel('sql')->debug($query, [__FILE__, __LINE__]);
 //                Log::channel('sql')->error('Cannot format SQL', [__FILE__, __LINE__, $e->getCode(), $e->getMessage()]);
 //                ERR::log($e, __FILE__, __LINE__);

@@ -4,10 +4,10 @@ namespace App\Http\Services\Commands;
 
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
-use Exception;
 use Illuminate\Support\Facades\Artisan;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
+use Throwable;
 
 class RestartCommand extends BaseCommand
 {
@@ -29,7 +29,7 @@ class RestartCommand extends BaseCommand
         try {
             $code = Artisan::call('queue:restart');
             $msg = 'Queue worker restarted';
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $code = $e->getCode();
             $msg = $e->getMessage();
         }
