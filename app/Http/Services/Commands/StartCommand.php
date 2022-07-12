@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Http\Models\TStarted;
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
 use Longman\TelegramBot\Entities\Message;
@@ -23,6 +24,9 @@ class StartCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
+        $userId = $message->getFrom()->getId();
+        /* @var TStarted $startedUser */
+        $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,
             'parse_mode' => 'Markdown',
@@ -32,6 +36,7 @@ class StartCommand extends BaseCommand
         ];
         $data['text'] .= "Hello, I am here alive.\n";
         $data['text'] .= "Type /help to get the help.\n";
-        $this->dispatch(new SendMessageJob($data));
+        $data['text'] .= "*Your user_id:* [$startedUser->user_id](tg://user?id=$startedUser->user_id)\n";
+        $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }
