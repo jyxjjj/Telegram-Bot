@@ -4,16 +4,15 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $chat_id
+ * @property int $admin_id
+ */
 class TChatAdmins extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'chat_admins';
-    protected $primaryKey = 'id';
-    public $timestamps = true;
-    protected $guarded = [];
 
     /**
      * @param $chat_id

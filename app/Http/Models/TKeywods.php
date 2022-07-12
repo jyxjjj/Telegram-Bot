@@ -2,8 +2,7 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class TKeywods extends Model
+class TKeywods extends BaseModel
 {
+    protected $table = 'keywords';
 }
