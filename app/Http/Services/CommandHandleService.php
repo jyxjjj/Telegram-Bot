@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -56,7 +57,7 @@ class CommandHandleService extends BaseService
                     'reply_to_message_id' => $messageId,
                     'text' => 'This command is admin only',
                 ];
-                dispatch(new SendMessageJob($data));
+                app(Dispatcher::class)->dispatch(new SendMessageJob($data));
                 return;
             }
             if ($command_class->private && $notPrivate) {// Detect if command is private only
@@ -68,7 +69,7 @@ class CommandHandleService extends BaseService
                     'reply_to_message_id' => $messageId,
                     'text' => 'This command needs to be sent in a private chat.',
                 ];
-                dispatch(new SendMessageJob($data));
+                app(Dispatcher::class)->dispatch(new SendMessageJob($data));
                 return;
             }
             $command_class->execute($message, $telegram, $updateId); // Execute command
