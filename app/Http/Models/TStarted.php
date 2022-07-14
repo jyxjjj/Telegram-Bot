@@ -28,4 +28,13 @@ class TStarted extends BaseModel
             ]
         );
     }
+
+    /**
+     * @param $user_id
+     * @return bool
+     */
+    public static function getUser($user_id): bool
+    {
+        return (bool)self::query()->where('user_id', $user_id)->first();
+    }
 }
