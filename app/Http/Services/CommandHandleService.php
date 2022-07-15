@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Common\BotCommon;
+use App\Http\Models\TStarted;
 use App\Jobs\SendMessageJob;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Longman\TelegramBot\Entities\Message;
@@ -24,8 +25,10 @@ class CommandHandleService extends BaseService
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $senderId = BotCommon::getSender($message);
+        $isStarted = TStarted::getUser($senderId);
         $messageId = BotCommon::getMessageId($message);
         $notAdmin = !BotCommon::isAdmin($message);
+        $chatId = $message->getChat()->getId();
         $notPrivate = !$message->getChat()->isPrivateChat();
         $sendCommand = $message->getCommand();
         $path = app_path('Http/Services/Commands');
@@ -55,8 +58,11 @@ class CommandHandleService extends BaseService
                     'disable_web_page_preview' => true,
                     'allow_sending_without_reply' => true,
                     'reply_to_message_id' => $messageId,
-                    'text' => 'This command is admin only',
+                    'text' => '',
                 ];
+                $data['text'] .= "This command is admin only.\n";
+                !$isStarted && $data['chat_id'] = $chatId;
+                !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
                 app(Dispatcher::class)->dispatch(new SendMessageJob($data));
                 return;
             }
@@ -67,8 +73,11 @@ class CommandHandleService extends BaseService
                     'disable_web_page_preview' => true,
                     'allow_sending_without_reply' => true,
                     'reply_to_message_id' => $messageId,
-                    'text' => 'This command needs to be sent in a private chat.',
+                    'text' => '',
                 ];
+                $data['text'] .= "This command needs to be sent in a private chat.\n";
+                !$isStarted && $data['chat_id'] = $chatId;
+                !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
                 app(Dispatcher::class)->dispatch(new SendMessageJob($data));
                 return;
             }
