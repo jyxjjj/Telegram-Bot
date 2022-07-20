@@ -39,9 +39,6 @@ class BanMemberJob extends TelegramBaseQueue
         ];
         $sender = [
             'chat_id' => $origin['chatId'],
-            'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
             'reply_to_message_id' => $origin['messageId'],
             'text' => '',
         ];

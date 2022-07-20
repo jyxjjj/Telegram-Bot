@@ -29,9 +29,6 @@ class UpdateChatAdministratorsCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
-            'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
             'reply_to_message_id' => $message->getMessageId(),
             'text' => '',
         ];

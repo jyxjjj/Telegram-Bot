@@ -35,9 +35,6 @@ class AboutCommand extends BaseCommand
         $date = date('Y-m-d H:i:s', strtotime($commits['commit']['committer']['date']));
         $data = [
             'chat_id' => $chatId,
-            'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
             'text' => '',
         ];
         $data['text'] .= "龙缘特种工业集团机器人\n";

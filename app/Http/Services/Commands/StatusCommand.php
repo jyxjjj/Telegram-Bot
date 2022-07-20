@@ -24,9 +24,6 @@ class StatusCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
-            'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
             'text' => '',
         ];
         $stat1 = file_get_contents('/proc/stat');

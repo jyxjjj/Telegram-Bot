@@ -29,9 +29,6 @@ class StartCommand extends BaseCommand
         $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,
-            'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
             'text' => '',
         ];
         $data['text'] .= "Hello, I am here alive.\n";
