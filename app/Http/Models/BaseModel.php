@@ -9,11 +9,11 @@ class BaseModel extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = true;
+    public $timestamps = true;
     protected $connection = 'mysql';
     protected $primaryKey = 'id';
     protected $keyType = 'int';
-    public $incrementing = true;
     protected $perPage = 20;
-    public $timestamps = true;
     protected $guarded = [];
 }
