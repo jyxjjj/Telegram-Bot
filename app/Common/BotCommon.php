@@ -4,6 +4,7 @@ namespace App\Common;
 
 use GuzzleHttp\Client;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Entities\ReplyToMessage;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
@@ -45,19 +46,19 @@ class BotCommon
     }
 
     /**
-     * @param Message $message
+     * @param Message|ReplyToMessage $message
      * @return int
      */
-    public static function getSender(Message $message): int
+    public static function getSender(Message|ReplyToMessage $message): int
     {
         return $message->getFrom()->getId();
     }
 
     /**
-     * @param Message $message
+     * @param Message|ReplyToMessage $message
      * @return string
      */
-    public static function getSenderName(Message $message): string
+    public static function getSenderName(Message|ReplyToMessage $message): string
     {
         return $message->getChat()->getFirstName() . $message->getChat()->getLastName();
     }
@@ -99,10 +100,10 @@ class BotCommon
     }
 
     /**
-     * @param Message $message
+     * @param Message|ReplyToMessage $message
      * @return string
      */
-    public static function getMessageId(Message $message): string
+    public static function getMessageId(Message|ReplyToMessage $message): string
     {
         return $message->getMessageId();
     }
