@@ -40,7 +40,7 @@ class SendMessageJob extends TelegramBaseQueue
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */
             $sendResult = $serverResponse->getResult();
-            $messageId = $sendResult->getMessageId();
+            $messageId = BotCommon::getMessageId($sendResult);
             $data = [
                 'chat_id' => $this->data['chat_id'],
                 'message_id' => $messageId,
