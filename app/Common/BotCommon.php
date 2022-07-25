@@ -17,44 +17,6 @@ class BotCommon
     public static ?Telegram $telegram = null;
 
     /**
-     * @return Client
-     */
-    private static function getClient(): Client
-    {
-        return new Client([
-            'base_uri' => env('TELEGRAM_API_BASE_URI'),
-            'proxy' => env('TELEGRAM_PROXY'),
-            'timeout' => 60,
-        ]);
-    }
-
-    /**
-     * @return Telegram
-     * @throws TelegramException
-     */
-    public static function getTelegram(): Telegram
-    {
-        if (self::$telegram) {
-            return self::$telegram;
-        }
-        self::$telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
-        self::$telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
-        self::$telegram->setDownloadPath(storage_path('app/telegram'));
-        self::$telegram->setUploadPath(storage_path('app/telegram'));
-        Request::setClient(self::getClient());
-        return self::$telegram;
-    }
-
-    /**
-     * @param Message|ReplyToMessage $message
-     * @return int
-     */
-    public static function getSender(Message|ReplyToMessage $message): int
-    {
-        return $message->getFrom()->getId();
-    }
-
-    /**
      * @param Message|ReplyToMessage $message
      * @return string
      */
@@ -120,5 +82,43 @@ class BotCommon
             return $telegram->isAdmin(self::getSender($message));
         }
         return self::getTelegram()->isAdmin(self::getSender($message));
+    }
+
+    /**
+     * @param Message|ReplyToMessage $message
+     * @return int
+     */
+    public static function getSender(Message|ReplyToMessage $message): int
+    {
+        return $message->getFrom()->getId();
+    }
+
+    /**
+     * @return Telegram
+     * @throws TelegramException
+     */
+    public static function getTelegram(): Telegram
+    {
+        if (self::$telegram) {
+            return self::$telegram;
+        }
+        self::$telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
+        self::$telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
+        self::$telegram->setDownloadPath(storage_path('app/telegram'));
+        self::$telegram->setUploadPath(storage_path('app/telegram'));
+        Request::setClient(self::getClient());
+        return self::$telegram;
+    }
+
+    /**
+     * @return Client
+     */
+    private static function getClient(): Client
+    {
+        return new Client([
+            'base_uri' => env('TELEGRAM_API_BASE_URI'),
+            'proxy' => env('TELEGRAM_PROXY'),
+            'timeout' => 60,
+        ]);
     }
 }
