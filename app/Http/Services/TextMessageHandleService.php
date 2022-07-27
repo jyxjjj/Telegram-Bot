@@ -2,8 +2,8 @@
 
 namespace App\Http\Services;
 
-use App\Common\BotCommon;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
 class TextMessageHandleService extends BaseService
@@ -13,17 +13,10 @@ class TextMessageHandleService extends BaseService
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws TelegramException
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        $messageId = BotCommon::getMessageId($message);
-        $messageType = $message->getType();
-        $sender = BotCommon::getSender($message);
-//        $serverResponse = Request::getChatAdministrators([
-//            'chat_id' => $message->getChat()->getId(),
-//        ]);
-//        /** @var ChatMember[] $chatMembers */
-//        $chatMembers = $serverResponse->getResult();
-
+        KeywordHandleService::handle($message, $telegram, $updateId);
     }
 }

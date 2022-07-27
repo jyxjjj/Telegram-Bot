@@ -27,9 +27,9 @@ class CommandHandleService extends BaseService
         $senderId = BotCommon::getSender($message);
         $isStarted = TStarted::getUser($senderId);
         $messageId = BotCommon::getMessageId($message);
-        $notAdmin = !BotCommon::isAdmin($message);
         $chatId = BotCommon::getChatId($message);
-        $notPrivate = !$message->getChat()->isPrivateChat();
+        $notAdmin = !BotCommon::isAdmin($message);
+        $notPrivate = !BotCommon::isPrivateChat($message);
         $sendCommand = $message->getCommand();
         $path = app_path('Http/Services/Commands');
         $files = new RegexIterator(

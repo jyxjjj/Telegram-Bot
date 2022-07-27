@@ -46,12 +46,12 @@ class BanMemberJob extends TelegramBaseQueue
         if ($serverResponse->isOk()) {
             $sender['text'] .= "*User banned from chat.*\n";
             $sender['text'] .= "*User ID:* [{$origin['banUserId']}](tg://user?id={$origin['banUserId']})\n";
-            $this->dispatch(new DeleteMessageJob($deleter, 0));
+            DeleteMessageJob::dispatch($deleter, 0);
         } else {
             $sender['text'] .= "*Error banning user.*\n";
             $sender['text'] .= "*Error Code:* `{$serverResponse->getErrorCode()}`\n";
             $sender['text'] .= "*Error Msg:* `{$serverResponse->getDescription()}`\n";
         }
-        $this->dispatch(new SendMessageJob($sender));
+        SendMessageJob::dispatch($sender);
     }
 }

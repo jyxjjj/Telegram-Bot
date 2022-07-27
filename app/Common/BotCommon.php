@@ -85,6 +85,15 @@ class BotCommon
     }
 
     /**
+     * @param Message $message
+     * @return bool
+     */
+    public static function isPrivateChat(Message $message): bool
+    {
+        return $message->getChat()->isPrivateChat();
+    }
+
+    /**
      * @param Message|ReplyToMessage $message
      * @return int
      */
