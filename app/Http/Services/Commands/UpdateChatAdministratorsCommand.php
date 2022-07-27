@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Http\Models\TChatAdmins;
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
@@ -26,13 +27,13 @@ class UpdateChatAdministratorsCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = $message->getChat()->getId();
+        $chatId = BotCommon::getChatId($message);
         $data = [
             'chat_id' => $chatId,
-            'reply_to_message_id' => $message->getMessageId(),
+            'reply_to_message_id' => BotCommon::getMessageId($message),
             'text' => '',
         ];
-        $chatType = $message->getChat()->getType();
+        $chatType = BotCommon::getChatType($message);
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
             $data['text'] .= "*Error:* This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
@@ -54,7 +55,6 @@ class UpdateChatAdministratorsCommand extends BaseCommand
             $data['text'] .= "This group is a $chatType.\n";
             $data['text'] .= "There are $i admins in this group.\n";
         } catch (Throwable $e) {
-            Log::debug($e->getMessage());
             $data['text'] .= "*Error({$e->getCode()}):* {$e->getFile()}:{$e->getLine()}\n";
         }
         $this->dispatch(new SendMessageJob($data));

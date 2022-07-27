@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Http\Models\TChatAdmins;
 use App\Http\Services\BaseCommand;
 use App\Jobs\BanMemberJob;
@@ -23,8 +24,8 @@ class BanCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = $message->getChat()->getId();
-        $messageId = $message->getMessageId();
+        $chatId = BotCommon::getChatId($message);
+        $messageId = BotCommon::getMessageId($message);
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
@@ -40,21 +41,21 @@ class BanCommand extends BaseCommand
 
         $admins = TChatAdmins::getChatAdmins($chatId);
 
-        $userId = $message->getFrom()->getId();
+        $userId = BotCommon::getSender($message);
         if (!in_array($userId, $admins, true)) {
             $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
 
-        $banUserId = $replyTo->getFrom()->getId();
+        $banUserId = BotCommon::getSender($replyTo);
         if (in_array($banUserId, $admins, true)) {
             $data['text'] .= "*Error:* You can't ban an admin.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
 
-        $replyToMessageId = $replyTo->getMessageId();
+        $replyToMessageId = BotCommon::getMessageId($replyTo);
 
         $data = [
             'chatId' => $chatId,

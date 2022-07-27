@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
 use Longman\TelegramBot\Entities\Message;
@@ -24,7 +25,7 @@ class HelpCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = $message->getChat()->getId();
+        $chatId = BotCommon::getChatId($message);
         $data = [
             'chat_id' => $chatId,
             'text' => $this->getHelp(),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Http\Models\TStarted;
 use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
@@ -23,8 +24,8 @@ class StartCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = $message->getChat()->getId();
-        $userId = $message->getFrom()->getId();
+        $chatId = BotCommon::getChatId($message);
+        $userId = BotCommon::getSender($message);
         /* @var TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [

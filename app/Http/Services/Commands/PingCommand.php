@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Http\Services\BaseCommand;
 use App\Jobs\DeleteMessageWithKeyJob;
 use App\Jobs\EditMessageTextWithKeyJob;
@@ -27,7 +28,7 @@ class PingCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $key = UUID::generateUniqueID();
-        $chatId = $message->getChat()->getId();
+        $chatId = BotCommon::getChatId($message);
         $data = [
             'chat_id' => $chatId,
             'text' => 'Calculating...',
