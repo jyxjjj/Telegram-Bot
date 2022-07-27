@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Common\BotCommon;
-use App\Http\Models\TStarted;
 use App\Jobs\SendMessageJob;
+use App\Models\TStarted;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -31,7 +31,7 @@ class CommandHandleService extends BaseService
         $notAdmin = !BotCommon::isAdmin($message);
         $notPrivate = !BotCommon::isPrivateChat($message);
         $sendCommand = $message->getCommand();
-        $path = app_path('Http/Services/Commands');
+        $path = app_path('Services/Commands');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
@@ -42,7 +42,7 @@ class CommandHandleService extends BaseService
             $fileName = $file->getFileName();
             $pathName = $file->getPathName();
             $command = str_replace('.php', '', $fileName);
-            $command_class = "App\\Http\\Services\\Commands\\$command";
+            $command_class = "App\\Services\\Commands\\$command";
             require_once $pathName;
             if (!class_exists($command_class, false)) {
                 continue;

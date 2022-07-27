@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Exceptions\Handler;
-use App\Http\Services\UpdateHandleService;
+use App\Services\UpdateHandleService;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;

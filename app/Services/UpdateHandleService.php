@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;

@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
-abstract class BaseKeyword
+abstract class BaseCommand
 {
     use DispatchesJobs;
 
     public string $name;
     public string $description;
-    public string $pattern;
+    public string $usage;
     public string $version = '1.0.0';
-    public bool $ignoreAdmin = false;
-    public bool $ignorePrivate = false;
+    public bool $admin = false;
+    public bool $private = false;
 
     /**
      * @param Message $message

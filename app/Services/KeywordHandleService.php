@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -20,7 +20,7 @@ class KeywordHandleService extends BaseService
      */
     public static function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        $path = app_path('Http/Services/Keywords');
+        $path = app_path('Services/Keywords');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
@@ -31,7 +31,7 @@ class KeywordHandleService extends BaseService
             $fileName = $file->getFileName();
             $pathName = $file->getPathName();
             $handler = str_replace('.php', '', $fileName);
-            $handler_class = "App\\Http\\Services\\Keywords\\$handler";
+            $handler_class = "App\\Services\\Keywords\\$handler";
             require_once $pathName;
             if (!class_exists($handler_class, false)) {
                 continue;

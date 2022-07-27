@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Services\Commands;
+namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Http\Models\TStarted;
-use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
+use App\Models\TStarted;
+use App\Services\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -26,7 +26,7 @@ class StartCommand extends BaseCommand
     {
         $chatId = BotCommon::getChatId($message);
         $userId = BotCommon::getSender($message);
-        /* @var TStarted $startedUser */
+        /* @var \App\Models\TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Services\Commands;
+namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
+use App\Services\BaseCommand;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;

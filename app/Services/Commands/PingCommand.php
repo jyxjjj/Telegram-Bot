@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Services\Commands;
+namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Http\Services\BaseCommand;
 use App\Jobs\DeleteMessageWithKeyJob;
 use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
+use App\Services\BaseCommand;
 use Carbon\Carbon;
 use DESMG\UUID;
 use Illuminate\Support\Facades\Cache;

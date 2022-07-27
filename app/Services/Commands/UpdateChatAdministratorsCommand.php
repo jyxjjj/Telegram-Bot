@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Services\Commands;
+namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Http\Models\TChatAdmins;
-use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
-use Illuminate\Support\Facades\Log;
+use App\Models\TChatAdmins;
+use App\Services\BaseCommand;
 use Longman\TelegramBot\Entities\ChatMember\ChatMember;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Request;

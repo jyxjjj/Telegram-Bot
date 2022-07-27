@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Services\Commands;
+namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Http\Services\BaseCommand;
 use App\Jobs\SendMessageJob;
+use App\Services\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
+use function App\Http\Services\Commands\str_starts_with;
 
 class StatusCommand extends BaseCommand
 {
