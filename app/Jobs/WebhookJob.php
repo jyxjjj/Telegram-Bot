@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\Handler;
 use App\Http\Services\UpdateHandleService;
 use Longman\TelegramBot\Entities\Update;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
 class WebhookJob extends BaseQueue
@@ -30,6 +32,10 @@ class WebhookJob extends BaseQueue
         $update = $this->update;
         $telegram = $this->telegram;
         $updateId = $this->updateId;
-        UpdateHandleService::handle($update, $telegram, $updateId);
+        try {
+            UpdateHandleService::handle($update, $telegram, $updateId);
+        } catch (TelegramException $e) {
+            Handler::logError($e);
+        }
     }
 }

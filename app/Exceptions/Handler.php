@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -19,5 +20,10 @@ class Handler extends ExceptionHandler
         });
         $this->renderable(function (Throwable $e) {
         });
+    }
+
+    public static function logError(Throwable $e)
+    {
+        Log::error($e->getMessage(), [$e->getFile(), $e->getLine(), $e->getTrace()]);
     }
 }
