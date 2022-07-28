@@ -47,7 +47,7 @@ class CommandHandleService extends BaseService
             if (!class_exists($command_class, false)) {
                 continue;
             }
-            $command_class = new $command_class; // instantiate the command
+            $command_class = new $command_class; // Instantiate the command
             if ($command_class->name != $sendCommand) { // Detect if command matches
                 continue;
             }

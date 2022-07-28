@@ -36,7 +36,7 @@ class KeywordHandleService extends BaseService
             if (!class_exists($handler_class, false)) {
                 continue;
             }
-            $handler_class = new $handler_class; // instantiate the command
+            $handler_class = new $handler_class; // Instantiate the Handler
             if ($handler_class->pattern !== null && preg_match($handler_class->pattern, $message->getText())) {
                 $handler_class->execute($message, $telegram, $updateId);
             }
