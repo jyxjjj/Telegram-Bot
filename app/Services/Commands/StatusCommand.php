@@ -7,7 +7,6 @@ use App\Jobs\SendMessageJob;
 use App\Services\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
-use function App\Http\Services\Commands\str_starts_with;
 
 class StatusCommand extends BaseCommand
 {
