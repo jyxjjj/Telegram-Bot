@@ -19,7 +19,11 @@ class EditMessageTextWithKeyJob extends TelegramBaseQueue
     public function __construct(array $data, string $key)
     {
         parent::__construct();
-        $this->data = $data;
+        $this->data = array_merge($data, [
+            'parse_mode' => 'Markdown',
+            'disable_web_page_preview' => true,
+            'allow_sending_without_reply' => true,
+        ]);
         $this->key = $key;
     }
 
