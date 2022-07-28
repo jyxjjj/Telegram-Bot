@@ -14,7 +14,7 @@ class DeleteMessageJob extends TelegramBaseQueue
      * @param array $data
      * @param int $delay
      */
-    public function __construct(array $data, int $delay = 30)
+    public function __construct(array $data, int $delay = 60)
     {
         parent::__construct();
         $this->data = $data;
