@@ -37,9 +37,11 @@ class PingCommand extends BaseCommand
         $data['text'] = '';
         $sendTime = $message->getDate();
         $sendTime = Carbon::createFromTimestamp($sendTime)->getTimestampMs();
-        $startTime = Cache::get("TelegramUpdateStartTime_$updateId");
+        $startTime = Cache::get("TelegramUpdateStartTime_$updateId", 0);
         $startTime = Carbon::createFromTimestampMs($startTime)->getTimestampMs();
         $server_latency = $startTime - $sendTime;
+        $clientIP = Cache::get("TelegramIP_$updateId", '');
+        $clientIPCountry = Cache::get("TelegramIPCOUNTRY_$updateId", '');
         $endTime = Carbon::now()->getTimestampMs();
         $message_latency = $endTime - $startTime;
         $data['text'] .= "*Send Time:* `$sendTime`\n";
@@ -47,6 +49,7 @@ class PingCommand extends BaseCommand
         $data['text'] .= "*End Time:* `$endTime`\n";
         $data['text'] .= "*Server Latency:* `$server_latency` ms\n";
         $data['text'] .= "*Message Latency:* `$message_latency` ms\n";
+        $data['text'] .= "*Telegram Update IP:* `$clientIP ($clientIPCountry)`\n";
         $IPs = [
             '149.154.175.53',
             '149.154.167.51',

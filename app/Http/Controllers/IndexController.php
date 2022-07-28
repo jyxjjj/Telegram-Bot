@@ -15,11 +15,14 @@ use Longman\TelegramBot\Exception\TelegramException;
 class IndexController extends BaseController
 {
     /**
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return $this->plain(request()->server('HTTP_CF_CONNECTING_IP') . ' (' . request()->server('HTTP_CF_IPCOUNTRY') . ')');
+        $clientIP = $request->server('HTTP_CF_CONNECTING_IP');
+        $clientCountry = $request->server('HTTP_CF_IPCOUNTRY');
+        return $this->plain("$clientIP ($clientCountry)");
     }
 
     /**
@@ -36,7 +39,12 @@ class IndexController extends BaseController
             $update = new Update($request->all(), $telegram->getBotUsername());
             $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
-            Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), Carbon::now()->addMinutes(5));
+            $clientIP = $request->server('HTTP_CF_CONNECTING_IP');
+            $clientCountry = $request->server('HTTP_CF_IPCOUNTRY');
+            $expireTime = Carbon::now()->addMinutes(5);
+            Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), $expireTime);
+            Cache::put("TelegramIP_$updateId", $clientIP, $expireTime);
+            Cache::put("TelegramIPCOUNTRY_$updateId", $clientCountry, $expireTime);
             $this->dispatch(new WebhookJob($update, $telegram, $updateId));
             return $this->json([
                 'code' => 0,

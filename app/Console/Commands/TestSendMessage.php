@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
+use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
@@ -45,7 +46,12 @@ class TestSendMessage extends Command
             'url' => 'https://github.com',
         ]);
         $data['reply_markup']->addRow($button1);
-        dd(Request::sendMessage($data));
+        $serverResponse = Request::sendMessage($data);
+        if ($serverResponse->isOk()) {
+            /** @var Message $sendResult */
+            $sendResult = $serverResponse->getResult();
+            dump($sendResult);
+        }
         return self::SUCCESS;
     }
 }

@@ -22,7 +22,7 @@ class Config
         'DNT' => '1',
         'DPR' => '1',
         'Pragma' => 'no-cache',
-        'SEC-CH-UA' => '"Chromium";v="102", "DESMG Web Client";v="2"',
+        'SEC-CH-UA' => '"Chromium";v="103", "DESMG Web Client";v="2"',
         'SEC-CH-UA-Arch' => 'x86',
         'SEC-CH-UA-Full-Version' => '2.2',
         'SEC-CH-UA-Mobile' => '?0',
@@ -34,7 +34,7 @@ class Config
         'SEC-Fetch-Site' => 'none',
         'SEC-Fetch-User' => '?1',
         'Upgrade-Insecure-Requests' => '1',
-        'User-Agent' => 'Linux/5; Fedora/36; IA64; x86_64; Chrome/102; DESMG-Web-Client/2.2',
+        'User-Agent' => 'Linux/5; Fedora/36; IA64; x86_64; Chrome/103; DESMG-Web-Client/2.2',
         'Viewport-Width' => '2560',
         'Width' => '2560',
     ];
