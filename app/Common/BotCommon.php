@@ -85,15 +85,6 @@ class BotCommon
     }
 
     /**
-     * @param Message $message
-     * @return bool
-     */
-    public static function isPrivateChat(Message $message): bool
-    {
-        return $message->getChat()->isPrivateChat();
-    }
-
-    /**
      * @param Message|ReplyToMessage $message
      * @return int
      */
@@ -129,5 +120,14 @@ class BotCommon
             'proxy' => env('TELEGRAM_PROXY'),
             'timeout' => 60,
         ]);
+    }
+
+    /**
+     * @param Message $message
+     * @return bool
+     */
+    public static function isPrivateChat(Message $message): bool
+    {
+        return $message->getChat()->isPrivateChat();
     }
 }

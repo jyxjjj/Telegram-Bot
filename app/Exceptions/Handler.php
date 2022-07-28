@@ -14,16 +14,16 @@ class Handler extends ExceptionHandler
     protected $dontFlash = [
     ];
 
+    public static function logError(Throwable $e)
+    {
+        Log::error($e->getMessage(), [$e->getFile(), $e->getLine(), $e->getTrace()]);
+    }
+
     public function register()
     {
         $this->reportable(function (Throwable $e) {
         });
         $this->renderable(function (Throwable $e) {
         });
-    }
-
-    public static function logError(Throwable $e)
-    {
-        Log::error($e->getMessage(), [$e->getFile(), $e->getLine(), $e->getTrace()]);
     }
 }
