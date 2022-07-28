@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
-use function App\Http\Services\Keywords\str_starts_with;
 
 class B23TrackerRemoverKeyword extends BaseKeyword
 {
