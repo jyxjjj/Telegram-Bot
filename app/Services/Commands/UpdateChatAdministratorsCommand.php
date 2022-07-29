@@ -55,7 +55,6 @@ class UpdateChatAdministratorsCommand extends BaseCommand
             $data['text'] .= "*This group is a* `$chatType`.\n";
             $data['text'] .= "*There are* `$i` admins in this group.\n";
         } catch (Throwable $e) {
-            Log::debug($e->getMessage(), [$e->getTrace(),]);
             $data['text'] .= "*Error({$e->getCode()}):* database error.\n";
         }
         $this->dispatch(new SendMessageJob($data));
