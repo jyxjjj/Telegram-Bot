@@ -34,6 +34,36 @@ This is a doc of supervisor + crontab version that laravel recommended.
 
 You can do anything you want.
 
+## Pre-install
+
+Make a file tree like this:
+
+```
+/www/server/mariadb/
+├── data
+└── mysql
+    └── my.cnf
+/www/server/redis/
+├── conf
+│   └── redis.conf
+└── data
+```
+
+Then run:
+
+```bash
+podman-compose -f docker-compose.yml up -d
+```
+
+If you are using docker, you need to create a bridge network named podman first.
+
+```bash
+docker network create --driver bridge podman
+docker-compose -f docker-compose.yml up -d
+```
+
+## Run
+
 ```bash
 dnf update --refresh -y
 dnf install supervisor podman* cockpit* --refresh -y
