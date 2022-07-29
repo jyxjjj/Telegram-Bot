@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Common\BotCommon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
@@ -36,10 +37,11 @@ class DeleteMessageWithKeyJob extends TelegramBaseQueue
             $this->data['message_id'] = $messageId;
             $serverResponse = Request::deleteMessage($this->data);
             if (!$serverResponse->isOk()) {
+                $errorCode = $serverResponse->getErrorCode();
+                $errorDescription = $serverResponse->getDescription();
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
                 $this->release(1);
             }
-        } else {
-            $this->release(1);
         }
     }
 }

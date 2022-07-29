@@ -130,4 +130,22 @@ class BotCommon
     {
         return $message->getChat()->isPrivateChat();
     }
+
+    /**
+     * @param Message|ReplyToMessage $message
+     * @return string
+     */
+    public static function getText(Message|ReplyToMessage $message): string
+    {
+        return $message->getText();
+    }
+
+    /**
+     * @param Message $message
+     * @return string
+     */
+    public static function getCommand(Message $message): string
+    {
+        return $message->getCommand();
+    }
 }

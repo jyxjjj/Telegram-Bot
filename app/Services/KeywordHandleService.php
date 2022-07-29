@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Common\BotCommon;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -27,6 +28,7 @@ class KeywordHandleService extends BaseService
             ),
             '/^.+Keyword.php$/'
         );
+        $sendText = BotCommon::getText($message);
         foreach ($files as $file) {
             $fileName = $file->getFileName();
             $pathName = $file->getPathName();
@@ -37,9 +39,7 @@ class KeywordHandleService extends BaseService
                 continue;
             }
             $handler_class = new $handler_class; // Instantiate the Handler
-            if ($handler_class->pattern !== null && preg_match($handler_class->pattern, $message->getText())) {
-                $handler_class->execute($message, $telegram, $updateId);
-            }
+            $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
             return;
         }
     }

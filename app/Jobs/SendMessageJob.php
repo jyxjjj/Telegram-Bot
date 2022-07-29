@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
@@ -49,6 +50,9 @@ class SendMessageJob extends TelegramBaseQueue
                 DeleteMessageJob::dispatch($data, $this->delete);
             }
         } else {
+            $errorCode = $serverResponse->getErrorCode();
+            $errorDescription = $serverResponse->getDescription();
+            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
             $this->release(1);
         }
     }

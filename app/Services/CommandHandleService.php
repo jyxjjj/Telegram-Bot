@@ -30,7 +30,7 @@ class CommandHandleService extends BaseService
         $chatId = BotCommon::getChatId($message);
         $notAdmin = !BotCommon::isAdmin($message);
         $notPrivate = !BotCommon::isPrivateChat($message);
-        $sendCommand = $message->getCommand();
+        $sendCommand = BotCommon::getCommand($message);
         $path = app_path('Services/Commands');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
