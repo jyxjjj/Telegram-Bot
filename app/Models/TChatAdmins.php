@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $chat_id
  * @property int $admin_id
  */
-class TChatAdmins extends Model
+class TChatAdmins extends BaseModel
 {
     protected $table = 'chat_admins';
 

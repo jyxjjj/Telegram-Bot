@@ -6,6 +6,7 @@ use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatAdmins;
 use App\Services\BaseCommand;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\ChatMember\ChatMember;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Request;
@@ -51,10 +52,11 @@ class UpdateChatAdministratorsCommand extends BaseCommand
                 TChatAdmins::addAdmin($chatId, $admin->getUser()->getId());
             }
             $data['text'] .= "Updated chat administrators successfully.\n";
-            $data['text'] .= "This group is a $chatType.\n";
-            $data['text'] .= "There are $i admins in this group.\n";
+            $data['text'] .= "*This group is a* `$chatType`.\n";
+            $data['text'] .= "*There are* `$i` admins in this group.\n";
         } catch (Throwable $e) {
-            $data['text'] .= "*Error({$e->getCode()}):* {$e->getFile()}:{$e->getLine()}\n";
+            Log::debug($e->getMessage(), [$e->getTrace(),]);
+            $data['text'] .= "*Error({$e->getCode()}):* database error.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }
