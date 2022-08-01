@@ -47,24 +47,28 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             $pattern = '/https:\/\/www.bilibili.com\/video\/[a-zA-Z\d]+(\?p=(\d){1,3})?/';
             $data['text'] .= "Bilibili Tracker Removed\n";
             $data['reply_markup'] = new InlineKeyboard([]);
-            for ($i = 0; $i < 3; $i++) {
+            if (count($matches[0]) > 3) {
+                $count = 3;
+            } else {
+                $count = count($matches[0]);
+            }
+            for ($i = 0; $i < $count; $i++) {
                 $link = $matches[0][$i];
                 $this->normalizeLink($link);
                 if (preg_match($pattern, $link)) {
                     $data['text'] .= "*Link:* `$link`\n";
                     $button = new InlineKeyboardButton([
-                        'text' => 'Click here to open',
+                        'text' => $link,
                         'url' => $link,
                     ]);
                     $data['reply_markup']->addRow($button);
                 } else {
                     $location = $this->getLocation($link);
-                    if (preg_match($pattern, $location)) {
-                        $data['text'] .= "*Link:* `$link`\n";
-                        $data['reply_markup'] = new InlineKeyboard([]);
+                    if (preg_match($pattern, $location, $matchedLocation)) {
+                        $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
                         $button = new InlineKeyboardButton([
-                            'text' => 'Click here to open',
-                            'url' => $link,
+                            'text' => $matchedLocation[0],
+                            'url' => $matchedLocation[0],
                         ]);
                         $data['reply_markup']->addRow($button);
                     }
