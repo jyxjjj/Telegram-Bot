@@ -17,6 +17,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     public string $name = 'b23 tracker remover';
     public string $description = 'Remove b23 tracker from b23 link';
     protected string $pattern = '/(b23\.tv|bilibili\.com)/';
+    private array $matches;
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
@@ -58,7 +59,9 @@ class B23TrackerRemoverKeyword extends BaseKeyword
 
     public function preExecute(string $text): bool
     {
-        // TODO: Implement preExecute() method.
+        if (preg_match($this->pattern, $text, $this->matches)) {
+            return true;
+        }
         return false;
     }
 }
