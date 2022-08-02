@@ -44,7 +44,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     {
         $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
         if (preg_match_all($pattern, $text, $matches)) {
-            $pattern = '/https:\/\/www.bilibili.com\/video\/[a-zA-Z\d]+(\?p=(\d){1,3})?/';
+            $pattern = '/https:\/\/(www|live).bilibili.com\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
             $data['text'] .= "Bilibili Tracker Removed\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (count($matches[0]) > 3) {
