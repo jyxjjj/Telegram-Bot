@@ -40,7 +40,6 @@ class KeywordHandleService extends BaseService
             }
             $handler_class = new $handler_class; // Instantiate the Handler
             $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
-            return;
         }
     }
 }
