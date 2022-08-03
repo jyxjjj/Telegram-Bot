@@ -32,11 +32,12 @@ services:
             - net.ipv4.tcp_synack_retries=2
             - net.ipv4.tcp_fastopen=3
         dns:
-            - 1.1.1.1
-            - 8.8.8.8
-            - 8.8.4.4
             - 223.5.5.5
             - 223.6.6.6
+            - 1.1.1.1
+            - 1.0.0.1
+            - 8.8.8.8
+            - 8.8.4.4
         ports:
             -   target: 3306
                 published: 3306
@@ -82,11 +83,12 @@ services:
             - net.ipv4.tcp_synack_retries=2
             - net.ipv4.tcp_fastopen=3
         dns:
-            - 1.1.1.1
-            - 8.8.8.8
-            - 8.8.4.4
             - 223.5.5.5
             - 223.6.6.6
+            - 1.1.1.1
+            - 1.0.0.1
+            - 8.8.8.8
+            - 8.8.4.4
         ports:
             -   target: 6379
                 published: 6379
