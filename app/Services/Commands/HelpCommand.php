@@ -38,7 +38,7 @@ class HelpCommand extends BaseCommand
      */
     private function getHelp(): string
     {
-        $path = app_path('Http/Services/Commands');
+        $path = app_path('Services/Commands');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
@@ -50,7 +50,7 @@ class HelpCommand extends BaseCommand
             $fileName = $file->getFileName();
             $pathName = $file->getPathName();
             $command = str_replace('.php', '', $fileName);
-            $command_class = "App\\Http\\Services\\Commands\\$command";
+            $command_class = "App\\Services\\Commands\\$command";
             require_once $pathName;
             if (!class_exists($command_class, false)) {
                 continue;

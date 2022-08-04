@@ -8,18 +8,16 @@ use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class SendMessageJob extends TelegramBaseQueue
+class SendPhotoJob extends TelegramBaseQueue
 {
     private array $data;
-    private ?array $extras;
     private int $delete;
 
     /**
      * @param array $data
-     * @param array|null $extras
      * @param int $delete
      */
-    public function __construct(array $data, ?array $extras = null, int $delete = 60)
+    public function __construct(array $data, int $delete = 60)
     {
         parent::__construct();
         $this->data = array_merge($data, [
@@ -27,7 +25,6 @@ class SendMessageJob extends TelegramBaseQueue
             'disable_web_page_preview' => true,
             'allow_sending_without_reply' => true,
         ]);
-        $this->extras = $extras;
         $this->delete = $delete;
     }
 
@@ -37,7 +34,7 @@ class SendMessageJob extends TelegramBaseQueue
     public function handle()
     {
         BotCommon::getTelegram();
-        $serverResponse = Request::sendMessage($this->data, $this->extras);
+        $serverResponse = Request::sendPhoto($this->data);
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */
             $sendResult = $serverResponse->getResult();
