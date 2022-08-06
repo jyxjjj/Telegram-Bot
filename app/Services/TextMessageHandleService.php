@@ -15,8 +15,8 @@ class TextMessageHandleService extends BaseService
      * @return void
      * @throws TelegramException
      */
-    public static function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): void
     {
-        KeywordHandleService::handle($message, $telegram, $updateId);
+        (new KeywordHandleService)->handle($message, $telegram, $updateId);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
 use App\Models\TStarted;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -22,7 +21,7 @@ class CommandHandleService extends BaseService
      * @return void
      * @throws TelegramException
      */
-    public static function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $senderId = BotCommon::getSender($message);
         $isStarted = TStarted::getUser($senderId);
@@ -60,7 +59,7 @@ class CommandHandleService extends BaseService
                 $data['text'] .= "This command is admin only.\n";
                 !$isStarted && $data['chat_id'] = $chatId;
                 !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
-                app(Dispatcher::class)->dispatch(new SendMessageJob($data));
+                $this->dispatch(new SendMessageJob($data));
                 return;
             }
             if ($command_class->private && $notPrivate) {// Detect if command is private only
@@ -72,7 +71,7 @@ class CommandHandleService extends BaseService
                 $data['text'] .= "This command needs to be sent in a private chat.\n";
                 !$isStarted && $data['chat_id'] = $chatId;
                 !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
-                app(Dispatcher::class)->dispatch(new SendMessageJob($data));
+                $this->dispatch(new SendMessageJob($data));
                 return;
             }
             $command_class->execute($message, $telegram, $updateId); // Execute command

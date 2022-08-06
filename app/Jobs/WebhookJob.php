@@ -33,7 +33,7 @@ class WebhookJob extends BaseQueue
         $telegram = $this->telegram;
         $updateId = $this->updateId;
         try {
-            UpdateHandleService::handle($update, $telegram, $updateId);
+            (new UpdateHandleService)->handle($update, $telegram, $updateId);
         } catch (TelegramException $e) {
             Handler::logError($e);
         }

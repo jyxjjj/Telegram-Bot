@@ -15,24 +15,24 @@ class UpdateHandleService extends BaseService
      * @return void
      * @throws TelegramException
      */
-    public static function handle(Update $update, Telegram $telegram, int $updateId): void
+    public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
         $updateType = $update->getUpdateType();
         switch ($updateType) {
             case Update::TYPE_MESSAGE:
                 // 任何类型的新传入消息--文本、照片、贴纸等。
-                MessageHandleService::handle($update->getMessage(), $telegram, $updateId);
+                (new MessageHandleService)->handle($update->getMessage(), $telegram, $updateId);
                 break;
             case Update::TYPE_EDITED_MESSAGE:
-//                MessageHandleService::handle($update->getEditedMessage(), $telegram, $updateId);
+//                (new MessageHandleService)->handle($update->getEditedMessage(), $telegram, $updateId);
                 // 机器人已知并已编辑的消息的新版本。
                 break;
             case Update::TYPE_CHANNEL_POST:
-//                MessageHandleService::handle($update->getChannelPost(), $telegram, $updateId);
+//                (new MessageHandleService)->handle($update->getChannelPost(), $telegram, $updateId);
                 // 任何类型的新传入频道帖子--文字、照片、贴纸等。
                 break;
             case Update::TYPE_EDITED_CHANNEL_POST:
-//                MessageHandleService::handle($update->getEditedChannelPost(), $telegram, $updateId);
+//                (new MessageHandleService)->handle($update->getEditedChannelPost(), $telegram, $updateId);
                 // 机器人已知并已编辑的频道帖子的新版本。
                 break;
             case Update::TYPE_INLINE_QUERY:

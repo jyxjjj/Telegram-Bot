@@ -19,7 +19,7 @@ class KeywordHandleService extends BaseService
      * @return void
      * @throws TelegramException
      */
-    public static function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $path = app_path('Services/Keywords');
         $files = new RegexIterator(

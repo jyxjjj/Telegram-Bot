@@ -15,15 +15,19 @@ class MessageHandleService extends BaseService
      * @return void
      * @throws TelegramException
      */
-    public static function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): void
     {
         $messageType = $message->getType();
+        $handled = (new AutoDeleteHandler)->handle($message, $telegram, $updateId);
+        if ($handled) {
+            return;
+        }
         switch ($messageType) {
             case 'command':
-                CommandHandleService::handle($message, $telegram, $updateId);
+                (new CommandHandleService)->handle($message, $telegram, $updateId);
                 break;
             case 'text':
-                TextMessageHandleService::handle($message, $telegram, $updateId);
+                (new TextMessageHandleService)->handle($message, $telegram, $updateId);
                 break;
 //            case 'audio':
 //            case 'animation':
