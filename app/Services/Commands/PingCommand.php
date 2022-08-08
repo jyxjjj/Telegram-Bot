@@ -3,7 +3,6 @@
 namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Jobs\DeleteMessageWithKeyJob;
 use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use App\Services\BaseCommand;
@@ -62,7 +61,6 @@ class PingCommand extends BaseCommand
             $data['text'] .= "*DC$i($IP) Latency:* `$ping ms`\n";
         }
         $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
-        $this->dispatch(new DeleteMessageWithKeyJob($data, $key));
     }
 
     /**

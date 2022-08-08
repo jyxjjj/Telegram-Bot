@@ -26,7 +26,7 @@ class StartCommand extends BaseCommand
     {
         $chatId = BotCommon::getChatId($message);
         $userId = BotCommon::getSender($message);
-        /* @var \App\Models\TStarted $startedUser */
+        /* @var TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,

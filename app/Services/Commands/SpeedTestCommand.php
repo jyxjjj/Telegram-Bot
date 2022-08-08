@@ -44,7 +44,7 @@ class SpeedTestCommand extends BaseCommand
         $data['caption'] .= "*Upload:* `$upload` Kbps\n";
         $data['caption'] .= "*Download:* `$download` Kbps\n";
         $data['caption'] .= "*Latency:* `{$server['latency']}`\n";
-        $this->dispatch(new SendPhotoJob($data));
+        $this->dispatch(new SendPhotoJob($data, 0));
     }
 
     private function getBestServer(): array
