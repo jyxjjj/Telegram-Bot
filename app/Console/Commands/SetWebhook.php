@@ -53,7 +53,8 @@ class SetWebhook extends Command
                 'secret_token' => $secret_token,
             ];
             if (env('TELEGRAM_CERTIFICATE') != null) {
-                $webHookInfo['certificate'] = base_path('/' . env('TELEGRAM_CERTIFICATE'));
+                $webHookInfo['certificate'] = base_path(env('TELEGRAM_CERTIFICATE'));
+                self::info($webHookInfo['certificate']);
             }
             $result = Request::setWebhook($webHookInfo);
             self::info($result->getDescription());

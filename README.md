@@ -92,6 +92,9 @@ vim supervisor/TelegramBot-Queue-default.ini
 vim supervisor/TelegramBot-Queue-TelegramLimitedApiRequest.ini
 chmod +X supervisor/init.sh
 chmod +X supervisor/restart.sh
+chmod +X supervisor/reload.sh
+chmod +X supervisor/start.sh
+chmod +X supervisor/stop.sh
 supervisor/init.sh
 supervisor/restart.sh
 ```
