@@ -16,10 +16,10 @@ class KeywordHandleService extends BaseService
      * @param Message $message
      * @param Telegram $telegram
      * @param int $updateId
-     * @return void
+     * @return bool
      * @throws TelegramException
      */
-    public function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
         $path = app_path('Services/Keywords');
         $files = new RegexIterator(
@@ -41,5 +41,6 @@ class KeywordHandleService extends BaseService
             $handler_class = new $handler_class; // Instantiate the Handler
             $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
         }
+        return false;
     }
 }

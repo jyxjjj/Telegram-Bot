@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Common\BotCommon;
+use App\Common\IP;
 use App\Jobs\WebhookJob;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -20,9 +21,7 @@ class IndexController extends BaseController
      */
     public function index(Request $request): Response
     {
-        $clientIP = $request->server('HTTP_CF_CONNECTING_IP');
-        $clientCountry = $request->server('HTTP_CF_IPCOUNTRY');
-        return $this->plain("$clientIP ($clientCountry)");
+        return $this->plain(IP::getClientIpAndCountry());
     }
 
     /**
@@ -39,12 +38,10 @@ class IndexController extends BaseController
             $update = new Update($request->all(), $telegram->getBotUsername());
             $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
-            $clientIP = $request->server('HTTP_CF_CONNECTING_IP');
-            $clientCountry = $request->server('HTTP_CF_IPCOUNTRY');
+            $clientIP = IP::getClientIpAndCountry();
             $expireTime = Carbon::now()->addMinutes(5);
             Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), $expireTime);
             Cache::put("TelegramIP_$updateId", $clientIP, $expireTime);
-            Cache::put("TelegramIPCOUNTRY_$updateId", $clientCountry, $expireTime);
             $this->dispatch(new WebhookJob($update, $telegram, $updateId));
             return $this->json([
                 'code' => 0,

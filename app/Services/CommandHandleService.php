@@ -18,10 +18,10 @@ class CommandHandleService extends BaseService
      * @param Message $message
      * @param Telegram $telegram
      * @param int $updateId
-     * @return void
+     * @return bool
      * @throws TelegramException
      */
-    public function handle(Message $message, Telegram $telegram, int $updateId): void
+    public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
         $senderId = BotCommon::getSender($message);
         $isStarted = TStarted::getUser($senderId);
@@ -60,7 +60,7 @@ class CommandHandleService extends BaseService
                 !$isStarted && $data['chat_id'] = $chatId;
                 !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
                 $this->dispatch(new SendMessageJob($data));
-                return;
+                return true;
             }
             if ($command_class->private && $notPrivate) {// Detect if command is private only
                 $data = [
@@ -72,10 +72,11 @@ class CommandHandleService extends BaseService
                 !$isStarted && $data['chat_id'] = $chatId;
                 !$isStarted && $data['text'] .= "You should send a message to me in private, so that i can send message to you.\n";
                 $this->dispatch(new SendMessageJob($data));
-                return;
+                return true;
             }
             $command_class->execute($message, $telegram, $updateId); // Execute command
-            return;
+            return true;
         }
+        return false;
     }
 }

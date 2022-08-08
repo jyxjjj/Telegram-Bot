@@ -5,7 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\TrimStrings;
-use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
@@ -18,7 +17,6 @@ class Kernel extends HttpKernel
     protected $middleware = [
         EncryptCookies::class,
         StartSession::class,
-        TrustHosts::class,
         TrustProxies::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
@@ -28,7 +26,6 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         EncryptCookies::class,
         StartSession::class,
-        TrustHosts::class,
         TrustProxies::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,

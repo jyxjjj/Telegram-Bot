@@ -19,7 +19,7 @@ class SetWebhook extends Command
      */
     public function handle(): int
     {
-        $url = env('APP_URL') . '/api/webhook';
+        $url = env('TELEGRAM_API_URI') . '/api/webhook';
         $max_connections = 25;
         $allowed_updates = [
             'message',
@@ -45,13 +45,17 @@ class SetWebhook extends Command
         self::info("Secret token: $secret_token");
         try {
             BotCommon::getTelegram();
-            $result = Request::setWebhook([
+            $webHookInfo = [
                 'url' => $url,
                 'max_connections' => $max_connections,
                 'allowed_updates' => $allowed_updates,
                 'drop_pending_updates' => true,
                 'secret_token' => $secret_token,
-            ]);
+            ];
+            if (env('TELEGRAM_CERTIFICATE') != null) {
+                $webHookInfo['certificate'] = base_path('/' . env('TELEGRAM_CERTIFICATE'));
+            }
+            $result = Request::setWebhook($webHookInfo);
             self::info($result->getDescription());
         } catch (TelegramException $e) {
             self::error($e->getMessage());

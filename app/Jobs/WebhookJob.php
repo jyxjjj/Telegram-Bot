@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Exceptions\Handler;
 use App\Services\UpdateHandleService;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -33,8 +34,8 @@ class WebhookJob extends BaseQueue
         $telegram = $this->telegram;
         $updateId = $this->updateId;
         try {
-            (new UpdateHandleService)->handle($update, $telegram, $updateId);
-        } catch (TelegramException $e) {
+            app()->make(UpdateHandleService::class)->handle($update, $telegram, $updateId);
+        } catch (TelegramException|BindingResolutionException $e) {
             Handler::logError($e);
         }
     }
