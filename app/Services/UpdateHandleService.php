@@ -60,14 +60,13 @@ class UpdateHandleService extends BaseService
     /**
      * @param string $needType
      * @param string $class
-     * @throws BindingResolutionException
      * @noinspection PhpSameParameterValueInspection
      */
     private function addHandler(string $needType, string $class)
     {
         $this->handlers[] = [
             'type' => $needType,
-            'class' => app()->make($class),
+            'class' => $class,
         ];
     }
 
@@ -77,13 +76,14 @@ class UpdateHandleService extends BaseService
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws BindingResolutionException
      * @throws TelegramException
      */
     private function runHandler(string $type, Update $update, Telegram $telegram, int $updateId): void
     {
         foreach ($this->handlers as $handler) {
             if ($type == $handler['type'] || $handler['type'] == '*' || $handler['type'] == 'ANY') {
-                $handler['class']->handle($update, $telegram, $updateId);
+                app()->make($handler['class'])->handle($update, $telegram, $updateId);
             }
         }
     }

@@ -72,13 +72,12 @@ class MessageHandleService extends BaseService
     /**
      * @param string $needType
      * @param string $class
-     * @throws BindingResolutionException
      */
     private function addHandler(string $needType, string $class)
     {
         $this->handlers[] = [
             'type' => $needType,
-            'class' => app()->make($class),
+            'class' => $class,
         ];
     }
 
@@ -88,13 +87,14 @@ class MessageHandleService extends BaseService
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws BindingResolutionException
      * @throws TelegramException
      */
     private function runHandler(string $type, Message $message, Telegram $telegram, int $updateId): void
     {
         foreach ($this->handlers as $handler) {
             if ($type == $handler['type'] || $handler['type'] == '*' || $handler['type'] == 'ANY') {
-                $handled = $handler['class']->handle($message, $telegram, $updateId);
+                $handled = app()->make($handler['class'])->handle($message, $telegram, $updateId);
                 if ($handled) {
                     return;
                 }
