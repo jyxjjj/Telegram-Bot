@@ -20,7 +20,11 @@ class TChatAdmins extends BaseModel
      */
     public static function getChatAdmins($chat_id): array
     {
-        return self::query()->where('chat_id', $chat_id)->pluck('admin_id')->toArray();
+        return
+            self::query()
+                ->where('chat_id', $chat_id)
+                ->pluck('admin_id')
+                ->toArray();
     }
 
     /**
@@ -29,7 +33,10 @@ class TChatAdmins extends BaseModel
      */
     public static function clearAdmin($chat_id): int
     {
-        return self::query()->where('chat_id', $chat_id)->delete();
+        return
+            self::query()
+                ->where('chat_id', $chat_id)
+                ->delete();
     }
 
     /**
@@ -39,9 +46,13 @@ class TChatAdmins extends BaseModel
      */
     public static function addAdmin($chat_id, $admin_id): Builder|Model
     {
-        return self::query()->create([
-            'chat_id' => $chat_id,
-            'admin_id' => $admin_id,
-        ]);
+        return
+            self::query()
+                ->create(
+                    [
+                        'chat_id' => $chat_id,
+                        'admin_id' => $admin_id,
+                    ]
+                );
     }
 }

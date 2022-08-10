@@ -19,14 +19,16 @@ class TStarted extends BaseModel
      */
     public static function addUser($user_id): Builder|Model
     {
-        return self::query()->firstOrCreate(
-            [
-                'user_id' => $user_id,
-            ],
-            [
-                'user_id' => $user_id,
-            ]
-        );
+        return
+            self::query()
+                ->firstOrCreate(
+                    [
+                        'user_id' => $user_id,
+                    ],
+                    [
+                        'user_id' => $user_id,
+                    ]
+                );
     }
 
     /**
@@ -37,9 +39,11 @@ class TStarted extends BaseModel
     {
         return (bool)
         self::query()
-            ->where([
-                'user_id' => $user_id,
-            ])
+            ->where(
+                [
+                    'user_id' => $user_id,
+                ]
+            )
             ->first();
     }
 }
