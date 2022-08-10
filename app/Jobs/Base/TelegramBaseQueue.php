@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Base;
 
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 

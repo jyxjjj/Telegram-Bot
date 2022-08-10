@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Exceptions\Handler;
+use App\Jobs\Base\BaseQueue;
 use App\Services\UpdateHandleService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Longman\TelegramBot\Entities\Update;

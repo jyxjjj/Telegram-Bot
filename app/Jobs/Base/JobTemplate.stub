@@ -1,14 +1,20 @@
 <?php
 
 namespace App\Jobs;
+
+use App\Common\BotCommon;
+use App\Jobs\Base\TelegramBaseQueue;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class {className} extends TelegramBaseQueue
+class {className}Job extends TelegramBaseQueue
 {
     private array $data;
 
+    /**
+     * @param array $data
+     */
     public function __construct(array $data)
     {
         parent::__construct();

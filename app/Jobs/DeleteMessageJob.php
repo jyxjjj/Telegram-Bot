@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
+use App\Jobs\Base\TelegramBaseQueue;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
