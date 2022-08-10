@@ -5,7 +5,7 @@ namespace App\Services\Commands;
 use App\Common\BotCommon;
 use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
-use App\Services\BaseCommand;
+use App\Services\Base\BaseCommand;
 use Carbon\Carbon;
 use DESMG\UUID;
 use Illuminate\Support\Facades\Cache;

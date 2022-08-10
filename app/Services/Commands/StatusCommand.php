@@ -4,7 +4,7 @@ namespace App\Services\Commands;
 
 use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
-use App\Services\BaseCommand;
+use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 

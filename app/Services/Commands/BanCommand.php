@@ -6,7 +6,7 @@ use App\Common\BotCommon;
 use App\Jobs\BanMemberJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatAdmins;
-use App\Services\BaseCommand;
+use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 

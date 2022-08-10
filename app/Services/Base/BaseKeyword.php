@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Base;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Longman\TelegramBot\Entities\Message;
@@ -19,26 +19,22 @@ abstract class BaseKeyword
      * @var string $description Description of the Handler
      */
     public string $description;
-
-    /**
-     * @var string $pattern Pattern to match the message
-     */
-    protected string $pattern;
-
     /**
      * @var string $version Version of the Handler
      */
     public string $version = '1.0.0';
-
     /**
      * @var bool $ignoreAdmin Ignore administrators
      */
     public bool $ignoreAdmin = false;
-
     /**
      * @var bool $ignorePrivate Ignore private messages
      */
     public bool $ignorePrivate = false;
+    /**
+     * @var string $pattern Pattern to match the message
+     */
+    protected string $pattern;
 
     /**
      * @param string $text

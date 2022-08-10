@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Base\BaseService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;

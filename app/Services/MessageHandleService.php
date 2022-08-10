@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Base\BaseService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\Update;
@@ -30,6 +31,7 @@ class MessageHandleService extends BaseService
         $this->addHandler('ANY', AutoDeleteHandler::class);
         $this->addHandler('command', CommandHandleService::class);
         $this->addHandler('text', KeywordHandleService::class);
+        $this->addHandler('sticker', StickerHandleService::class);
         $this->runHandler($messageType, $message, $telegram, $updateId);
 //            'command':
 //            'text':

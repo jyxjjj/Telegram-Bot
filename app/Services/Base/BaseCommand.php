@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Base;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Longman\TelegramBot\Entities\Message;

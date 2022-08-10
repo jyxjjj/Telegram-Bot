@@ -5,7 +5,7 @@ namespace App\Services\Commands;
 use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendPhotoJob;
-use App\Services\BaseCommand;
+use App\Services\Base\BaseCommand;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Http;

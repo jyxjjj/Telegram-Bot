@@ -5,7 +5,7 @@ namespace App\Services\Keywords;
 use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
-use App\Services\BaseKeyword;
+use App\Services\Base\BaseKeyword;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
