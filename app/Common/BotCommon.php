@@ -5,6 +5,7 @@ namespace App\Common;
 use GuzzleHttp\Client;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\ReplyToMessage;
+use Longman\TelegramBot\Entities\Sticker;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
@@ -27,9 +28,9 @@ class BotCommon
 
     /**
      * @param Message $message
-     * @return string
+     * @return int
      */
-    public static function getChatId(Message $message): string
+    public static function getChatId(Message $message): int
     {
         return $message->getChat()->getId();
     }
