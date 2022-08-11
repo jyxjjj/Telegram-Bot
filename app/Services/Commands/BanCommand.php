@@ -32,9 +32,9 @@ class BanCommand extends BaseCommand
             'text' => '',
         ];
 
-        $replyTo = $message->getReplyToMessage();
-        if (!$replyTo) {
-            $data['text'] .= "*Error:* You should reply to a message for using this command.\n";
+        $chatType = BotCommon::getChatType($message);
+        if (!in_array($chatType, ['group', 'supergroup'], true)) {
+            $data['text'] .= "*Error:* This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -43,7 +43,16 @@ class BanCommand extends BaseCommand
 
         $userId = BotCommon::getSender($message);
         if (!in_array($userId, $admins, true)) {
-            $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n";
+            $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n\n";
+            $data['text'] .= "*Warning:* This command can be used by people who was an admin before update admin list.\n\n";
+            $data['text'] .= "*Notice:* Send /updatechatadministrators to update chat admin list.\n\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
+
+        $replyTo = BotCommon::getReplyToMessage($message);
+        if (!$replyTo) {
+            $data['text'] .= "*Error:* You should reply to a message for using this command.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }

@@ -158,4 +158,13 @@ class BotCommon
     {
         return $message->getSticker();
     }
+
+    /**
+     * @param Message|ReplyToMessage $message
+     * @return ?ReplyToMessage
+     */
+    public static function getReplyToMessage(Message|ReplyToMessage $message): ?ReplyToMessage
+    {
+        return $message->getReplyToMessage();
+    }
 }
