@@ -152,6 +152,15 @@ class BotCommon
 
     /**
      * @param Message|ReplyToMessage $message
+     * @return string
+     */
+    public static function getStickerFileId(Message|ReplyToMessage $message): string
+    {
+        return $message->getSticker()->getFileId();
+    }
+
+    /**
+     * @param Message|ReplyToMessage $message
      * @return Sticker
      */
     public static function getSticker(Message|ReplyToMessage $message): Sticker
