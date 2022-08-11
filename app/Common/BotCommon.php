@@ -149,4 +149,13 @@ class BotCommon
     {
         return $message->getCommand();
     }
+
+    /**
+     * @param Message|ReplyToMessage $message
+     * @return Sticker
+     */
+    public static function getSticker(Message|ReplyToMessage $message): Sticker
+    {
+        return $message->getSticker();
+    }
 }
