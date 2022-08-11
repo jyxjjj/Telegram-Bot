@@ -8,6 +8,8 @@ A PHP Laravel Telegram Bot
 
 # Versions
 
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=23e8653b361a&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
 [![Fedora](https://img.shields.io/badge/Fedora-36-blue.svg?style=flat-square)](https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso)
 
 [![Nginx](https://img.shields.io/badge/Nginx-^1.23.0-brightgreen.svg?style=flat-square)](https://nginx.org/en/download.html)
