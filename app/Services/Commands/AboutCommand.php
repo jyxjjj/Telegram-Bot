@@ -2,7 +2,6 @@
 
 namespace App\Services\Commands;
 
-use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
@@ -26,7 +25,7 @@ class AboutCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = BotCommon::getChatId($message);
+        $chatId = $message->getChat()->getId();
         $commits = Http::
         withHeaders(Config::CURL_HEADERS)
             ->accept('application/vnd.github.v3+json')

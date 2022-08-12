@@ -2,7 +2,6 @@
 
 namespace App\Services\Commands;
 
-use App\Common\BotCommon;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Facades\Artisan;
@@ -26,7 +25,7 @@ class RestartCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $messageId = BotCommon::getMessageId($message);
+        $messageId = $message->getMessageId();
         try {
             $code = Artisan::call('queue:restart');
             $msg = 'Queue worker restarted';
@@ -34,7 +33,7 @@ class RestartCommand extends BaseCommand
             $code = $e->getCode();
             $msg = $e->getMessage();
         }
-        $chatId = BotCommon::getChatId($message);
+        $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,

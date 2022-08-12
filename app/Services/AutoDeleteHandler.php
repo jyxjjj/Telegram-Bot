@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Common\BotCommon;
 use App\Jobs\DeleteMessageJob;
 use App\Services\Base\BaseService;
 use Longman\TelegramBot\Entities\Message;
@@ -18,9 +17,9 @@ class AutoDeleteHandler extends BaseService
      */
     public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
-        $chatId = BotCommon::getChatId($message);
-        $messageId = BotCommon::getMessageId($message);
-        $senderId = BotCommon::getSender($message);
+        $chatId = $message->getChat()->getId();
+        $messageId = $message->getMessageId();
+        $senderId = $message->getFrom()->getId();
         if (in_array($senderId, [5325743711,])) {
             $data = [
                 'chat_id' => $chatId,

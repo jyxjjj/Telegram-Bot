@@ -2,7 +2,6 @@
 
 namespace App\Services\Keywords;
 
-use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseKeyword;
@@ -29,9 +28,9 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = BotCommon::getChatId($message);
-        $messageId = BotCommon::getMessageId($message);
-        $text = BotCommon::getText($message);
+        $chatId = $message->getChat()->getId();
+        $messageId = $message->getMessageId();
+        $text = $message->getText();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,

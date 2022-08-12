@@ -24,13 +24,13 @@ class CommandHandleService extends BaseService
      */
     public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
-        $senderId = BotCommon::getSender($message);
+        $senderId = $message->getFrom()->getId();
         $isStarted = TStarted::getUser($senderId);
-        $messageId = BotCommon::getMessageId($message);
-        $chatId = BotCommon::getChatId($message);
+        $messageId = $message->getMessageId();
+        $chatId = $message->getChat()->getId();
         $notAdmin = !BotCommon::isAdmin($message);
-        $notPrivate = !BotCommon::isPrivateChat($message);
-        $sendCommand = BotCommon::getCommand($message);
+        $notPrivate = !$message->getChat()->isPrivateChat();
+        $sendCommand = $message->getCommand();
         $path = app_path('Services/Commands');
         $files = new RegexIterator(
             new RecursiveIteratorIterator(

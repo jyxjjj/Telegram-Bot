@@ -44,7 +44,7 @@ class SendMessageWithKeyJob extends TelegramBaseQueue
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */
             $sendResult = $serverResponse->getResult();
-            $messageId = BotCommon::getMessageId($sendResult);
+            $messageId = $sendResult->getMessageId();
             Cache::put($this->key, $messageId, Carbon::now()->addMinutes(5));
         } else {
             $errorCode = $serverResponse->getErrorCode();

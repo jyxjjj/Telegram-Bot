@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Common\BotCommon;
 use App\Services\Base\BaseService;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -29,7 +28,7 @@ class KeywordHandleService extends BaseService
             ),
             '/^.+Keyword.php$/'
         );
-        $sendText = BotCommon::getText($message);
+        $sendText = $message->getText();
         foreach ($files as $file) {
             $fileName = $file->getFileName();
             $pathName = $file->getPathName();

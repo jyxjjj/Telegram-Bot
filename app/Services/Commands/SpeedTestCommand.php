@@ -2,7 +2,6 @@
 
 namespace App\Services\Commands;
 
-use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseCommand;
@@ -27,8 +26,8 @@ class SpeedTestCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $chatId = BotCommon::getChatId($message);
-        $messageId = BotCommon::getMessageId($message);
+        $chatId = $message->getChat()->getId();
+        $messageId = $message->getMessageId();
         $server = $this->getBestServer();
         $download = $this->download($server);
         $upload = $this->upload($server);
