@@ -54,7 +54,11 @@ class SetWebhook extends Command
             ];
             if (env('TELEGRAM_CERTIFICATE') != null) {
                 $webHookInfo['certificate'] = base_path(env('TELEGRAM_CERTIFICATE'));
-                self::info($webHookInfo['certificate']);
+                self::info("Custom Certificate: {$webHookInfo['certificate']}");
+            }
+            if (env('TELEGRAM_IPADDRESS') != null) {
+                $webHookInfo['ip_address'] = env('TELEGRAM_IPADDRESS');
+                self::info("Force IP Address: {$webHookInfo['ip_address']}");
             }
             $result = Request::setWebhook($webHookInfo);
             self::info($result->getDescription());
