@@ -11,7 +11,7 @@ return new class extends Migration {
         Schema::create('chat_keywords', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement()->comment('主键');
             $table->BigInteger('chat_id')->default(0)->comment('聊天ID');
-            $table->BigInteger('keyword')->default('')->comment('关键字');
+            $table->string('keyword', 256)->default('')->comment('关键字');
             $table->enum('operation', ['REPLY', 'DELETE', 'BAN', 'RESTRICT'])->default('DELETE')->comment('执行操作');
             $table->json('data')->default(DB::raw('JSON_OBJECT()'))->comment('数据');
             $table->boolean('enable')->default(1)->comment('启用');
