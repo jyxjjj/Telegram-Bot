@@ -43,7 +43,6 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     {
         $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
         if (preg_match_all($pattern, $text, $matches)) {
-            $pattern = '/https:\/\/(www|live).bilibili.com\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
             $data['text'] .= "Bilibili Tracker Removed\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (count($matches[0]) > 3) {
@@ -54,6 +53,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             for ($i = 0; $i < $count; $i++) {
                 $link = $matches[0][$i];
                 $this->normalizeLink($link);
+                $pattern = '/https:\/\/(www|live).bilibili.com\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
                 if (preg_match($pattern, $link)) {
                     $data['text'] .= "*Link:* `$link`\n";
                     $button = new InlineKeyboardButton([
@@ -79,7 +79,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     private function normalizeLink(string &$link)
     {
         if (str_starts_with($link, 'http://')) {
-            str_replace('http://', 'https://', $link);
+            $link = str_replace('http://', 'https://', $link);
         }
         if (str_starts_with($link, 'b23.tv') || str_starts_with($link, 'bilibili.com') || str_starts_with($link, 'www.bilibili.com')) {
             $link = "https://$link";
