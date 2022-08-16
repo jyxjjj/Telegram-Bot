@@ -25,7 +25,7 @@ class StartCommand extends BaseCommand
     {
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
-        /* @var TStarted $startedUser */
+        /** @var TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,
