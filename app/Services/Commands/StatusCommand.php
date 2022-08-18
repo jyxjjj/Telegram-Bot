@@ -176,13 +176,13 @@ class StatusCommand extends BaseCommand
         $uptimes = $uptimes[0];
         $uptimes = explode('.', $uptimes);
         $uptime = $uptimes[0];
-        $millseconds = $uptimes[1];
+        $milliseconds = $uptimes[1];
         $days = floor($uptime / 86400);
         $uptime %= 86400;
         $hours = floor($uptime / 3600);
         $uptime %= 3600;
         $minutes = floor($uptime / 60);
         $seconds = $uptime % 60;
-        return "$days:$hours:$minutes:$seconds.$millseconds";
+        return "$days:$hours:$minutes:$seconds.$milliseconds";
     }
 }
