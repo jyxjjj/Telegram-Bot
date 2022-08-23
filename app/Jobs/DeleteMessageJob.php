@@ -33,8 +33,12 @@ class DeleteMessageJob extends TelegramBaseQueue
         if (!$serverResponse->isOk()) {
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
-            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
-            $this->release(1);
+            if (
+                $errorDescription != 'Bad Request: message to delete not found'
+            ) {
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+                $this->release(1);
+            }
         }
     }
 }

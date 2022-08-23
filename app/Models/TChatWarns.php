@@ -53,9 +53,10 @@ class TChatWarns extends BaseModel
                         'times' => 1,
                     ]
                 );
+        } else {
+            $data->times++;
+            $data->save();
         }
-        $data->times++;
-        $data->save();
     }
 
     /**

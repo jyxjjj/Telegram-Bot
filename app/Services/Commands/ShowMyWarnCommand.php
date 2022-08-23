@@ -48,6 +48,7 @@ class ShowMyWarnCommand extends BaseCommand
                 $userId = $replyToMessage->getFrom()->getId();
             }
         } else {
+            /** @noinspection DuplicatedCode */
             if (str_starts_with($param, '@')) {
                 $data['text'] .= "Get user id via resolve the username you inputed.\n";
                 $userId = null;
@@ -65,19 +66,22 @@ class ShowMyWarnCommand extends BaseCommand
                 }
             }
         }
-        if (is_numeric($userId)) {
-            $warns = TChatWarns::getUserWarns($chatId, $userId);
-            if ($warns > 0) {
-                $data['text'] .= "This user [$userId](tg://user?id=$userId) has been warned for $warns times.\n";
-            } else {
-                $data['text'] .= "This user [$userId](tg://user?id=$userId) had never been warned.\n";
-            }
-        } else {
+
+        if (!is_numeric($userId)) {
             $data['text'] .= "Invalid user id.\n";
             $data['text'] .= "*Usage:* /showmywarn to show your own warn times.\n";
             $data['text'] .= "*Usage:* Reply to his message with /showmywarn.\n";
-            $data['text'] .= "*Usage:* /showmywarn @username.\n";
+            $data['text'] .= "*Usage:* /showmywarn @ + username.\n";
             $data['text'] .= "*Usage:* /showmywarn user_id.\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
+
+        $warns = TChatWarns::getUserWarns($chatId, $userId);
+        if ($warns > 0) {
+            $data['text'] .= "This user [$userId](tg://user?id=$userId) has been warned for $warns times.\n";
+        } else {
+            $data['text'] .= "This user [$userId](tg://user?id=$userId) had never been warned.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }
