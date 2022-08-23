@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property int $id
@@ -20,11 +22,16 @@ class TChatAdmins extends BaseModel
      */
     public static function getChatAdmins($chat_id): array
     {
-        return
-            self::query()
-                ->where('chat_id', $chat_id)
-                ->pluck('admin_id')
-                ->toArray();
+        $data = Cache::get("DB::TChatAdmins::chat_admins::{$chat_id}");
+        if (is_array($data)) {
+            return $data;
+        }
+        $data = self::query()
+            ->where('chat_id', $chat_id)
+            ->pluck('admin_id')
+            ->toArray();
+        Cache::put("DB::TChatAdmins::chat_admins::{$chat_id}", $data, Carbon::now()->addDay());
+        return $data;
     }
 
     /**
@@ -33,6 +40,7 @@ class TChatAdmins extends BaseModel
      */
     public static function clearAdmin($chat_id): int
     {
+        Cache::forget("DB::TChatAdmins::chat_admins::{$chat_id}");
         return
             self::query()
                 ->where('chat_id', $chat_id)
