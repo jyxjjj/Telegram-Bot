@@ -50,24 +50,23 @@ class WarnCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data));
             return;
         }
-
-        $replyTo = $message->getReplyToMessage();
-        $warnUserId = $replyTo->getFrom()->getId();
-        if (in_array($warnUserId, $admins, true)) {
-            $data['text'] .= "*Error:* You can't warn an admin.\n";
-            $this->dispatch(new SendMessageJob($data));
-            return;
-        }
+        unset($userId);
 
         if ($param == '' || $param == null) {
             $userId = null;
-            $replyToMessage = $message->getReplyToMessage();
-            if ($replyToMessage != null) {
+            $replyTo = $message->getReplyToMessage();
+            if ($replyTo != null) {
+                $userId = $replyTo->getFrom()->getId();
+                if (in_array($userId, $admins, true)) {
+                    $data['text'] .= "*Error:* You can't warn an admin.\n";
+                    $this->dispatch(new SendMessageJob($data));
+                    return;
+                }
+                unset($admins);
                 $data['text'] .= "Get user id from reply message.\n";
-                $userId = $replyToMessage->getFrom()->getId();
                 $deleter = [
                     'chat_id' => $chatId,
-                    'message_id' => $replyToMessage->getMessageId(),
+                    'message_id' => $replyTo->getMessageId(),
                 ];
                 $this->dispatch(new DeleteMessageJob($deleter, 0));
             }
