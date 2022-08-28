@@ -92,8 +92,8 @@ class WarnCommand extends BaseCommand
         if (!is_numeric($userId)) {
             $data['text'] .= "Invalid user id.\n";
             $data['text'] .= "*Usage:* Reply to his message with /warn.\n";
-            $data['text'] .= "*Usage:* /warn + @ + username.\n";
-            $data['text'] .= "*Usage:* /warn user_id.\n";
+            $data['text'] .= "*Usage:* /warn @username.\n";
+            $data['text'] .= "*Usage:* /warn user\_id.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }

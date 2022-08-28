@@ -71,8 +71,8 @@ class ShowMyWarnCommand extends BaseCommand
             $data['text'] .= "Invalid user id.\n";
             $data['text'] .= "*Usage:* /showmywarn to show your own warn times.\n";
             $data['text'] .= "*Usage:* Reply to his message with /showmywarn.\n";
-            $data['text'] .= "*Usage:* /showmywarn + @ + username.\n";
-            $data['text'] .= "*Usage:* /showmywarn user_id.\n";
+            $data['text'] .= "*Usage:* /showmywarn @username.\n";
+            $data['text'] .= "*Usage:* /showmywarn user\_id.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
