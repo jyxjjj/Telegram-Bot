@@ -40,7 +40,7 @@ class LogClean extends Command
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            $this->error($e->getMessage());
+            self::error($e->getMessage());
             return self::FAILURE;
         }
     }
@@ -62,7 +62,7 @@ class LogClean extends Command
             $arr[] = $filename . '.emergency.log';
         }
         foreach ($arr as $file) {
-            $this->line("WhiteList: $file");
+            self::line("WhiteList: $file");
         }
         return $arr;
     }
