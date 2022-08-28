@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('queue:prune-failed --hours 72')->dailyAt('00:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command('log:clean 3')->hourly()->runInBackground()->withoutOverlapping(120);
     }
 
