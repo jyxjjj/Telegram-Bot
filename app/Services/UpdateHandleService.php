@@ -30,7 +30,7 @@ class UpdateHandleService extends BaseService
 //                 机器人已知并已编辑的消息的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_MESSAGE, EditedMessageHandleService::class);
 //                 任何类型的新传入频道帖子--文字、照片、贴纸等。
-//        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
+        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
 //                 机器人已知并已编辑的频道帖子的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_CHANNEL_POST, MessageHandleService::class);
 //                 新传入的内联(https://core.telegram.org/bots/api#inline-mode)查询。
@@ -61,7 +61,6 @@ class UpdateHandleService extends BaseService
     /**
      * @param string $needType
      * @param string $class
-     * @noinspection PhpSameParameterValueInspection
      */
     private function addHandler(string $needType, string $class)
     {
