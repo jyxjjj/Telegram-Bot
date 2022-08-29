@@ -14,7 +14,6 @@ class RestartCommand extends BaseCommand
     public string $name = 'restart';
     public string $description = 'Restart queue worker';
     public string $usage = '/restart';
-    public bool $private = true;
     public bool $admin = true;
 
     /**
