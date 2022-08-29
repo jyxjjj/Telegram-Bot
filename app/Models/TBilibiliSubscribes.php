@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,10 +23,11 @@ class TBilibiliSubscribes extends BaseModel
             ])
             ->first();
         if ($data == null) {
-            return self::query()->create([
-                'chat_id' => $chat_id,
-                'mid' => $mid,
-            ]);
+            return self::query()
+                ->create([
+                    'chat_id' => $chat_id,
+                    'mid' => $mid,
+                ]);
         }
         return false;
     }
@@ -38,7 +38,9 @@ class TBilibiliSubscribes extends BaseModel
      */
     public static function removeAllSubscribe(int $chat_id): int
     {
-        return self::query()->where('chat_id', $chat_id)->delete();
+        return self::query()
+            ->where('chat_id', $chat_id)
+            ->delete();
     }
 
     /**
@@ -56,7 +58,14 @@ class TBilibiliSubscribes extends BaseModel
             ->delete();
     }
 
-    public static function getSubscribe($chat, Closure $fun): array
+    /**
+     * @param callable $fun
+     * @return bool
+     */
+    public static function getSubscribe(callable $fun): bool
     {
+        return self::query()
+            ->orderBy('mid')
+            ->chunkById(100, $fun);
     }
 }

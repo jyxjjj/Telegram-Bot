@@ -14,6 +14,12 @@ return new class extends Migration {
             $table->timestamp('created_at')->useCurrent()->comment('创建时间');
             $table->timestamp('updated_at')->useCurrent()->comment('更新时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
+            $table->comment('Bilibili订阅表');
+            $table->index(['chat_id',], 'chat_id');
+            $table->index(['mid',], 'mid');
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
         });
     }
 

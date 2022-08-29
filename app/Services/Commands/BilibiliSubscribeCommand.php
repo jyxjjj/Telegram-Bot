@@ -116,6 +116,10 @@ class BilibiliSubscribeCommand extends BaseCommand
         $this->dispatch(new SendMessageJob($data));
     }
 
+    /**
+     * @param string $link
+     * @return array|null
+     */
     private function getJson(string $link): ?array
     {
         $headers = Config::CURL_HEADERS;
