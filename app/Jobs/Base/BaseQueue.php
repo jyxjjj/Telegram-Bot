@@ -15,7 +15,7 @@ class BaseQueue implements ShouldQueue
     /**
      * @var int
      */
-    public int $tries = 10;
+    public int $tries = 5;
     /**
      * @var int
      */
