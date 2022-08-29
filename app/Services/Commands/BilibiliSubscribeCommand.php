@@ -103,7 +103,7 @@ class BilibiliSubscribeCommand extends BaseCommand
             $data['text'] .= "Name: `{$video['title']}`\n";
             $data['text'] .= "Author: `{$video['author']}`\n";
             $data['text'] .= "Created: `{$video['created']}`\n";
-            $data['text'] .= "AV No.: [{$video['aid']}](https://www.bilibili.com/{$video['aid']})\n";
+            $data['text'] .= "AV No.: [{$video['aid']}](https://www.bilibili.com/av{$video['aid']})\n";
             $data['text'] .= "BV ID: [{$video['bvid']}](https://www.bilibili.com/{$video['bvid']})\n";
             $data['text'] .= "Picture: [View]({$video['pic']})\n";
             $data['text'] .= "Comments: {$video['comment']}\n";
@@ -112,6 +112,7 @@ class BilibiliSubscribeCommand extends BaseCommand
             $data['text'] .= "Subscribe successfully.\n";
         } else {
             $data['text'] .= "*Error:* Subscribe failed.\n";
+            $data['text'] .= "One possibility is that this chat has already subscribed this mid.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }

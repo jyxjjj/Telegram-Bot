@@ -37,14 +37,14 @@ class SendPhotoJob extends TelegramBaseQueue
         BotCommon::getTelegram();
         $serverResponse = Request::sendPhoto($this->data);
         if ($serverResponse->isOk()) {
-            /** @var Message $sendResult */
-            $sendResult = $serverResponse->getResult();
-            $messageId = $sendResult->getMessageId();
-            $data = [
-                'chat_id' => $this->data['chat_id'],
-                'message_id' => $messageId,
-            ];
             if ($this->delete !== 0) {
+                /** @var Message $sendResult */
+                $sendResult = $serverResponse->getResult();
+                $messageId = $sendResult->getMessageId();
+                $data = [
+                    'chat_id' => $this->data['chat_id'],
+                    'message_id' => $messageId,
+                ];
                 DeleteMessageJob::dispatch($data, $this->delete);
             }
         } else {

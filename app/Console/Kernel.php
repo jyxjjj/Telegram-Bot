@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('queue:prune-failed --hours 72')->dailyAt('00:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command('log:clean 3')->hourly()->runInBackground()->withoutOverlapping(120);
+        $schedule->command('bilibili:subscribe')->everyTwoMinutes()->runInBackground()->withoutOverlapping(120);
     }
 
     protected function commands()

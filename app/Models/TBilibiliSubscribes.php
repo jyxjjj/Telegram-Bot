@@ -3,8 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $chat_id
+ * @property int $mid
+ */
 class TBilibiliSubscribes extends BaseModel
 {
     protected $table = 'bilibili_subscribes';
@@ -59,13 +64,11 @@ class TBilibiliSubscribes extends BaseModel
     }
 
     /**
-     * @param callable $fun
-     * @return bool
+     * @return Collection
      */
-    public static function getSubscribe(callable $fun): bool
+    public static function getAllSubscribe(): Collection
     {
         return self::query()
-            ->orderBy('mid')
-            ->chunkById(100, $fun);
+            ->get();
     }
 }
