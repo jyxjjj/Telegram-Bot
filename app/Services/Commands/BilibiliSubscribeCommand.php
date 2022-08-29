@@ -4,6 +4,7 @@ namespace App\Services\Commands;
 
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
+use App\Models\TBilibiliSubscribes;
 use App\Models\TChatAdmins;
 use App\Services\Base\BaseCommand;
 use Carbon\Carbon;
@@ -14,7 +15,7 @@ use Longman\TelegramBot\Telegram;
 class BilibiliSubscribeCommand extends BaseCommand
 {
     public string $name = 'bilibilisubscribe';
-    public string $description = 'subscribe bilibili videos of a UP';
+    public string $description = 'subscribe bilibili videos of an UP';
     public string $usage = '/bilibilisubscribe';
 
     /**
@@ -93,20 +94,25 @@ class BilibiliSubscribeCommand extends BaseCommand
         $tagNames = implode(', ', $tagNames);
         $video = $vlist[0];
         $video['created'] = Carbon::createFromTimestamp($video['created'])->format('Y-m-d H:i:s');
-        $data['text'] .= "*Notice:* This function will send a message to this chat when his new video is available.\n";
-        $data['text'] .= str_repeat('=', 16) . "\n";
-        $data['text'] .= "Tags: $tagNames\n";
-        $data['text'] .= str_repeat('=', 16) . "\n";
-        $data['text'] .= "*First Video Info:*\n";
-        $data['text'] .= "Name: `{$video['title']}`\n";
-        $data['text'] .= "Author: `{$video['author']}`\n";
-        $data['text'] .= "Created: `{$video['created']}`\n";
-        $data['text'] .= "AV No.: [{$video['aid']}](https://www.bilibili.com/{$video['aid']})\n";
-        $data['text'] .= "BV ID: [{$video['bvid']}](https://www.bilibili.com/{$video['bvid']})\n";
-        $data['text'] .= "Picture: [View]({$video['pic']})\n";
-        $data['text'] .= "Comments: {$video['comment']}\n";
-        $data['text'] .= "Viewed Times: {$video['video_review']}\n";
-        $data['text'] .= str_repeat('=', 16) . "\n";
+        if (TBilibiliSubscribes::addSubscribe($chatId, $mid)) {
+            $data['text'] .= "*Notice:* This function will send a message to this chat when a new video is available.\n";
+            $data['text'] .= str_repeat('=', 16) . "\n";
+            $data['text'] .= "Tags: $tagNames\n";
+            $data['text'] .= str_repeat('=', 16) . "\n";
+            $data['text'] .= "*First Video Info:*\n";
+            $data['text'] .= "Name: `{$video['title']}`\n";
+            $data['text'] .= "Author: `{$video['author']}`\n";
+            $data['text'] .= "Created: `{$video['created']}`\n";
+            $data['text'] .= "AV No.: [{$video['aid']}](https://www.bilibili.com/{$video['aid']})\n";
+            $data['text'] .= "BV ID: [{$video['bvid']}](https://www.bilibili.com/{$video['bvid']})\n";
+            $data['text'] .= "Picture: [View]({$video['pic']})\n";
+            $data['text'] .= "Comments: {$video['comment']}\n";
+            $data['text'] .= "Viewed Times: {$video['video_review']}\n";
+            $data['text'] .= str_repeat('=', 16) . "\n";
+            $data['text'] .= "Subscribe successfully.\n";
+        } else {
+            $data['text'] .= "*Error:* Subscribe failed.\n";
+        }
         $this->dispatch(new SendMessageJob($data));
     }
 
