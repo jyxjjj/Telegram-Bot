@@ -71,4 +71,15 @@ class TBilibiliSubscribes extends BaseModel
         return self::query()
             ->get();
     }
+
+    /**
+     * @param int $chatId
+     * @return Collection
+     */
+    public static function getAllSubscribeByChat(int $chatId): Collection
+    {
+        return self::query()
+            ->where('chat_id', $chatId)
+            ->get();
+    }
 }
