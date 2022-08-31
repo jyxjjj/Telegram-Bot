@@ -22,8 +22,6 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
-            \Sentry\captureException($e);
         });
         $this->renderable(function (Throwable $e) {
         });

@@ -21,7 +21,6 @@
         "laravel/tinker": "^2.7.2",
         "longman/telegram-bot": "^0.78.0",
         "nunomaduro/collision": "^6.3.0",
-        "sentry/sentry-laravel": "^2.13",
         "spatie/laravel-ignition": "^1.4.0"
     },
     "require-dev": {
