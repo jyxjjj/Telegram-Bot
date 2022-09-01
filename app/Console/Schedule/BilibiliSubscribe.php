@@ -48,7 +48,7 @@ class BilibiliSubscribe extends Command
                 } else {
                     for ($i = 0; $i < count($videoList); $i++) {
                         if ($i == 0 && $videoList[$i]['bvid'] == $last_send) {
-                            self::info("There is no new video of $mid");
+                            self::info("There is no new video of $mid for $chat_id");
                             continue 2;
                         }
                         if ($videoList[$i]['bvid'] == $last_send) {
@@ -143,6 +143,6 @@ class BilibiliSubscribe extends Command
      */
     private function setLastSend(int $chat_id, int $mid, string $bvid): bool
     {
-        return Cache::put("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", $bvid, Carbon::now()->addDay());
+        return Cache::put("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", $bvid, Carbon::now()->addMonth());
     }
 }
