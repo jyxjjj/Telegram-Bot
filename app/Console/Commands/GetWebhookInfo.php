@@ -33,7 +33,7 @@ class GetWebhookInfo extends Command
             $last_error_date = $result->getLastErrorDate() == '' ? '<empty>' : $result->getLastErrorDate();
             $last_error_message = $result->getLastErrorMessage() == '' ? '<empty>' : $result->getLastErrorMessage();
             $max_connections = $result->getMaxConnections() == '' ? '40' : $result->getMaxConnections();
-            $allowed_updates = count($result->getAllowedUpdates()) == 0 ? '<empty>' : ' - ' . implode("\n - ", $result->getAllowedUpdates());
+            $allowed_updates = count($result->getAllowedUpdates() ?? []) == 0 ? '<empty>' : ' - ' . implode("\n - ", $result->getAllowedUpdates());
             self::info("URL: $url");
             self::info("IP: $ip");
             self::info("Has custom certificate: $has_custom_certificate");
