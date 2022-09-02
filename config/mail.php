@@ -28,5 +28,4 @@ return [
             app_path('Http/Views/Mail'),
         ],
     ],
-
 ];
