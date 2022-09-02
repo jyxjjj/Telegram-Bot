@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Common\BotCommon;
-use DESMG\UUID;
+use DESMG\RFC4122\UUID;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Longman\TelegramBot\Exception\TelegramException;

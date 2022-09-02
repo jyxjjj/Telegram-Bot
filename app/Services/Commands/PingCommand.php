@@ -6,7 +6,7 @@ use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use App\Services\Base\BaseCommand;
 use Carbon\Carbon;
-use DESMG\UUID;
+use DESMG\RFC4122\UUID;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
