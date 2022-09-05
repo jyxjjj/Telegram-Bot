@@ -69,6 +69,17 @@ class TUpdateSubscribe extends BaseModel
     }
 
     /**
+     * @param string $software
+     * @return Collection
+     */
+    public static function getAllSubscribeBySoftware(string $software): Collection
+    {
+        return self::query()
+            ->where('software', $software)
+            ->get();
+    }
+
+    /**
      * @param int $chatId
      * @return Collection
      */
