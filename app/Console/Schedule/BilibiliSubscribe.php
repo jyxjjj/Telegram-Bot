@@ -143,6 +143,6 @@ class BilibiliSubscribe extends Command
      */
     private function setLastSend(int $chat_id, int $mid, string $bvid): bool
     {
-        return Cache::put("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", $bvid, Carbon::now()->addMonth());
+        return Cache::put("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", $bvid, Carbon::now()->addMonths(3));
     }
 }
