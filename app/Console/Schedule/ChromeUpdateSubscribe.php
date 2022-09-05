@@ -130,15 +130,15 @@ class ChromeUpdateSubscribe extends Command
         return <<<STR
 *New Versions of Chrome Updated*
 ================
-*Mac:* `{$data['StableMacVersion']}`
-*Windows:* `{$data['StableWindowsVersion']}`
-*Linux:* `{$data['StableLinuxVersion']}`
-*Android:* `{$data['StableAndroidVersion']}`
-*iOS:* `{$data['StableiOSVersion']}`
+*Mac*: `{$data['StableMacVersion']}`
+*Windows*: `{$data['StableWindowsVersion']}`
+*Linux*: `{$data['StableLinuxVersion']}`
+*Android*: `{$data['StableAndroidVersion']}`
+*iOS*: `{$data['StableiOSVersion']}`
 
-*Mac:* (_Canary_) `{$data['CanaryMacVersion']}`
-*Windows:* (_Canary_) `{$data['CanaryWindowsVersion']}`
-*Android:* (_Canary_) `{$data['CanaryAndroidVersion']}`
+*Mac*(_Canary_): `{$data['CanaryMacVersion']}`
+*Windows*(_Canary_): `{$data['CanaryWindowsVersion']}`
+*Android*(_Canary_): `{$data['CanaryAndroidVersion']}`
 STR;
     }
 
