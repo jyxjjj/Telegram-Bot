@@ -41,9 +41,14 @@ class ChromeUpdateSubscribe extends Command
                     'text' => $string,
                 ];
                 $lastSend = $this->getLastSend($chat_id);
-                if (!$lastSend && $lastSend != $hash) {
+                if (!$lastSend) {
                     $this->dispatch(new SendMessageJob($message, null, 0));
                     $this->setLastSend($chat_id, $hash);
+                } else {
+                    if ($lastSend != $hash) {
+                        $this->dispatch(new SendMessageJob($message, null, 0));
+                        $this->setLastSend($chat_id, $hash);
+                    }
                 }
             }
             return self::SUCCESS;
