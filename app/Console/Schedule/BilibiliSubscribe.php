@@ -18,7 +18,7 @@ class BilibiliSubscribe extends Command
 {
     use DispatchesJobs;
 
-    protected $signature = 'bilibili:subscribe';
+    protected $signature = 'subscribe:bilibili';
     protected $description = 'Get Subscribed UPs\' video lists then push to target chat';
 
     public function __construct()
@@ -112,9 +112,9 @@ class BilibiliSubscribe extends Command
 
     /**
      * @param string $link
-     * @return array|null
+     * @return array
      */
-    private function getJson(string $link): ?array
+    private function getJson(string $link): array
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
