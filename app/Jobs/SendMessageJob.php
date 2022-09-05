@@ -23,11 +23,11 @@ class SendMessageJob extends TelegramBaseQueue
     public function __construct(array $data, ?array $extras = null, int $delete = 60)
     {
         parent::__construct();
-        $this->data = array_merge($data, [
+        $this->data = array_merge([
             'parse_mode' => 'Markdown',
             'disable_web_page_preview' => true,
             'allow_sending_without_reply' => true,
-        ]);
+        ], $data);
         $this->extras = $extras;
         $this->delete = $delete;
     }
