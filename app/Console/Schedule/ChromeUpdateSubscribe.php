@@ -29,11 +29,15 @@ class ChromeUpdateSubscribe extends Command
     public function handle(): int
     {
         try {
+            self::info('Start to get Chrome newest versions');
             $updates = $this->getUpdate();
+            self::info('Get Chrome newest versions successfully');
             /** @var TUpdateSubscribes[] $datas */
             $datas = TUpdateSubscribes::getAllSubscribeBySoftware('Chrome');
+            self::info('Get all subscribers');
             foreach ($datas as $data) {
                 $chat_id = $data->chat_id;
+                self::info("Start to process {$chat_id}");
                 $string = $this->getUpdateData($chat_id, $updates);
                 $hash = Hash::sha512($string);
                 $message = [
@@ -42,12 +46,17 @@ class ChromeUpdateSubscribe extends Command
                 ];
                 $lastSend = $this->getLastSend($chat_id);
                 if (!$lastSend) {
+                    self::info("Haven't send any update to {$chat_id}");
                     $this->dispatch(new SendMessageJob($message, null, 0));
                     $this->setLastSend($chat_id, $hash);
+                    self::info("Send update to {$chat_id} successfully");
                 } else {
                     if ($lastSend != $hash) {
                         $this->dispatch(new SendMessageJob($message, null, 0));
                         $this->setLastSend($chat_id, $hash);
+                        self::info("Send update to {$chat_id} successfully");
+                    } else {
+                        self::info("No new update for {$chat_id}");
                     }
                 }
             }
@@ -127,9 +136,13 @@ class ChromeUpdateSubscribe extends Command
     {
         foreach ($data as $k => &$v) {
             $last[$k] = $this->getLastVersion($chat_id, $k);
-            if ($last[$k] && $last[$k] != $v) {
+            if ($last[$k]) {
+                if ($last[$k] != $v) {
+                    $this->setLastVersion($chat_id, $k, $v);
+                    $v .= ' (NEW)';
+                }
+            } else {
                 $this->setLastVersion($chat_id, $k, $v);
-                $v .= ' (NEW)';
             }
         }
         return <<<STR
