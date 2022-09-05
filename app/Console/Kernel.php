@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:prune-failed --hours 72')->dailyAt('00:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command('log:clean 3')->hourly()->runInBackground()->withoutOverlapping(120);
         $schedule->command('subscribe:bilibili')->everyFiveMinutes()->runInBackground()->withoutOverlapping(120);
-//        $schedule->command('subscribe:chrome')->hourly()->runInBackground()->withoutOverlapping(120);
+        $schedule->command('subscribe:chrome')->hourly()->runInBackground()->withoutOverlapping(120);
 //        $schedule->command('subscribe:php')->hourly()->runInBackground()->withoutOverlapping(120);
 //        $schedule->command('subscribe:nginx')->hourly()->runInBackground()->withoutOverlapping(120);
 //        $schedule->command('subscribe:mariadb')->hourly()->runInBackground()->withoutOverlapping(120);

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class TUpdateSubscribe extends BaseModel
+class TUpdateSubscribes extends BaseModel
 {
-    protected $table = 'update_subscribe';
+    protected $table = 'update_subscribes';
 
     /**
      * @param int $chat_id
