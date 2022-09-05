@@ -12,20 +12,16 @@ A PHP Laravel Telegram Bot
 
 [![Fedora](https://img.shields.io/badge/Fedora-36-blue.svg?style=flat-square)](https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso)
 
-[![Nginx](https://img.shields.io/badge/Nginx-^1.23.0-brightgreen.svg?style=flat-square)](https://nginx.org/en/download.html)
-[![GCC](https://img.shields.io/badge/GCC-^12.1-yellow.svg?style=flat-square)](https://gcc.gnu.org/onlinedocs/)
-[![OpenSSL](https://img.shields.io/badge/OpenSSL-^3.0.3-red.svg?style=flat-square)](https://www.openssl.org/source/)
-
 [![PHP](https://img.shields.io/badge/PHP-^8.1-blue.svg?style=flat-square)](https://www.php.net/downloads.php)
-[![Composer](https://img.shields.io/badge/Composer-^2.3.7-blue.svg?style=flat-square)](https://getcomposer.org/)
-[![cURL](https://img.shields.io/badge/cURL-^7.82.0-brightgreen.svg?style=flat-square)](https://curl.se/download.html)
 
-[![Laravel](https://img.shields.io/badge/Laravel-^9.18.0-red.svg?style=flat-square)](https://laravel.com/docs/9.x/installation)
+[![Mariadb](https://img.shields.io/badge/MariaDB-^10.8-yellow.svg?style=flat-square)](https://mariadb.org/download/)
 
-[![Mariadb](https://img.shields.io/badge/MariaDB-^10.8.3-yellow.svg?style=flat-square)](https://mariadb.org/download/)
+[![Redis](https://img.shields.io/badge/Redis-^7.0-red.svg?style=flat-square)](https://redis.io/download)
 
-[![Redis](https://img.shields.io/badge/Redis-^7.0.2-red.svg?style=flat-square)](https://redis.io/download)
-[![jemalloc](https://img.shields.io/badge/jemalloc-^5.2.1-blue.svg?style=flat-square)](https://github.com/jemalloc/jemalloc/releases)
+# TODO
+
+- [ ] Support both channel and group
+- [ ] Migrate to MarkdownV2
 
 # Install
 
