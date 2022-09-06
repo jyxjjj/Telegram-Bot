@@ -39,7 +39,7 @@ class ChromeUpdateSubscribe extends Command
                 $chat_id = $data->chat_id;
                 self::info("Start to process {$chat_id}");
                 $string = $this->getUpdateData($chat_id, $updates);
-                $hash = Hash::sha512($string);
+                $hash = Hash::sha512(str_replace(' (NEW)', '', $string));
                 $message = [
                     'chat_id' => $chat_id,
                     'text' => $string,
