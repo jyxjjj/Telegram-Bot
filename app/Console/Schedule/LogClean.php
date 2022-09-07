@@ -2,7 +2,12 @@
 
 namespace App\Console\Schedule;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 use Throwable;
 
 class LogClean extends Command
@@ -19,23 +24,27 @@ class LogClean extends Command
     {
         try {
             $preserve = (int)$this->argument('preserve');
-            if ($preserve < 3 && env('APP_ENV') != 'local') {
-                self::error('保留日志天数过少，删除请求被拒绝。');
+            if ($preserve < 3 && !App::isLocal()) {
+                self::error('Days to preserve must be greater than 3');
                 return self::INVALID;
             }
-            $whiteLists = $this->generateWhiteLists($preserve);
             $path = storage_path('logs');
-            $files = scandir($path);
+            $files = new RegexIterator(
+                new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($path)
+                ),
+                '/^.+\.log$/i'
+            );
+            $whitelist = $this->generateWhiteLists($preserve);
+            self::info("Using RegExp: $whitelist");
             foreach ($files as $file) {
-                if ($file != '.' && $file != '..') {
-                    $in = in_array("$path/$file", $whiteLists, true);
-                    if (!$in) {
-                        self::warn("File: $path/$file is not in White List, deleting...");
-                        unlink("$path/$file");
-                        self::warn("Deleted: $path/$file .");
-                    } else {
-                        self::info("$path/$file is in White List, skipping...");
-                    }
+                $fullFileName = $file->getPathName();
+                $fileName = $file->getFileName();
+                if (!preg_match($whitelist, $fileName)) {
+                    self::error("Deleting $fileName...");
+                    unlink($fullFileName);
+                } else {
+                    self::info("Preserved $fileName.");
                 }
             }
             return self::SUCCESS;
@@ -45,25 +54,25 @@ class LogClean extends Command
         }
     }
 
-    private function generateWhiteLists(int $int): array
+    private function generateWhiteLists(int $int): string
     {
-        $arr = [
-            storage_path('logs/schedule.log'),
-            storage_path('logs/default.queue.out.log'),
-            storage_path('logs/TelegramLimitedApiRequest.queue.out.log'),
+        $now = Carbon::createFromTimestamp(LARAVEL_START);
+        $times = [];
+        $times[] = $now->format('Y-m-d');
+        for ($i = 0; $i < $int; $i++) {
+            $times[] = $now->subDay()->format('Y-m-d');
+        }
+        $times = implode('|', $times);
+        $type = [
+            'single',
+            'sql',
+            'perf',
+            'deprecations',
+            'emergency',
+            'schedule',
         ];
-        for ($i = 0; $i > -$int; $i--) {
-            $filename = date('Y-m-d', strtotime("$i days"));
-            $filename = storage_path("logs/$filename");
-            $arr[] = $filename . '.single.log';
-            $arr[] = $filename . '.sql.log';
-            $arr[] = $filename . '.perf.log';
-            $arr[] = $filename . '.deprecations.log';
-            $arr[] = $filename . '.emergency.log';
-        }
-        foreach ($arr as $file) {
-            self::line("WhiteList: $file");
-        }
-        return $arr;
+        $type = implode('|', $type);
+        /** @lang PhpRegExp */
+        return "/^(($times)\.($type)|.+\.queue\.\d+\.(out|err))\.log$/i";
     }
 }
