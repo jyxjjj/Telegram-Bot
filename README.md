@@ -91,24 +91,12 @@ chmod -R 755 .
 chmod -R 777 bootstrap/cache/
 chmod -R 777 storage/
 
-touch .user.ini
-vim .user.ini
-chown www:www .user.ini
-chmod 644 .user.ini
-chattr +i .user.ini
-
 php artisan key:generate
 vim .env
 
-vim supervisor/TelegramBot-Queue-default.ini
-vim supervisor/TelegramBot-Queue-TelegramLimitedApiRequest.ini
-chmod +X supervisor/init.sh
-chmod +X supervisor/restart.sh
-chmod +X supervisor/reload.sh
-chmod +X supervisor/start.sh
-chmod +X supervisor/stop.sh
 supervisor/init.sh
-supervisor/restart.sh
+supervisor/reload.sh
+supervisor/start.sh
 ```
 
 #### Database Migration
