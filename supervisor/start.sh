@@ -1,3 +1,2 @@
 #!/bin/bash
-supervisorctl start TelegramBot-Queue-default:*
-supervisorctl start TelegramBot-Queue-TelegramLimitedApiRequest:*
+supervisorctl start TelegramBot-Queue:*
