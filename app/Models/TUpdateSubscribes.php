@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $chat_id
+ * @property string $software
+ */
 class TUpdateSubscribes extends BaseModel
 {
     protected $table = 'update_subscribes';
