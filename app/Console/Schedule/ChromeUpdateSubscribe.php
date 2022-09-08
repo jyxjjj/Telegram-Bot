@@ -192,7 +192,7 @@ STR;
 
     /**
      * @param int $chat_id
-     * @param string $data
+     * @param string $hash
      * @return bool
      */
     private function setLastSend(int $chat_id, string $hash): bool
