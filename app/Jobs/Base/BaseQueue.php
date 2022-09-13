@@ -12,19 +12,16 @@ class BaseQueue implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var int
-     */
-    public int $tries = 5;
-    /**
-     * @var int
-     */
+    public int $tries = 3;
     public int $maxExceptions = 3;
 
     public function __construct()
     {
     }
 
+    /**
+     * @return int[]
+     */
     public function backoff(): array
     {
         return [1, 5, 10];
