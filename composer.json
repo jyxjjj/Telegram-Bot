@@ -17,7 +17,7 @@
         "ext-sockets": "*",
         "desmg/php-common": "^2.0.0",
         "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^9.27.0",
+        "laravel/framework": "^9.30.0",
         "laravel/tinker": "^2.7.2",
         "longman/telegram-bot": "^0.78.0",
         "nunomaduro/collision": "^6.3.0",
@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.20.0",
-        "predis/predis": "^2.0.0"
+        "predis/predis": "^2.0.2"
     },
     "autoload": {
         "psr-4": {
