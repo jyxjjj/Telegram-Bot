@@ -3,6 +3,7 @@
 namespace App\Console\Schedule;
 
 use App\Common\Config;
+use App\Exceptions\Handler;
 use App\Jobs\SendPhotoJob;
 use App\Models\TBilibiliSubscribes;
 use Carbon\Carbon;
@@ -29,7 +30,6 @@ class BilibiliSubscribe extends Command
     public function handle(): int
     {
         try {
-            self::info("Start to get subscribed UPs' video lists");
             /** @var TBilibiliSubscribes[] $datas */
             $datas = TBilibiliSubscribes::getAllSubscribe();
             foreach ($datas as $data) {
@@ -43,7 +43,7 @@ class BilibiliSubscribe extends Command
                 $videoList = $this->getVideoList($mid);
                 $last_send = $this->getLastSend($chat_id, $mid);
                 if (!$last_send) {
-                    self::info("Haven't send any video to $chat_id with $mid");
+                    self::info("Haven't send any video of $mid to $chat_id ");
                     $video = $videoList[0];
                 } else {
                     for ($i = 0; $i < count($videoList); $i++) {
@@ -52,7 +52,7 @@ class BilibiliSubscribe extends Command
                             continue 2;
                         }
                         if ($videoList[$i]['bvid'] == $last_send) {
-                            self::info("Find new video of $mid");
+                            self::info("Find new video of $mid for $chat_id");
                             $video = $videoList[$i - 1];
                             break;
                         }
@@ -85,7 +85,7 @@ class BilibiliSubscribe extends Command
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            self::error($e->getMessage());
+            Handler::logError($e);
             return self::FAILURE;
         }
     }
