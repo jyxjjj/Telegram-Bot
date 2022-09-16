@@ -107,7 +107,7 @@ class PhpUpdateSubscribe extends Command
     }
 
     /**
-     * @return array
+     * @return array|int|false
      */
     private function getJson(): array|int|false
     {
