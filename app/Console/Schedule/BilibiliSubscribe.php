@@ -106,7 +106,7 @@ class BilibiliSubscribe extends Command
         foreach ($vlist as &$video) {
             $video['created'] = Carbon::createFromTimestamp($video['created'])->format('Y-m-d H:i:s');
         }
-        Cache::put("Schedule::BilibiliSubscribe::mid_info::{$mid}", $vlist, Carbon::now()->addMinutes(3));
+        Cache::put("Schedule::BilibiliSubscribe::mid_info::{$mid}", $vlist, Carbon::now()->addMinutes(15));
         return $vlist;
     }
 
