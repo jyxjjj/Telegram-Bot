@@ -38,7 +38,6 @@ class BilibiliGetSubscribeCommand extends BaseCommand
         }
         //#endregion
         $subscribes = TBilibiliSubscribes::getAllSubscribeByChat($chatId);
-        $subscribes = $subscribes->toArray();
         if (count($subscribes) > 0) {
             $data['text'] .= "*Subscribed UPs:*\n";
             foreach ($subscribes as $subscribe) {

@@ -30,11 +30,11 @@ class BilibiliSubscribe extends Command
     public function handle(): int
     {
         try {
-            /** @var TBilibiliSubscribes[] $datas */
             $datas = TBilibiliSubscribes::getAllSubscribe();
             foreach ($datas as $data) {
-                $chat_id = $data->chat_id;
-                $mid = $data->mid;
+                unset($video, $message);
+                $chat_id = $data['chat_id'];
+                $mid = $data['mid'];
                 self::info("Get subscribed UPs' video lists of $mid");
                 $message = [
                     'chat_id' => $chat_id,
@@ -51,7 +51,7 @@ class BilibiliSubscribe extends Command
                             self::info("There is no new video of $mid for $chat_id");
                             continue 2;
                         }
-                        if ($videoList[$i]['bvid'] == $last_send) {
+                        if ($i > 0 && $videoList[$i]['bvid'] == $last_send) {
                             self::info("Find new video of $mid for $chat_id");
                             $video = $videoList[$i - 1];
                             break;

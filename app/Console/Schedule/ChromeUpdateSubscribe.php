@@ -31,10 +31,9 @@ class ChromeUpdateSubscribe extends Command
     {
         try {
             $updates = $this->getUpdate();
-            /** @var TUpdateSubscribes[] $datas */
             $datas = TUpdateSubscribes::getAllSubscribeBySoftware('Chrome');
             foreach ($datas as $data) {
-                $chat_id = $data->chat_id;
+                $chat_id = $data['chat_id'];
                 $string = $this->getUpdateData($chat_id, $updates);
                 $hash = Hash::sha512(str_replace(' (NEW)', '', $string));
                 $message = [

@@ -37,7 +37,7 @@ class PhpUpdateSubscribe extends Command
             /** @var TUpdateSubscribes[] $datas */
             $datas = TUpdateSubscribes::getAllSubscribeBySoftware('PHP');
             foreach ($datas as $data) {
-                $chat_id = $data->chat_id;
+                $chat_id = $data['chat_id'];
                 $message = [
                     'chat_id' => $chat_id,
                     'text' => '',

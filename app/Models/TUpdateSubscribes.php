@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -65,33 +64,36 @@ class TUpdateSubscribes extends BaseModel
     }
 
     /**
-     * @return Collection
+     * @return array
      */
-    public static function getAllSubscribe(): Collection
+    public static function getAllSubscribe(): array
     {
         return self::query()
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
      * @param string $software
-     * @return Collection
+     * @return array
      */
-    public static function getAllSubscribeBySoftware(string $software): Collection
+    public static function getAllSubscribeBySoftware(string $software): array
     {
         return self::query()
             ->where('software', $software)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
      * @param int $chatId
-     * @return Collection
+     * @return array
      */
-    public static function getAllSubscribeByChat(int $chatId): Collection
+    public static function getAllSubscribeByChat(int $chatId): array
     {
         return self::query()
             ->where('chat_id', $chatId)
-            ->get();
+            ->get()
+            ->toArray();
     }
 }
