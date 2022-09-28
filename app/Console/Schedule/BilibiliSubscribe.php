@@ -32,6 +32,7 @@ class BilibiliSubscribe extends Command
         try {
             $datas = TBilibiliSubscribes::getAllSubscribe();
             foreach ($datas as $data) {
+                sleep(10);
                 unset($video, $message);
                 $chat_id = $data['chat_id'];
                 $mid = $data['mid'];

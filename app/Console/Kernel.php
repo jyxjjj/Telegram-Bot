@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Schedule\BilibiliSubscribe;
 use App\Console\Schedule\ChromeUpdateSubscribe;
 use App\Console\Schedule\LogClean;
 use App\Console\Schedule\PhpUpdateSubscribe;
@@ -24,7 +23,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('subscribe:nginx')->hourly()->runInBackground()->withoutOverlapping(120);
 //        $schedule->command('subscribe:mariadb')->hourly()->runInBackground()->withoutOverlapping(120);
 //        $schedule->command('subscribe:redis')->hourly()->runInBackground()->withoutOverlapping(120);
-        $schedule->command(BilibiliSubscribe::class)->everyTenMinutes()->runInBackground()->withoutOverlapping(120);
+//        $schedule->command(BilibiliSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
     }
 
     protected function commands()
