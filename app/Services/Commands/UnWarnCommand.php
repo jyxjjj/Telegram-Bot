@@ -90,8 +90,13 @@ class UnWarnCommand extends BaseCommand
                 $this->dispatch(new SendMessageJob($data));
                 return;
             }
-            TChatWarns::revokeUserWarn($chatId, $userId);
             $warns = TChatWarns::getUserWarns($chatId, $userId);
+            if ($warns <= 0) {
+                $data['text'] .= "*Error:* This user has no warns.\n";
+                $this->dispatch(new SendMessageJob($data));
+                return;
+            }
+            TChatWarns::revokeUserWarn($chatId, $userId);
             $data['text'] .= "Remove once warning of user [$userId](tg://user?id=$userId).\n";
             $data['text'] .= "*Current warn times:* $warns.\n";
             $data['text'] .= "Since you are unwarning it,\n";
