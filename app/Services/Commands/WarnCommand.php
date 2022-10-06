@@ -97,9 +97,8 @@ class WarnCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data));
             return;
         }
-        TChatWarns::addUserWarn($chatId, $userId);
         $warns = TChatWarns::getUserWarns($chatId, $userId);
-        if ($warns >= 3) {
+        if ($warns + 1 >= 3 || $warns >= 3) {
             $data['text'] .= "*Warning:* This user [$userId](tg://user?id=$userId) has been warned 3 times.\n";
             $data['text'] .= "*Warning:* Banning user [$userId](tg://user?id=$userId).\n";
             $this->dispatch(new SendMessageJob($data));
@@ -110,6 +109,8 @@ class WarnCommand extends BaseCommand
             ];
             $this->dispatch(new BanMemberByWarnJob($data));
         } else {
+            TChatWarns::addUserWarn($chatId, $userId);
+            $warns++;
             $data['text'] .= "Warning user [$userId](tg://user?id=$userId).\n";
             $data['text'] .= "*Current warn times:* $warns.\n";
             $this->dispatch(new SendMessageJob($data));
