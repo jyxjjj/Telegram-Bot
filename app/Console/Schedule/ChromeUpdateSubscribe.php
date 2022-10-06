@@ -63,42 +63,42 @@ class ChromeUpdateSubscribe extends Command
      */
     #[ArrayShape([
         'StableAndroidVersion' => 'string',
-        'CanaryAndroidVersion' => 'string',
+//        'CanaryAndroidVersion' => 'string',
         'StableWindowsVersion' => 'string',
-        'CanaryWindowsVersion' => 'string',
+//        'CanaryWindowsVersion' => 'string',
         'StableMacVersion' => 'string',
-        'CanaryMacVersion' => 'string',
+//        'CanaryMacVersion' => 'string',
         'StableLinuxVersion' => 'string',
         'StableiOSVersion' => 'string'
     ])]
     private function getUpdate(): array
     {
         $StableAndroidVersion =
-        $CanaryAndroidVersion =
+//        $CanaryAndroidVersion =
         $StableWindowsVersion =
-        $CanaryWindowsVersion =
+//        $CanaryWindowsVersion =
         $StableMacVersion =
-        $CanaryMacVersion =
+//        $CanaryMacVersion =
         $StableLinuxVersion =
         $StableiOSVersion = 'Fetch Failed';
         $data = $this->getJson();
         foreach ($data as $ver) {
             $ver['platform'] == 'Android' && $ver['channel'] == 'Stable' && $StableAndroidVersion = $ver['version'];
-            $ver['platform'] == 'Android' && $ver['channel'] == 'Canary' && $CanaryAndroidVersion = $ver['version'];
+//            $ver['platform'] == 'Android' && $ver['channel'] == 'Canary' && $CanaryAndroidVersion = $ver['version'];
             $ver['platform'] == 'Windows' && $ver['channel'] == 'Stable' && $StableWindowsVersion = $ver['version'];
-            $ver['platform'] == 'Windows' && $ver['channel'] == 'Canary' && $CanaryWindowsVersion = $ver['version'];
+//            $ver['platform'] == 'Windows' && $ver['channel'] == 'Canary' && $CanaryWindowsVersion = $ver['version'];
             $ver['platform'] == 'Mac' && $ver['channel'] == 'Stable' && $StableMacVersion = $ver['version'];
-            $ver['platform'] == 'Mac' && $ver['channel'] == 'Canary' && $CanaryMacVersion = $ver['version'];
+//            $ver['platform'] == 'Mac' && $ver['channel'] == 'Canary' && $CanaryMacVersion = $ver['version'];
             $ver['platform'] == 'Linux' && $ver['channel'] == 'Stable' && $StableLinuxVersion = $ver['version'];
             $ver['platform'] == 'iOS' && $ver['channel'] == 'Stable' && $StableiOSVersion = $ver['version'];
         }
         return [
             'StableAndroidVersion' => $StableAndroidVersion,
-            'CanaryAndroidVersion' => $CanaryAndroidVersion,
+//            'CanaryAndroidVersion' => $CanaryAndroidVersion,
             'StableWindowsVersion' => $StableWindowsVersion,
-            'CanaryWindowsVersion' => $CanaryWindowsVersion,
+//            'CanaryWindowsVersion' => $CanaryWindowsVersion,
             'StableMacVersion' => $StableMacVersion,
-            'CanaryMacVersion' => $CanaryMacVersion,
+//            'CanaryMacVersion' => $CanaryMacVersion,
             'StableLinuxVersion' => $StableLinuxVersion,
             'StableiOSVersion' => $StableiOSVersion,
         ];
@@ -144,11 +144,11 @@ class ChromeUpdateSubscribe extends Command
 *Linux*: `{$data['StableLinuxVersion']}`
 *Android*: `{$data['StableAndroidVersion']}`
 *iOS*: `{$data['StableiOSVersion']}`
-
-*Mac*(_Canary_): `{$data['CanaryMacVersion']}`
-*Windows*(_Canary_): `{$data['CanaryWindowsVersion']}`
-*Android*(_Canary_): `{$data['CanaryAndroidVersion']}`
 STR;
+//*Mac*(_Canary_): `{$data['CanaryMacVersion']}`
+//*Windows*(_Canary_): `{$data['CanaryWindowsVersion']}`
+//*Android*(_Canary_): `{$data['CanaryAndroidVersion']}`
+//STR;
     }
 
     /**
