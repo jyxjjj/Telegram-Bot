@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
+namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 
-class SoftwareTemplate implements SoftwareInterface
+class Go implements SoftwareInterface
 {
 
     public function getVersion(): string
