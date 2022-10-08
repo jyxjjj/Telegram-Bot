@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Cache;
 class Common
 {
     /**
+     * \ud83c\udf89
+     * @return string
+     */
+    public static function emoji(): string
+    {
+        return str_repeat(json_decode('["\ud83c\udf89"]', true)[0], 3);
+    }
+
+    /**
      * 获取已缓存的HTTP响应中 <b>Last-Modified</b> 值
      * @param Software $software
      * @return string
