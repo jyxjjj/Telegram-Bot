@@ -21,7 +21,7 @@ class Nginx implements SoftwareInterface
     {
         $data = $this->getJson();
         if (!is_array($data)) {
-            return Common::getLastVersion(Software::PHP);
+            return Common::getLastVersion(Software::Nginx);
         }
         $major = 0;
         $minor = 0;
@@ -40,9 +40,7 @@ class Nginx implements SoftwareInterface
                 }
             }
         }
-        $version = "{$major}.{$minor}.{$patch}";
-        Common::setLastVersion(Software::PHP, $version);
-        return $version;
+        return "{$major}.{$minor}.{$patch}";
     }
 
     /**
@@ -53,7 +51,7 @@ class Nginx implements SoftwareInterface
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
         $headers['User-Agent'] .= "; Telegram-Nginx-Subscriber-Runner/$ts";
-        $last_modified = Common::getLastModified(Software::PHP);
+        $last_modified = Common::getLastModified(Software::Nginx);
         if ($last_modified) {
             $headers['If-Modified-Since'] = $last_modified;
         }
@@ -63,7 +61,7 @@ class Nginx implements SoftwareInterface
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/nginx/nginx/tags?per_page=100');
         $last_modified = $get->header('last-modified');
-        Common::cacheLastModified(Software::PHP, $last_modified);
+        Common::cacheLastModified(Software::Nginx, $last_modified);
         if ($get->status() == 200) {
             return $get->json();
         }

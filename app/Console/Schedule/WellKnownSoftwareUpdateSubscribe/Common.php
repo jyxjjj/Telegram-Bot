@@ -8,12 +8,25 @@ use Illuminate\Support\Facades\Cache;
 class Common
 {
     /**
+     * @var array
+     */
+    public static array $instances = [];
+
+    /**
+     * @var string
+     */
+    private static string $emoji = '';
+
+    /**
      * \ud83c\udf89
      * @return string
      */
     public static function emoji(): string
     {
-        return str_repeat(json_decode('["\ud83c\udf89"]', true)[0], 3);
+        if (self::$emoji == '') {
+            self::$emoji = str_repeat(json_decode('["\ud83c\udf89"]', true)[0], 3);
+        }
+        return self::$emoji;
     }
 
     /**

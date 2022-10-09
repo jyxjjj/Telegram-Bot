@@ -12,7 +12,6 @@ class {{CLASS}} implements SoftwareInterface
      */
     public function getVersion(): string
     {
-        // TODO: Implement getVersion() method.
     }
 
     /**
@@ -27,6 +26,5 @@ class {{CLASS}} implements SoftwareInterface
     ])]
     public function generateMessage(int $chat_id, string $version): array
     {
-        // TODO: Implement generateMessage() method.
     }
 }

@@ -47,7 +47,10 @@ enum Software: string
 
     public function getInstance(): SoftwareInterface
     {
-        return new ($this->getClass());
+        if (!isset(Common::$instances[$this->value]) || !Common::$instances[$this->value] instanceof SoftwareInterface) {
+            Common::$instances[$this->value] = new ($this->getClass());
+        }
+        return Common::$instances[$this->value];
     }
 
     public function getClass(): string

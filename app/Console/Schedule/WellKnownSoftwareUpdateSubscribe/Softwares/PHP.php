@@ -40,9 +40,7 @@ class PHP implements SoftwareInterface
                 }
             }
         }
-        $version = "{$major}.{$minor}.{$patch}";
-        Common::setLastVersion(Software::PHP, $version);
-        return $version;
+        return "{$major}.{$minor}.{$patch}";
     }
 
     /**

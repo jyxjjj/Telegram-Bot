@@ -42,6 +42,9 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Software::PHP->name,
                     Software::Nginx->name,
                     Software::MariaDB->name,
+                    Software::MariaDBDocker->name,
+                    Software::Redis->name,
+                    Software::RedisDocker->name,
                 ])) {
                     continue;
                 }
@@ -52,9 +55,11 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                         $chat_id = $data['chat_id'];
                         $version = $software->getInstance()->getVersion();
                         $lastVersion = Common::getLastVersion($software);
+                        self::info("{$software->name} Current:{$version} Latest:{$lastVersion}");
                         if ($version && $lastVersion != $version) {
                             $message = $software->getInstance()->generateMessage($chat_id, $version);
                             $this->dispatch(new SendMessageJob($message, null, 0));
+                            Common::setLastVersion($software, $version);
                         }
                     }
                 } catch (Throwable $e) {

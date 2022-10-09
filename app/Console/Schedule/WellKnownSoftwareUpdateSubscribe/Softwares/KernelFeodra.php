@@ -8,12 +8,19 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 
 class KernelFeodra implements SoftwareInterface
 {
-
+    /**
+     * @return string
+     */
     public function getVersion(): string
     {
         // TODO: Implement getVersion() method.
     }
 
+    /**
+     * @param int $chat_id
+     * @param string $version
+     * @return array
+     */
     #[ArrayShape([
         'chat_id' => 'int',
         'text' => 'string',
