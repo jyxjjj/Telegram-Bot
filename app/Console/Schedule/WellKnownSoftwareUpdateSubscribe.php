@@ -62,6 +62,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Handler::logError($e);
                     continue;
                 }
+                sleep(1);
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
