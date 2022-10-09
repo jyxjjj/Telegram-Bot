@@ -55,7 +55,6 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                         if ($version && $lastVersion != $version) {
                             $message = $software->getInstance()->generateMessage($chat_id, $version);
                             $this->dispatch(new SendMessageJob($message, null, 0));
-                            Common::setLastVersion($software, $version);
                         }
                     }
                 } catch (Throwable $e) {
