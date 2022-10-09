@@ -21,7 +21,7 @@ class Redis implements SoftwareInterface
     {
         $data = $this->getJson();
         if (!is_array($data)) {
-            return Common::getLastVersion(Software::PHP);
+            return Common::getLastVersion(Software::Redis);
         }
         $major = 0;
         $minor = 0;
