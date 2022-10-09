@@ -37,20 +37,30 @@ class WellKnownSoftwareUpdateSubscribe extends Command
 //                    }
 //                }
             foreach (Software::cases() as $software) {
-                if (!in_array($software->name, [Software::PHP->name, Software::Nginx->name])) {
+                self::info("Checking {$software->name}...");
+                if (!in_array($software->name, [
+                    Software::PHP->name,
+                    Software::Nginx->name,
+                    Software::MariaDB->name,
+                ])) {
                     continue;
                 }
-                /** @var TUpdateSubscribes[] $datas */
-                $datas = TUpdateSubscribes::getAllSubscribeBySoftware($software->name);
-                foreach ($datas as $data) {
-                    $chat_id = $data['chat_id'];
-                    $version = $software->getInstance()->getVersion();
-                    $lastVersion = Common::getLastVersion($software);
-                    if ($version && $lastVersion != $version) {
-                        $message = $software->getInstance()->generateMessage($chat_id, $version);
-                        $this->dispatch(new SendMessageJob($message, null, 0));
-                        Common::setLastVersion($software, $version);
+                try {
+                    /** @var TUpdateSubscribes[] $datas */
+                    $datas = TUpdateSubscribes::getAllSubscribeBySoftware($software->name);
+                    foreach ($datas as $data) {
+                        $chat_id = $data['chat_id'];
+                        $version = $software->getInstance()->getVersion();
+                        $lastVersion = Common::getLastVersion($software);
+                        if ($version && $lastVersion != $version) {
+                            $message = $software->getInstance()->generateMessage($chat_id, $version);
+                            $this->dispatch(new SendMessageJob($message, null, 0));
+                            Common::setLastVersion($software, $version);
+                        }
                     }
+                } catch (Throwable $e) {
+                    Handler::logError($e);
+                    continue;
                 }
             }
             return self::SUCCESS;
