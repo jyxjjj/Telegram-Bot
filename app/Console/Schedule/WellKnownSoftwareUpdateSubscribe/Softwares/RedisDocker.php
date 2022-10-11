@@ -44,7 +44,6 @@ class RedisDocker implements SoftwareInterface
         $headers['User-Agent'] .= "; Telegram-RedisDocker-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
-            ->accept('application/vnd.docker.distribution.manifest.v2+json')
             ->get('https://registry.hub.docker.com/v2/repositories/library/redis/tags/latest/images')
             ->json();
     }
