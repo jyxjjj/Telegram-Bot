@@ -64,15 +64,22 @@ class PingCommand extends BaseCommand
 
     /**
      * @param $host
-     * @return int
+     * @return float
      */
-    private function ping($host): int
+    private function ping($host): float
     {
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        $start = Carbon::now()->getTimestampMs();
-        socket_connect($socket, $host, 80);
-        $end = Carbon::now()->getTimestampMs();
+        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
+        $start = Carbon::now()->getPreciseTimestamp();
+        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
+        socket_recv($socket, $recv, 255, 0);
+        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
+        socket_recv($socket, $recv, 255, 0);
+        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
+        socket_recv($socket, $recv, 255, 0);
+        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
+        socket_recv($socket, $recv, 255, 0);
+        $end = Carbon::now()->getPreciseTimestamp();
         socket_close($socket);
-        return $end - $start;
+        return ($end - $start) / 1000 / 4;
     }
 }
