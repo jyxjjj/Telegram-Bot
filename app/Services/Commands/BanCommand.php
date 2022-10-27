@@ -69,7 +69,6 @@ class BanCommand extends BaseCommand
             'chatId' => $chatId,
             'messageId' => $messageId,
             'replyToMessageId' => $replyToMessageId,
-            'userId' => $userId,
             'banUserId' => $banUserId,
         ];
         $this->dispatch(new BanMemberJob($data));
