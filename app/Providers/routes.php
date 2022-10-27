@@ -8,7 +8,6 @@ Route::group(
     ],
     function () {
         Route::get('/', [IndexController::class, 'index']);
-        Route::get('/health', [IndexController::class, 'health']);
     }
 );
 

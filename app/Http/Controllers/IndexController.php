@@ -25,14 +25,6 @@ class IndexController extends BaseController
     }
 
     /**
-     * @return Response
-     */
-    public function health(): Response
-    {
-        return $this->plain('OK');
-    }
-
-    /**
      * @param Request $request
      * @return JsonResponse
      * @throws TelegramException
