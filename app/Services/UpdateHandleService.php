@@ -25,7 +25,7 @@ class UpdateHandleService extends BaseService
      */
     public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
-//         任何类型的新传入消息--文本、照片、贴纸等。
+//                 任何类型的新传入消息--文本、照片、贴纸等。
         $this->addHandler(Update::TYPE_MESSAGE, MessageHandleService::class);
 //                 机器人已知并已编辑的消息的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_MESSAGE, EditedMessageHandleService::class);
