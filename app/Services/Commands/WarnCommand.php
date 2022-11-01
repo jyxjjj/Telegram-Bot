@@ -15,7 +15,7 @@ class WarnCommand extends BaseCommand
 {
     public string $name = 'warn';
     public string $description = 'Warn a user';
-    public string $usage = '/warn';
+    public string $usage = '/warn [reply_to] [at(unsupported)|text_mention|user_id]';
 
     /**
      * @param Message $message

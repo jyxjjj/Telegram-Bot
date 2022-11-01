@@ -12,7 +12,7 @@ class ShowMyWarnCommand extends BaseCommand
 {
     public string $name = 'showmywarn';
     public string $description = 'Show the warn times of a user';
-    public string $usage = '/showmywarn';
+    public string $usage = '/showmywarn [reply_to] [at(unsupported)|text_mention|user_id]';
 
     /**
      * @param Message $message

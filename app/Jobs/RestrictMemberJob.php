@@ -13,16 +13,19 @@ class RestrictMemberJob extends TelegramBaseQueue
 {
     private array $data;
     private int $time;
+    private bool $revoke;
 
     /**
      * @param array $data
      * @param int $time
+     * @param bool $revoke
      */
-    public function __construct(array $data, int $time)
+    public function __construct(array $data, int $time, bool $revoke = false)
     {
         parent::__construct();
         $this->data = $data;
         $this->time = $time;
+        $this->revoke = $revoke;
     }
 
     /**
@@ -36,16 +39,27 @@ class RestrictMemberJob extends TelegramBaseQueue
             'chat_id' => $origin['chatId'],
             'user_id' => $origin['restrictUserId'],
             'until_date' => Carbon::now()->addSeconds($this->time)->getTimestamp(),
-            'permissions' => new ChatPermissions([
-                'can_send_messages' => false,
-                'can_send_media_messages' => false,
-                'can_send_polls' => false,
-                'can_send_other_messages' => false,
-                'can_add_web_page_previews' => false,
-                'can_change_info' => false,
-                'can_invite_users' => false,
-                'can_pin_messages' => false,
-            ]),
+            'permissions' => new ChatPermissions(
+                $this->revoke ? [
+                    'can_send_messages' => true,
+                    'can_send_media_messages' => true,
+                    'can_send_polls' => true,
+                    'can_send_other_messages' => true,
+                    'can_add_web_page_previews' => true,
+                    'can_change_info' => false,
+                    'can_invite_users' => false,
+                    'can_pin_messages' => false,
+                ] : [
+                    'can_send_messages' => false,
+                    'can_send_media_messages' => false,
+                    'can_send_polls' => false,
+                    'can_send_other_messages' => false,
+                    'can_add_web_page_previews' => false,
+                    'can_change_info' => false,
+                    'can_invite_users' => false,
+                    'can_pin_messages' => false,
+                ]
+            ),
         ];
         $sender = [
             'chat_id' => $origin['chatId'],

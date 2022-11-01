@@ -11,7 +11,7 @@ class MessageInfoCommand extends BaseCommand
 {
     public string $name = 'messageinfo';
     public string $description = 'Show Message Info';
-    public string $usage = '/messageinfo';
+    public string $usage = '/messageinfo [reply_to]';
 
     /**
      * @param Message $message

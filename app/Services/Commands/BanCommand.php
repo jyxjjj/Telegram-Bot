@@ -13,7 +13,7 @@ class BanCommand extends BaseCommand
 {
     public string $name = 'ban';
     public string $description = 'Ban User from Chat';
-    public string $usage = '/ban';
+    public string $usage = '/ban [reply_to]';
 
     /**
      * @param Message $message

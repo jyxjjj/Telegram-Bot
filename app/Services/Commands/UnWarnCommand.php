@@ -13,7 +13,7 @@ class UnWarnCommand extends BaseCommand
 {
     public string $name = 'unwarn';
     public string $description = 'reduce once warn times of a user';
-    public string $usage = '/unwarn';
+    public string $usage = '/unwarn [reply_to] [at(unsupported)|text_mention|user_id]';
 
     /**
      * @param Message $message

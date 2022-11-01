@@ -25,17 +25,19 @@ class HelpCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
+        $param = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
-            'text' => $this->getHelp(),
+            'text' => $this->getHelp($param),
         ];
-        $this->dispatch(new SendMessageJob($data, null, 0));
+        $data['text'] && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     /**
+     * @param $commandName
      * @return string
      */
-    private function getHelp(): string
+    private function getHelp($commandName): string
     {
         $path = app_path('Services/Commands');
         $files = new RegexIterator(
@@ -44,6 +46,7 @@ class HelpCommand extends BaseCommand
             ),
             '/^.+Command.php$/'
         );
+        $classes = [];
         $help = [];
         foreach ($files as $file) {
             $fileName = $file->getFileName();
@@ -55,9 +58,34 @@ class HelpCommand extends BaseCommand
                 continue;
             }
             $command_class = new $command_class; // instantiate the command
-            $command_class->name == 'start' || $help[] = "$command_class->usage - $command_class->description";
+            $classes[] = $command_class;
         }
-        sort($help);
-        return implode("\n", $help);
+        if ($commandName == '') {
+            foreach ($classes as $class) {
+                if ($class->name != 'start') {
+                    $help[] = "$class->name - $class->description";
+                }
+            }
+            sort($help);
+            return implode("\n", $help);
+        } else {
+            foreach ($classes as $class) {
+                if ($class->name == $commandName) {
+                    $str = "Command: `$class->name`\n";
+                    $str .= "Description: `$class->description`\n";
+                    $str .= "Usage: `$class->usage`\n\n";
+                    $str .= "*ParamDesc:*\n";
+                    $str .= "reply\_to: It is not a param, you can/should reply to a message to use the command contains this directive.\n";
+                    $str .= "at: You can/should metion a user via @ to use the command contains this directive.\n";
+                    $str .= "text\_mention: You can/should metion a user who has no username to use the command contains this directive.\n";
+                    $str .= "user\_id: You can/should enter a valid user\_id to use the command contains this directive.\n";
+                    $str .= "unsupported: This directive has not been supported by this command yet.\n";
+                    $str .= "Text included by {}: Params Must Be Included, but may have default value.\n";
+                    $str .= "Text included by []: Optional Params.\n";
+                    return $str;
+                }
+            }
+            return "Command `$commandName` not found";
+        }
     }
 }

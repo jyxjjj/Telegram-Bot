@@ -9,11 +9,11 @@ use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
-class MuteCommand extends BaseCommand
+class UnMuteCommand extends BaseCommand
 {
-    public string $name = 'mute';
-    public string $description = 'Mute User of a Chat';
-    public string $usage = '/mute [reply_to] {time}[s|m|h|d]';
+    public string $name = 'unmute';
+    public string $description = 'Unmute User of a Chat';
+    public string $usage = '/unmute [reply_to]';
 
     /**
      * @param Message $message
@@ -25,7 +25,6 @@ class MuteCommand extends BaseCommand
     {
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
-        $param = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
@@ -59,45 +58,9 @@ class MuteCommand extends BaseCommand
 
         $restrictUserId = $replyTo->getFrom()->getId();
         if (in_array($restrictUserId, $admins, true)) {
-            $data['text'] .= "*Error:* You can't mute an admin.\n";
+            $data['text'] .= "*Error:* You can't unmute an admin.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
-        }
-
-        $time = trim($param);
-
-        if ($time == '') {
-            $time = 3600;
-        } else {
-            if (!is_numeric($time)) {
-                $time = substr($time, 0, -1);
-                if (!is_numeric($time)) {
-                    $data['text'] .= "*Error:* Time should be a number in seconds or in units of \"s,m,h,d\".\n";
-                    $this->dispatch(new SendMessageJob($data));
-                    return;
-                }
-                $unit = strtolower(substr($time, -1));
-                $time = match ($unit) {
-                    'm' => $time * 60,
-                    'h' => $time * 3600,
-                    'd' => $time * 86400,
-                    default => $time,
-                };
-            }
-            if ($time > 366 * 24 * 3600) {
-                $data['text'] .= "*Error:* Time more than 366 days will forever mute user.\n\n";
-                $data['text'] .= "*Info:* Bot now does not support automaticly unrestrict member.\n\n";
-                $data['text'] .= "*Notice:* If you really want to mute user forever, use /kick instead.\n\n";
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            }
-            if ($time < 30) {
-                $data['text'] .= "*Error:* Time less than 30 seconds will forever mute user.\n\n";
-                $data['text'] .= "*Info:* Bot now does not support automaticly unrestrict member.\n\n";
-                $data['text'] .= "*Notice:* If you really want to mute user forever, use /kick instead.\n\n";
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            }
         }
 
         $data = [
@@ -105,6 +68,6 @@ class MuteCommand extends BaseCommand
             'messageId' => $messageId,
             'restrictUserId' => $restrictUserId,
         ];
-        $this->dispatch(new RestrictMemberJob($data, $time));
+        $this->dispatch(new RestrictMemberJob($data, 1, true));
     }
 }
