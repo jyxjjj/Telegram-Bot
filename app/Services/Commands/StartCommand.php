@@ -25,6 +25,7 @@ class StartCommand extends BaseCommand
     {
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
+        $payload = $message->getText(true);
         /** @var TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [
@@ -33,7 +34,8 @@ class StartCommand extends BaseCommand
         ];
         $data['text'] .= "Hello, I am here alive.\n";
         $data['text'] .= "Type /help to get the help.\n";
-        $data['text'] .= "*Your user_id:* [$startedUser->user_id](tg://user?id=$startedUser->user_id)\n";
+        $data['text'] .= "*Your user_id:* [$startedUser->user_id](tg://user?id={$startedUser->user_id})\n";
+        $payload && $data['text'] .= "*Your payload:* `$payload`\n";
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }
