@@ -18,7 +18,7 @@
         "ext-sockets": "*",
         "desmg/php-common": "^2.0.0",
         "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^9.37.0",
+        "laravel/framework": "^9.38.0",
         "laravel/tinker": "^2.7.2",
         "longman/telegram-bot": "^0.79.0",
         "nunomaduro/collision": "^6.3.1",
