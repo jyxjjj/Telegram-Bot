@@ -9,6 +9,7 @@ use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use Throwable;
 
 class KeywordHandleService extends BaseService
 {
@@ -21,25 +22,25 @@ class KeywordHandleService extends BaseService
      */
     public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
-        $path = app_path('Services/Keywords');
+        $sendText = $message->getText(true) ?? $message->getCaption();
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($path)
+                new RecursiveDirectoryIterator(app_path('Services/Keywords'))
             ),
             '/^.+Keyword.php$/'
         );
-        $sendText = $message->getText();
-        foreach ($files as $file) {
-            $fileName = $file->getFileName();
-            $pathName = $file->getPathName();
-            $handler = str_replace('.php', '', $fileName);
-            $handler_class = "App\\Services\\Keywords\\$handler";
-            require_once $pathName;
-            if (!class_exists($handler_class, false)) {
-                continue;
+        if ($sendText) {
+            foreach ($files as $file) {
+                $fileName = $file->getFileName();
+                $handler = str_replace('.php', '', $fileName);
+                $handler_class = "App\\Services\\Keywords\\$handler";
+                try {
+                    $handler_class = app()->make($handler_class);
+                } catch (Throwable) {
+                    continue;
+                }
+                $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
             }
-            $handler_class = new $handler_class; // Instantiate the Handler
-            $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
         }
         return false;
     }
