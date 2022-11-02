@@ -20,10 +20,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     public function preExecute(Message $message): bool
     {
         $text = $message->getText(true) ?? $message->getCaption();
-        if (preg_match($this->pattern, $text)) {
-            return true;
-        }
-        return false;
+        return $text && preg_match($this->pattern, $text);
     }
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
