@@ -37,10 +37,10 @@ abstract class BaseKeyword
     protected string $pattern;
 
     /**
-     * @param string $text
+     * @param Message $message
      * @return bool
      */
-    public abstract function preExecute(string $text): bool;
+    public abstract function preExecute(Message $message): bool;
 
     /**
      * @param Message $message

@@ -22,25 +22,22 @@ class KeywordHandleService extends BaseService
      */
     public function handle(Message $message, Telegram $telegram, int $updateId): bool
     {
-        $sendText = $message->getText(true) ?? $message->getCaption();
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(app_path('Services/Keywords'))
             ),
             '/^.+Keyword.php$/'
         );
-        if ($sendText) {
-            foreach ($files as $file) {
-                $fileName = $file->getFileName();
-                $handler = str_replace('.php', '', $fileName);
-                $handler_class = "App\\Services\\Keywords\\$handler";
-                try {
-                    $handler_class = app()->make($handler_class);
-                } catch (Throwable) {
-                    continue;
-                }
-                $handler_class->preExecute($sendText) && $handler_class->execute($message, $telegram, $updateId);
+        foreach ($files as $file) {
+            $fileName = $file->getFileName();
+            $handler = str_replace('.php', '', $fileName);
+            $handler_class = "App\\Services\\Keywords\\$handler";
+            try {
+                $handler_class = app()->make($handler_class);
+            } catch (Throwable) {
+                continue;
             }
+            $handler_class->preExecute($message) && $handler_class->execute($message, $telegram, $updateId);
         }
         return false;
     }

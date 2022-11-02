@@ -17,8 +17,9 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     public string $description = 'Remove b23 tracker from b23 link';
     protected string $pattern = '/(b23\.tv|bilibili\.com)/';
 
-    public function preExecute(string $text): bool
+    public function preExecute(Message $message): bool
     {
+        $text = $message->getText(true) ?? $message->getCaption();
         if (preg_match($this->pattern, $text)) {
             return true;
         }

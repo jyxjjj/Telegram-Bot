@@ -17,8 +17,9 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
     public string $description = 'Remove AMap tracker from surl link';
     protected string $pattern = '/(surl\.amap\.com)/';
 
-    public function preExecute(string $text): bool
+    public function preExecute(Message $message): bool
     {
+        $text = $message->getText(true) ?? $message->getCaption();
         if (preg_match($this->pattern, $text)) {
             return true;
         }
