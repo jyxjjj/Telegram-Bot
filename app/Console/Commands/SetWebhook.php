@@ -26,6 +26,7 @@ class SetWebhook extends Command
             'edited_message',
             'channel_post',
             'edited_channel_post',
+            'callback_query',
             'my_chat_member',
             'chat_member',
             'chat_join_request',
