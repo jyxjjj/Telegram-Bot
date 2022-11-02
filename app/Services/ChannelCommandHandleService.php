@@ -10,6 +10,7 @@ use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use Throwable;
 
 class ChannelCommandHandleService extends BaseService
 {
@@ -34,14 +35,13 @@ class ChannelCommandHandleService extends BaseService
         );
         foreach ($files as $file) {
             $fileName = $file->getFileName();
-            $pathName = $file->getPathName();
             $command = str_replace('.php', '', $fileName);
             $command_class = "App\\Services\\ChannelCommands\\$command";
-            require_once $pathName;
-            if (!class_exists($command_class, false)) {
+            try {
+                $command_class = app()->make($command_class);
+            } catch (Throwable) {
                 continue;
             }
-            $command_class = new $command_class; // Instantiate the command
             if ($command_class->name != $sendCommand) { // Detect if command matches
                 continue;
             }
