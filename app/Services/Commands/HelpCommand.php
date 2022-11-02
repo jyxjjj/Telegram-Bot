@@ -9,6 +9,7 @@ use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use Throwable;
 
 class HelpCommand extends BaseCommand
 {
@@ -50,14 +51,13 @@ class HelpCommand extends BaseCommand
         $help = [];
         foreach ($files as $file) {
             $fileName = $file->getFileName();
-            $pathName = $file->getPathName();
             $command = str_replace('.php', '', $fileName);
             $command_class = "App\\Services\\Commands\\$command";
-            require_once $pathName;
-            if (!class_exists($command_class, false)) {
+            try {
+                $command_class = app()->make($command_class);
+            } catch (Throwable) {
                 continue;
             }
-            $command_class = new $command_class; // instantiate the command
             $classes[] = $command_class;
         }
         if ($commandName == '') {
