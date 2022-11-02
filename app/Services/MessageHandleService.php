@@ -28,9 +28,8 @@ class MessageHandleService extends BaseService
     {
         $message = $update->getMessage();
         $messageType = $message->getType();
-        $this->addHandler('ANY', AutoDeleteHandler::class);
+        $this->addHandler('ANY', KeywordHandleService::class);
         $this->addHandler('command', CommandHandleService::class);
-        $this->addHandler('text', KeywordHandleService::class);
         $this->addHandler('sticker', StickerHandleService::class);
         $this->runHandler($messageType, $message, $telegram, $updateId);
 //            'command':
