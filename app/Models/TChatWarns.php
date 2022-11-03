@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Cache;
+
 /**
  * @property int $id
  * @property int $chat_id
@@ -19,6 +21,10 @@ class TChatWarns extends BaseModel
      */
     public static function getUserWarns(int $chat_id, int $user_id): int
     {
+        $times = Cache::get("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}");
+        if (is_int($times)) {
+            return $times;
+        }
         /** @var TChatWarns $data */
         $data = self::query()
             ->where('chat_id', $chat_id)
@@ -29,6 +35,7 @@ class TChatWarns extends BaseModel
         } else {
             $times = $data->times;
         }
+        Cache::put("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}", $times, now()->addDay());
         return $times;
     }
 
@@ -45,6 +52,7 @@ class TChatWarns extends BaseModel
             ->where('user_id', $user_id)
             ->first();
         if ($data == null) {
+            Cache::put("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}", 1, now()->addDay());
             self::query()
                 ->create(
                     [
@@ -54,6 +62,7 @@ class TChatWarns extends BaseModel
                     ]
                 );
         } else {
+            Cache::increment("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}");
             $data->times++;
             $data->save();
         }
@@ -76,8 +85,10 @@ class TChatWarns extends BaseModel
         }
         $data->times--;
         if ($data->times <= 0) {
+            Cache::put("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}", 0, now()->addDay());
             $data->delete();
         } else {
+            Cache::decrement("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}");
             $data->save();
         }
     }
@@ -89,6 +100,7 @@ class TChatWarns extends BaseModel
      */
     public static function clearUserWarn(int $chat_id, int $user_id): void
     {
+        Cache::put("DB::TChatWarns::user_warns::{$chat_id}::{$user_id}", 0, now()->addDay());
         self::query()
             ->where('chat_id', $chat_id)
             ->where('user_id', $user_id)

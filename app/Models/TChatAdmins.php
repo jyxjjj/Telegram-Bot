@@ -41,10 +41,9 @@ class TChatAdmins extends BaseModel
     public static function clearAdmin($chat_id): int
     {
         Cache::forget("DB::TChatAdmins::chat_admins::{$chat_id}");
-        return
-            self::query()
-                ->where('chat_id', $chat_id)
-                ->delete();
+        return self::query()
+            ->where('chat_id', $chat_id)
+            ->delete();
     }
 
     /**
@@ -54,13 +53,12 @@ class TChatAdmins extends BaseModel
      */
     public static function addAdmin($chat_id, $admin_id): Builder|Model
     {
-        return
-            self::query()
-                ->create(
-                    [
-                        'chat_id' => $chat_id,
-                        'admin_id' => $admin_id,
-                    ]
-                );
+        return self::query()
+            ->create(
+                [
+                    'chat_id' => $chat_id,
+                    'admin_id' => $admin_id,
+                ]
+            );
     }
 }

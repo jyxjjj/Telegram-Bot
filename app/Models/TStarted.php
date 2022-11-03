@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property int $id
@@ -19,16 +20,19 @@ class TStarted extends BaseModel
      */
     public static function addUser($user_id): Builder|Model
     {
-        return
-            self::query()
-                ->firstOrCreate(
-                    [
-                        'user_id' => $user_id,
-                    ],
-                    [
-                        'user_id' => $user_id,
-                    ]
-                );
+        $data = Cache::get("DB::TStarted::user::{$user_id}");
+        if ($data) {
+            return $data;
+        }
+        return self::query()
+            ->firstOrCreate(
+                [
+                    'user_id' => $user_id,
+                ],
+                [
+                    'user_id' => $user_id,
+                ]
+            );
     }
 
     /**
@@ -37,13 +41,21 @@ class TStarted extends BaseModel
      */
     public static function getUser($user_id): bool
     {
-        return (bool)
-        self::query()
+        $data = Cache::get("DB::TStarted::user::{$user_id}");
+        if ($data) {
+            return true;
+        }
+        $data = self::query()
             ->where(
                 [
                     'user_id' => $user_id,
                 ]
             )
             ->first();
+        if ($data) {
+            Cache::put("DB::TStarted::user::{$user_id}", $data, now()->addDay());
+            return true;
+        }
+        return false;
     }
 }

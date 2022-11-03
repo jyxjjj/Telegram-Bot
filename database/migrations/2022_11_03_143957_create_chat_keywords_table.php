@@ -23,6 +23,8 @@ return new class extends Migration {
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
             $table->comment('聊天关键字表');
             $table->index(['chat_id',], 'chat_id');
+            $table->index(['detect_source',], 'detect_source');
+            $table->index(['enable',], 'enable');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
