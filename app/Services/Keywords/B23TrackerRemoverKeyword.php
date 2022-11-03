@@ -34,15 +34,20 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             'text' => '',
         ];
         $this->handle($text, $data);
-        $data['reply_markup'] && $this->dispatch(new SendMessageJob($data, null, 0));
+        isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     private function handle(string $text, array &$data)
     {
         $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
-        $pattern_space = '/https:\/\/space\.bilibili\.com\/\d+(\?p=(\d){1,3})?/';
+        $pattern_av = '/https:\/\/www\.bilibili\.com\/(video\/)?(av|AV)\d+/';
+        $pattern_bv = '/https:\/\/www\.bilibili\.com\/(video\/)?(bv|BV)[a-zA-Z\d]+/';
+        $pattern_cv = '/https:\/\/www\.bilibili\.com\/(read\/)?(mobile\/)?(cv|CV)?\d+/';
+        $pattern_space = '/https:\/\/space\.bilibili\.com\/\d+/';
+        $pattern_live = '/https:\/\/live\.bilibili\.com\/[a-zA-Z\d]+/';
         if (preg_match_all($pattern, $text, $matches)) {
             $data['text'] .= "Bilibili Tracker Removed\n";
+            $data['text'] .= "*Warning:* Beta Function, if error occured, contact @jyxjjj .\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (count($matches[0]) > 3) {
                 $count = 3;
@@ -52,32 +57,28 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             for ($i = 0; $i < $count; $i++) {
                 $link = $matches[0][$i];
                 $this->normalizeLink($link);
-                $pattern = '/https:\/\/(www|live).bilibili.com\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
-                if (preg_match($pattern, $link)) {
-                    $data['text'] .= "*Link:* `$link`\n";
+                if (
+                    !preg_match($pattern_av, $link) &&
+                    !preg_match($pattern_bv, $link) &&
+                    !preg_match($pattern_cv, $link) &&
+                    !preg_match($pattern_space, $link) &&
+                    !preg_match($pattern_live, $link)
+                ) {
+                    $link = $this->getLocation($link);
+                }
+                if (
+                    preg_match($pattern_av, $link, $matchedLocation) ||
+                    preg_match($pattern_bv, $link, $matchedLocation) ||
+                    preg_match($pattern_cv, $link, $matchedLocation) ||
+                    preg_match($pattern_space, $link, $matchedLocation) ||
+                    preg_match($pattern_live, $link, $matchedLocation)
+                ) {
+                    $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
                     $button = new InlineKeyboardButton([
-                        'text' => $link,
-                        'url' => $link,
+                        'text' => $matchedLocation[0],
+                        'url' => $matchedLocation[0],
                     ]);
                     $data['reply_markup']->addRow($button);
-                } else {
-                    $location = $this->getLocation($link);
-                    if (preg_match($pattern, $location, $matchedLocation)) {
-                        $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
-                        $button = new InlineKeyboardButton([
-                            'text' => $matchedLocation[0],
-                            'url' => $matchedLocation[0],
-                        ]);
-                        $data['reply_markup']->addRow($button);
-                    }
-                    if (preg_match($pattern_space, $location, $matchedLocation)) {
-                        $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
-                        $button = new InlineKeyboardButton([
-                            'text' => $matchedLocation[0],
-                            'url' => $matchedLocation[0],
-                        ]);
-                        $data['reply_markup']->addRow($button);
-                    }
                 }
             }
         }
