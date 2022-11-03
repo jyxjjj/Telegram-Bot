@@ -34,12 +34,13 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             'text' => '',
         ];
         $this->handle($text, $data);
-        $this->dispatch(new SendMessageJob($data, null, 0));
+        $data['reply_markup'] && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     private function handle(string $text, array &$data)
     {
         $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
+        $pattern_space = '/https:\/\/space\.bilibili\.com\/\d+(\?p=(\d){1,3})?/';
         if (preg_match_all($pattern, $text, $matches)) {
             $data['text'] .= "Bilibili Tracker Removed\n";
             $data['reply_markup'] = new InlineKeyboard([]);
@@ -62,6 +63,14 @@ class B23TrackerRemoverKeyword extends BaseKeyword
                 } else {
                     $location = $this->getLocation($link);
                     if (preg_match($pattern, $location, $matchedLocation)) {
+                        $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
+                        $button = new InlineKeyboardButton([
+                            'text' => $matchedLocation[0],
+                            'url' => $matchedLocation[0],
+                        ]);
+                        $data['reply_markup']->addRow($button);
+                    }
+                    if (preg_match($pattern_space, $location, $matchedLocation)) {
                         $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
                         $button = new InlineKeyboardButton([
                             'text' => $matchedLocation[0],
