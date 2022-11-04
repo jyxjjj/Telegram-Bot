@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -90,7 +91,7 @@ class TUpdateSubscribes extends BaseModel
         $data = self::query()
             ->get()
             ->toArray();
-        Cache::put("DB::TUpdateSubscribes::update_subscribes", $data, now()->addDay());
+        Cache::put("DB::TUpdateSubscribes::update_subscribes", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 
@@ -120,7 +121,7 @@ class TUpdateSubscribes extends BaseModel
             ->where('chat_id', $chatId)
             ->get()
             ->toArray();
-        Cache::put("DB::TUpdateSubscribes::update_subscribes::{$chatId}", $data, now()->addDay());
+        Cache::put("DB::TUpdateSubscribes::update_subscribes::{$chatId}", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 }

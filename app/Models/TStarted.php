@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -53,7 +54,7 @@ class TStarted extends BaseModel
             )
             ->first();
         if ($data) {
-            Cache::put("DB::TStarted::user::{$user_id}", $data, now()->addDay());
+            Cache::put("DB::TStarted::user::{$user_id}", $data, Carbon::now()->addMinutes(5));
             return true;
         }
         return false;

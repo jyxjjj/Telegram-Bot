@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -30,7 +30,7 @@ class TChatAdmins extends BaseModel
             ->where('chat_id', $chat_id)
             ->pluck('admin_id')
             ->toArray();
-        Cache::put("DB::TChatAdmins::chat_admins::{$chat_id}", $data, Carbon::now()->addDay());
+        Cache::put("DB::TChatAdmins::chat_admins::{$chat_id}", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 

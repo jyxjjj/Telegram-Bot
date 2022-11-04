@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -73,7 +74,7 @@ class TChatKeywords extends BaseModel
                 ->get()
                 ->toArray(),
         };
-        Cache::put("DB::TChatKeywords::chat_keywords::{$chat_id}::{$type}", $data, now()->addDay());
+        Cache::put("DB::TChatKeywords::chat_keywords::{$chat_id}::{$type}", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 }
