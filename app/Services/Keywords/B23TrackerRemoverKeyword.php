@@ -39,7 +39,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
 
     private function handle(string $text, array &$data)
     {
-        $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
+        $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.|live\.|space\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
         $pattern_av = '/https:\/\/www\.bilibili\.com\/(video\/)?(av|AV)\d+/';
         $pattern_bv = '/https:\/\/www\.bilibili\.com\/(video\/)?(bv|BV)[a-zA-Z\d]+/';
         $pattern_cv = '/https:\/\/www\.bilibili\.com\/(read\/)?(mobile\/)?(cv|CV)?\d+/';
@@ -89,7 +89,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         if (str_starts_with($link, 'http://')) {
             $link = str_replace('http://', 'https://', $link);
         }
-        if (str_starts_with($link, 'b23.tv') || str_starts_with($link, 'bilibili.com') || str_starts_with($link, 'www.bilibili.com')) {
+        if (str_starts_with($link, 'b23.tv') || str_starts_with($link, 'bilibili.com') || str_starts_with($link, 'www.bilibili.com') || str_starts_with($link, 'live.bilibili.com')) {
             $link = "https://$link";
         }
     }
