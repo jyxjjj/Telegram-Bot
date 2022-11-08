@@ -185,11 +185,34 @@ class ContributeKeyword extends ContributeStep
                     !$hasPic && $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                     // InlineKeyboard
                     $sender['reply_markup'] = new InlineKeyboard([]);
-                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '通过', 'callback_data' => "pendingpass$cvid"]));
-                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '拒绝', 'callback_data' => "pendingreject$cvid"]));
-                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '拒绝并留言', 'callback_data' => "pendingreply$cvid"]));
-                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '忽略', 'callback_data' => "pendingignore$cvid"]));
-                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '联系用户', 'url' => "tg://user?id={$message->getChat()->getId()}"]));
+                    $sender['reply_markup']->addRow(
+                        new InlineKeyboardButton([
+                            'text' => '通过',
+                            'callback_data' => "pendingpass$cvid",
+                        ]),
+                        new InlineKeyboardButton([
+                            'text' => '拒绝',
+                            'callback_data' => "pendingreject$cvid",
+                        ])
+                    );
+                    $sender['reply_markup']->addRow(
+                        new InlineKeyboardButton([
+                            'text' => '拒绝并留言',
+                            'callback_data' => "pendingreply$cvid",
+                        ])
+                    );
+                    $sender['reply_markup']->addRow(
+                        new InlineKeyboardButton([
+                            'text' => '忽略',
+                            'callback_data' => "pendingignore$cvid",
+                        ])
+                    );
+                    $sender['reply_markup']->addRow(
+                        new InlineKeyboardButton([
+                            'text' => '联系用户',
+                            'url' => "tg://user?id={$message->getChat()->getId()}",
+                        ])
+                    );
                     // 发送消息
                     $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
                     !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
