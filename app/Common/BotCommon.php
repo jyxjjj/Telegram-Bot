@@ -40,7 +40,7 @@ class BotCommon
             return self::$telegram;
         }
         self::$telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'), env('TELEGRAM_BOT_USERNAME'));
-        self::$telegram->enableAdmin(env('TELEGRAM_ADMIN_USER_ID'));
+        self::$telegram->enableAdmins(explode(',', env('TELEGRAM_ADMIN_USER_ID')));
         self::$telegram->setDownloadPath(storage_path('app/telegram'));
         self::$telegram->setUploadPath(storage_path('app/telegram'));
         Request::setClient(self::getClient($timeout));

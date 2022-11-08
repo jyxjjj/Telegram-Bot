@@ -28,8 +28,8 @@ class MessageHandleService extends BaseService
     {
         $message = $update->getMessage();
         $messageType = $message->getType();
-        $this->addHandler('ANY', KeywordHandleService::class);
         $this->addHandler('command', CommandHandleService::class);
+        $this->addHandler('ANY', KeywordHandleService::class);
         $this->runHandler($messageType, $message, $telegram, $updateId);
 //            'command':
 //            'text':

@@ -2,10 +2,8 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -31,15 +29,15 @@ class AboutCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= "在花投稿机器人2.0\n";
-        $data['text'] .= "龙缘科技合作方 ZaiHua 版权所有\n";
+        $data['text'] .= "ZaiHua 版权所有\n";
         $data['text'] .= sprintf("Copyright (C) %s\n", date('Y'));
         $data['text'] .= "DESMG All rights reserved.\n";
         $data['text'] .= "DESMG Main API(DESMG)\n";
-        $data['text'] .= "*Version:* 2.0\n";
-        $data['text'] .= sprintf("*System Time:* `%s`\n", date('Y-m-d H:i:s'));
-        $data['text'] .= sprintf("*Device Name:* `%s`\n", php_uname('n'));
-        $data['text'] .= sprintf("*System Version:* `%s %s %s`\n", php_uname('s'), php_uname('r'), php_uname('m'));
-        $data['text'] .= sprintf("*PHP Version:* `%s %s %s`\n", PHP_VERSION, PHP_SAPI, PHP_OS);
+        $data['text'] .= "<b>Version:</b> 2.0\n";
+        $data['text'] .= sprintf("<b>System Time:</b> <code>%s</code>\n", date('Y-m-d H:i:s'));
+        $data['text'] .= sprintf("<b>Device Name:</b> <code>%s</code>\n", php_uname('n'));
+        $data['text'] .= sprintf("<b>System Version:</b> <code>%s %s %s</code>\n", php_uname('s'), php_uname('r'), php_uname('m'));
+        $data['text'] .= sprintf("<b>PHP Version:</b> <code>%s %s %s</code>\n", PHP_VERSION, PHP_SAPI, PHP_OS);
         $data['reply_markup'] = new InlineKeyboard([]);
         $personal = new InlineKeyboardButton([
             'text' => '技术支持',

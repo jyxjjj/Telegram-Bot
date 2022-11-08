@@ -26,7 +26,6 @@ class CommandHandleService extends BaseService
     {
         $senderId = $message->getFrom()->getId();
         $messageId = $message->getMessageId();
-        $chatId = $message->getChat()->getId();
         $notAdmin = !BotCommon::isAdmin($message);
         $notPrivate = !$message->getChat()->isPrivateChat();
         $sendCommand = $message->getCommand();

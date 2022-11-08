@@ -4,6 +4,8 @@ namespace App\Services\Commands;
 
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -29,10 +31,16 @@ class StartCommand extends BaseCommand
             'chat_id' => $chatId,
             'text' => '',
         ];
-        $data['text'] .= "Hello, I am here alive.\n";
-        $data['text'] .= "Type /help to get the help.\n";
-        $data['text'] .= "*Your user_id:* [$userId](tg://user?id={$userId})\n";
-        $payload && $data['text'] .= "*Your payload:* `$payload`\n";
+        $data['text'] .= "你好，欢迎使用在花投稿机器人2.0。\n";
+        $data['text'] .= "命令列表请输入 /help 。\n";
+        $data['text'] .= "<b>你的用户ID：</b> <a href='tg://user?id={$userId}'>{$userId}</a>\n";
+        $data['text'] .= "使用问题及建议联系： @zaihua_bot \n";
+        $data['text'] .= "技术支持请联系： @jyxjjj \n";
+        $payload && $data['text'] .= "<b>本次启动参数:</b> <code>$payload</code>\n";
+        $data['reply_markup'] = new Keyboard([]);
+        $data['reply_markup']->setResizeKeyboard(true);
+        $button1 = new KeyboardButton('阿里云盘投稿');
+        $data['reply_markup']->addRow($button1);
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }
