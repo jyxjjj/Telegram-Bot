@@ -15,7 +15,7 @@ class ContributeKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿';
+        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘投稿';
     }
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -91,6 +91,9 @@ class ContributeKeyword extends ContributeStep
                     $data[$cvid]['status'] = 'link';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
                     $sender['text'] .= "请发送分享链接，频道接受阿里云盘、百度网盘、OneDrive 和 SharePoint 资源。请确保为永久分享，尽量不要设置提取码。\n";
+                    $sender['reply_markup'] = new Keyboard([]);
+                    $sender['reply_markup']->setResizeKeyboard(true);
+                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 case 'link':
@@ -108,35 +111,36 @@ class ContributeKeyword extends ContributeStep
                     $data[$cvid]['status'] = 'confirm';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
                     $hasPic = $data[$cvid]['pic'] != null;
-                    $data['reply_markup'] = new Keyboard([]);
-                    $data['reply_markup']->setResizeKeyboard(true);
-                    $data['reply_markup']->addRow(new KeyboardButton('确认投稿'));
-                    $data['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                    $sender['reply_markup'] = new Keyboard([]);
+                    $sender['reply_markup']->setResizeKeyboard(true);
+                    $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
                     if ($hasPic) {
-                        $data['photo'] = $data[$cvid]['pic'];
-                        $data['caption'] .= "资源名称：{$data[$cvid]['title']}\n";
-                        $data['caption'] .= "资源简介：{$data[$cvid]['desc']}\n";
-                        $data['caption'] .= "链接：{$data[$cvid]['link']}\n";
-                        $data['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
+                        $sender['photo'] = $data[$cvid]['pic'];
+                        $sender['text'] = null;
+                        $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n";
+                        $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n";
+                        $sender['caption'] .= "链接：{$data[$cvid]['link']}\n";
+                        $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
                         $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
                     } else {
-                        $data['text'] .= "资源名称：{$data[$cvid]['title']}\n";
-                        $data['text'] .= "资源简介：{$data[$cvid]['desc']}\n";
-                        $data['text'] .= "链接：{$data[$cvid]['link']}\n";
-                        $data['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
+                        $sender['text'] = "资源名称：{$data[$cvid]['name']}\n";
+                        $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n";
+                        $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     }
-                    $sender['text'] .= "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
-                    $this->dispatch((new SendPhotoJob($sender, 0))->delay(2));
+                    $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                    $this->dispatch((new SendMessageJob($sender, null, 0))->delay(2));
                     break;
                 case 'confirm':
                     $isConfirm = $message->getText() === '确认投稿';
                     if (!$isConfirm) {
                         $sender['text'] .= "您有正在进行中的投稿，请确认您的投稿或取消投稿。";
-                        $data['reply_markup'] = new Keyboard([]);
-                        $data['reply_markup']->setResizeKeyboard(true);
-                        $data['reply_markup']->addRow(new KeyboardButton('确认投稿'));
-                        $data['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                        $sender['reply_markup'] = new Keyboard([]);
+                        $sender['reply_markup']->setResizeKeyboard(true);
+                        $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                        $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
                     }
@@ -144,6 +148,9 @@ class ContributeKeyword extends ContributeStep
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
                     $sender['text'] .= "✅ 投稿成功，我们将稍后通过机器人告知您审核结果，请保持联系畅通 ~\n\n";
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
+                    $sender['reply_markup'] = new Keyboard([]);
+                    $sender['reply_markup']->setResizeKeyboard(true);
+                    $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 default:
