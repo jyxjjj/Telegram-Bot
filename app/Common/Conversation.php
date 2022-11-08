@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Storage;
 
 class Conversation
 {
-    public static function get(int $user_id, string $type): array
+    public static function get(int|string $filename, string $type): array
     {
         $fs = Storage::disk('telegram');
         $path = "conversation/{$type}";
-        $file = "{$path}/{$user_id}.json";
+        $file = "{$path}/{$filename}.json";
         if ($fs->exists($file)) {
             return json_decode($fs->get($file), true);
         }
         return [];
     }
 
-    public static function save(int $user_id, string $type, array $value): bool
+    public static function save(int|string $filename, string $type, array $value): bool
     {
         $fs = Storage::disk('telegram');
         $path = "conversation/{$type}";
-        $file = "{$path}/{$user_id}.json";
+        $file = "{$path}/{$filename}.json";
         if (!$fs->exists($path)) {
             $fs->makeDirectory($path);
         }

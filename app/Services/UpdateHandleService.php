@@ -30,7 +30,7 @@ class UpdateHandleService extends BaseService
 //                 机器人已知并已编辑的消息的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_MESSAGE, EditedMessageHandleService::class);
 //                 任何类型的新传入频道帖子--文字、照片、贴纸等。
-//        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
+        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
 //                 机器人已知并已编辑的频道帖子的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_CHANNEL_POST, MessageHandleService::class);
 //                 新传入的内联(https://core.telegram.org/bots/api#inline-mode)查询。
@@ -39,7 +39,7 @@ class UpdateHandleService extends BaseService
 //                 有关如何为您的机器人启用这些更新的详细信息，请参阅我们关于收集反馈(https://core.telegram.org/bots/inline#collecting-feedback)的文档。
 //        $this->addHandler(Update::TYPE_CHOSEN_INLINE_RESULT, MessageHandleService::class);
 //                 新的传入回调查询。
-//        $this->addHandler(Update::TYPE_CALLBACK_QUERY, CallbackQueryHandleService::class);
+        $this->addHandler(Update::TYPE_CALLBACK_QUERY, CallbackQueryHandleService::class);
 //                 新运费查询。仅适用于价格灵活的发票。
 //        $this->addHandler(Update::TYPE_SHIPPING_QUERY, MessageHandleService::class);
 //                 新传入的预结帐查询。包含有关结帐的完整信息。

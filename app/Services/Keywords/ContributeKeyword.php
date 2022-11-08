@@ -5,6 +5,8 @@ namespace App\Services\Keywords;
 use App\Common\Conversation;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -25,10 +27,7 @@ class ContributeKeyword extends ContributeStep
             'text' => '',
         ];
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
-        if (count($data) > 0 && $data['status'] != 'contribute') {
-            $sender['text'] .= "请先开始投稿。\n";
-            $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-        } else {
+        if ($data['status'] == 'contribute') {
             $cvid = $data['cvid'];
             switch ($data[$cvid]['status']) {
                 case 'name':
@@ -97,7 +96,18 @@ class ContributeKeyword extends ContributeStep
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 case 'link':
-                    $data[$cvid]['link'] = $message->getText();
+                    $link = $message->getText();
+                    if (
+                        !str_starts_with($link, 'https://www.aliyundrive.com/s/') &&
+                        !str_starts_with($link, 'https://pan.baidu.com/s/') &&
+                        !str_starts_with($link, 'https://1drv.ms/') &&
+                        !str_starts_with($link, 'https://sharepoint.com/')
+                    ) {
+                        $sender['text'] .= "链接格式错误，请发送正确的分享链接，频道接受阿里云盘、百度网盘、OneDrive 和 SharePoint 资源。请确保为永久分享，尽量不要设置提取码。\n";
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        break;
+                    }
+                    $data[$cvid]['link'] = $link;
                     $data[$cvid]['status'] = 'tag';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
                     $sender['text'] .= "您将要分享的文件搜索词是？\n\n关键词越细分，越容易被查找到。关键词以 # 开头，多个关键词之间用空格分开。\n\n";
@@ -118,16 +128,16 @@ class ContributeKeyword extends ContributeStep
                     if ($hasPic) {
                         $sender['photo'] = $data[$cvid]['pic'];
                         $sender['text'] = null;
-                        $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n";
-                        $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n";
-                        $sender['caption'] .= "链接：{$data[$cvid]['link']}\n";
-                        $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
+                        $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                        $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                        $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
+                        $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                         $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
                     } else {
-                        $sender['text'] = "资源名称：{$data[$cvid]['name']}\n";
-                        $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n";
-                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n";
-                        $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n";
+                        $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                        $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
+                        $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     }
                     $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
@@ -144,18 +154,52 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
                     }
+                    $data['status'] = 'free';
+                    $data['pending'][] = $cvid;
+                    unset($data['cvid']);
                     $data[$cvid]['status'] = 'pending';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    $data_pending = Conversation::get('pending', 'pending');
+                    $data_pending[$cvid] = $message->getChat()->getId();
+                    Conversation::save('pending', 'pending', $data_pending);
                     $sender['text'] .= "✅ 投稿成功，我们将稍后通过机器人告知您审核结果，请保持联系畅通 ~\n\n";
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
                     $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                    // 判断是否含图片
+                    $hasPic = $data[$cvid]['pic'] != null;
+                    $bot_name = $telegram->getBotUsername();
+                    $sender['chat_id'] = env('YPP_SOURCE_ID');
+                    // 生成消息
+                    $hasPic && $sender['text'] = null;
+                    $hasPic && $sender['photo'] = $data[$cvid]['pic'];
+                    $hasPic && $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                    $hasPic && $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                    $hasPic && $sender['caption'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                    $hasPic && $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                    !$hasPic && $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                    !$hasPic && $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                    !$hasPic && $sender['text'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                    !$hasPic && $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                    // InlineKeyboard
+                    $sender['reply_markup'] = new InlineKeyboard([]);
+                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '通过', 'callback_data' => "pendingpass$cvid"]));
+                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '拒绝', 'callback_data' => "pendingreject$cvid"]));
+                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '拒绝并留言', 'callback_data' => "pendingreply$cvid"]));
+                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '忽略', 'callback_data' => "pendingignore$cvid"]));
+                    $sender['reply_markup']->addRow(new InlineKeyboardButton(['text' => '联系用户', 'url' => "tg://user?id={$message->getChat()->getId()}"]));
+                    // 发送消息
+                    $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                    !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 default:
                     break;
             }
+        } else {
+            $sender['text'] .= "请先开始投稿。\n";
+            $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
         }
     }
 }

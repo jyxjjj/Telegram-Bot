@@ -25,10 +25,13 @@ class AliYunPanKeyword extends ContributeStep
                 'chat_id' => $message->getChat()->getId(),
                 'text' => "您已经在投稿流程中了，无法再次投稿。\n",
             ];
+            $data['reply_markup'] = new Keyboard([]);
+            $data['reply_markup']->setResizeKeyboard(true);
+            $data['reply_markup']->addRow(new KeyboardButton('取消投稿'));
             $this->dispatch((new SendMessageJob($data, null, 0))->delay(0));
             return;
         }
-        $cvid = UUID::generateUniqueID();
+        $cvid = UUID::generateTinyUniqueID();
         $data['status'] = 'contribute';
         $data['cvid'] = $cvid;
         $data[$cvid]['status'] = 'name';
