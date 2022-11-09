@@ -43,13 +43,16 @@ class StatusCommand extends BaseCommand
         $memInfo = explode("\n", $memInfo);
         $memTotal = $this->getMemTotal($memInfo);
         $memFree = $this->getMemFree($memInfo);
+        $memAvailable = $this->getMemAvailable($memInfo);
         $memUsed = $memTotal - $memFree;
         $memUsage = number_format($memUsed / $memTotal * 100, 2, '.', '');
         $memTotal = number_format($memTotal / 1024 / 1024, 2, '.', '');
         $memFree = number_format($memFree / 1024 / 1024, 2, '.', '');
+        $memAvailable = number_format($memAvailable / 1024 / 1024, 2, '.', '');
         $memUsed = number_format($memUsed / 1024 / 1024, 2, '.', '');
         $data['text'] .= "*Total Memory:* `$memTotal GiB`\n";
         $data['text'] .= "*Free Memory:* `$memFree GiB`\n";
+        $data['text'] .= "*Available Memory:* `$memAvailable GiB`\n";
         $data['text'] .= "*Used Memory:* `$memUsed GiB`\n";
         $data['text'] .= "*Memory Usage:* `$memUsage%`\n";
         $uptime = $this->getUptime();
@@ -158,6 +161,22 @@ class StatusCommand extends BaseCommand
     {
         foreach ($memInfo as $line) {
             if (str_starts_with($line, 'MemFree')) {
+                if (preg_match('/\d+/', $line, $matches)) {
+                    return (int)$matches[0];
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param array $memInfo
+     * @return int
+     */
+    private function getMemAvailable(array $memInfo): int
+    {
+        foreach ($memInfo as $line) {
+            if (str_starts_with($line, 'MemAvailable')) {
                 if (preg_match('/\d+/', $line, $matches)) {
                     return (int)$matches[0];
                 }
