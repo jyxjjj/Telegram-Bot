@@ -3,6 +3,10 @@
 namespace App\Services\Keywords;
 
 use App\Common\Conversation;
+use App\Common\Log\BL;
+use App\Common\Log\WL;
+use App\Jobs\PassPendingJob;
+use App\Jobs\RejectPendingJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -154,70 +158,89 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
                     }
+
                     $data['status'] = 'free';
-                    $data['pending'][] = $cvid;
                     unset($data['cvid']);
                     $data[$cvid]['status'] = 'pending';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
-                    $data_pending = Conversation::get('pending', 'pending');
-                    $data_pending[$cvid] = $message->getChat()->getId();
-                    Conversation::save('pending', 'pending', $data_pending);
+
                     $sender['text'] .= "✅ 投稿成功，我们将稍后通过机器人告知您审核结果，请保持联系畅通 ~\n\n";
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
                     $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    // 判断是否含图片
-                    $hasPic = $data[$cvid]['pic'] != null;
-                    $bot_name = $telegram->getBotUsername();
-                    $sender['chat_id'] = env('YPP_SOURCE_ID');
-                    // 生成消息
-                    $hasPic && $sender['text'] = null;
-                    $hasPic && $sender['photo'] = $data[$cvid]['pic'];
-                    $hasPic && $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
-                    $hasPic && $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                    $hasPic && $sender['caption'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
-                    $hasPic && $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                    !$hasPic && $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
-                    !$hasPic && $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                    !$hasPic && $sender['text'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
-                    !$hasPic && $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                    // InlineKeyboard
-                    $sender['reply_markup'] = new InlineKeyboard([]);
-                    $sender['reply_markup']->addRow(
-                        new InlineKeyboardButton([
-                            'text' => '通过',
-                            'callback_data' => "pendingpass$cvid",
-                        ]),
-                        new InlineKeyboardButton([
-                            'text' => '拒绝',
-                            'callback_data' => "pendingreject$cvid",
-                        ])
-                    );
-                    $sender['reply_markup']->addRow(
-                        new InlineKeyboardButton([
-                            'text' => '拒绝并留言',
-                            'callback_data' => "pendingreply$cvid",
-                        ])
-                    );
-                    $sender['reply_markup']->addRow(
-                        new InlineKeyboardButton([
-                            'text' => '忽略',
-                            'callback_data' => "pendingignore$cvid",
-                        ])
-                    );
-                    $sender['reply_markup']->addRow(
-                        new InlineKeyboardButton([
-                            'text' => '联系用户',
-                            'url' => "tg://user?id={$message->getChat()->getId()}",
-                        ])
-                    );
-                    // 发送消息
-                    $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
-                    !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    break;
-                default:
+
+                    $data_pending = Conversation::get('pending', 'pending');
+                    $data_pending[$cvid] = $message->getChat()->getId();
+                    Conversation::save('pending', 'pending', $data_pending);
+                    if (WL::get($message->getChat()->getId())) {
+                        // 将 '白名单用户{name}的投稿已自动通过审核' 发送到审核群
+                        $sender['chat_id'] = env('YPP_SOURCE_ID');
+                        $sender['text'] = "白名单用户<a href='tg://user?id={$message->getChat()->getId()}'>{$data[$cvid]['name']}</a>的投稿已自动通过审核，投稿ID:<code>{$cvid}</code>";
+                        $this->dispatch(new PassPendingJob($cvid));
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                    } else if (BL::get($message->getChat()->getId())) {
+                        // 将 '黑名单用户{name}的投稿已自动拒绝' 发送到审核群
+                        $sender['chat_id'] = env('YPP_SOURCE_ID');
+                        $sender['text'] = "黑名单用户<a href='tg://user?id={$message->getChat()->getId()}'>{$data[$cvid]['name']}</a>的投稿已自动拒绝，投稿ID:<code>{$cvid}</code>";
+                        $this->dispatch(new RejectPendingJob($cvid));
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                    } else {
+                        //#region 发送投稿到审核群
+                        // 判断是否含图片
+                        $hasPic = (bool)$data[$cvid]['pic'];
+                        $bot_name = $telegram->getBotUsername();
+                        $sender['chat_id'] = env('YPP_SOURCE_ID');
+                        // 生成消息
+                        if ($hasPic) {
+                            $sender['text'] = null;
+                            $sender['photo'] = $data[$cvid]['pic'];
+                            $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                            $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                            $sender['caption'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                            $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                        } else {
+                            $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                            $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                            $sender['text'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                            $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                        }
+                        // InlineKeyboard
+                        $sender['reply_markup'] = new InlineKeyboard([]);
+                        $sender['reply_markup']->addRow(
+                            new InlineKeyboardButton([
+                                'text' => '通过',
+                                'callback_data' => "pendingpass$cvid",
+                            ]),
+                            new InlineKeyboardButton([
+                                'text' => '拒绝',
+                                'callback_data' => "pendingreject$cvid",
+                            ])
+                        );
+                        $sender['reply_markup']->addRow(
+                            new InlineKeyboardButton([
+                                'text' => '拒绝并留言',
+                                'callback_data' => "pendingreply$cvid",
+                            ])
+                        );
+                        $sender['reply_markup']->addRow(
+                            new InlineKeyboardButton([
+                                'text' => '忽略',
+                                'callback_data' => "pendingignore$cvid",
+                            ])
+                        );
+                        $sender['reply_markup']->addRow(
+                            new InlineKeyboardButton([
+                                'text' => '联系用户',
+                                'url' => "tg://user?id={$message->getChat()->getId()}",
+                            ])
+                        );
+                        // 发送消息
+                        $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                        !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        //#endregion
+                    }
                     break;
             }
         } else {
