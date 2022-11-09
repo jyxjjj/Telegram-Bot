@@ -198,12 +198,12 @@ class ContributeKeyword extends ContributeStep
                             $sender['photo'] = $data[$cvid]['pic'];
                             $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
                             $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                            $sender['caption'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                            $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                         } else {
                             $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
                             $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                            $sender['text'] .= "链接：<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>\n\n";
+                            $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                         }
                         // InlineKeyboard
