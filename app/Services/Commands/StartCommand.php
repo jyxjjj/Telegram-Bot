@@ -25,6 +25,9 @@ class StartCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        if (!$message->getChat()->isPrivateChat()) {
+            return;
+        }
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
         $payload = $message->getText(true);

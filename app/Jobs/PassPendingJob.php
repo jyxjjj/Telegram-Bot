@@ -52,6 +52,7 @@ class PassPendingJob extends BaseQueue
         $message_link = "<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
+        $shortAd = env('SHORT_AD');
         if ($hasPic) {
             unset($sender['text']);
             $sender['photo'] = $message_pic;
@@ -59,12 +60,15 @@ class PassPendingJob extends BaseQueue
             $sender['caption'] .= "资源简介：{$message_desc}\n\n";
             $sender['caption'] .= "链接：{$message_link}\n\n";
             $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
+            $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
+            $sender['caption'] .= "{$shortAd}\n\n";
             $serverResponse = Request::sendPhoto($sender);
         } else {
             $sender['text'] .= "资源名称：{$message_name}\n\n";
             $sender['text'] .= "资源简介：{$message_desc}\n\n";
             $sender['text'] .= "链接：{$message_link}\n\n";
             $sender['text'] .= "🔍 关键词：{$message_tag}\n\n";
+            $sender['text'] .= "{$shortAd}\n\n";
             $serverResponse = Request::sendMessage($sender);
         }
         if ($serverResponse->isOk()) {

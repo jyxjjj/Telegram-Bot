@@ -5,7 +5,6 @@ namespace App\Services\Keywords;
 use App\Common\Conversation;
 use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -17,7 +16,8 @@ class ReplyToRejectKeyword extends ContributeStep
                 $message->getChat()->isGroupChat() ||
                 $message->getChat()->isSuperGroup()
             ) &&
-            $message->getChat()->getId() == env('YPP_SOURCE_ID');
+            $message->getChat()->getId() == env('YPP_SOURCE_ID') &&
+            $message->getReplyToMessage();
     }
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void

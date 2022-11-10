@@ -249,12 +249,6 @@ class ContributeKeyword extends ContributeStep
                                 'callback_data' => "pendingignore$cvid",
                             ])
                         );
-                        $sender['reply_markup']->addRow(
-                            new InlineKeyboardButton([
-                                'text' => '联系用户',
-                                'url' => "tg://user?id={$user_id}",
-                            ])
-                        );
                         // 发送消息
                         $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
                         !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
