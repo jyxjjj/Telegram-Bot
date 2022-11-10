@@ -60,7 +60,6 @@ class PassPendingJob extends BaseQueue
             $sender['caption'] .= "资源简介：{$message_desc}\n\n";
             $sender['caption'] .= "链接：{$message_link}\n\n";
             $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
             $sender['caption'] .= "{$shortAd}\n\n";
             $serverResponse = Request::sendPhoto($sender);
         } else {
