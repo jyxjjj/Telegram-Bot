@@ -23,14 +23,10 @@ class ReplyToRejectKeyword extends ContributeStep
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         if ($message->getReplyToMessage()->getFrom()->getId() == $telegram->getBotId()) {
-            Log::debug('机器人ID正确');
             if (preg_match('/投稿ID:(.{16})/', $message->getReplyToMessage()->getText(), $matches)) {
-                Log::debug('匹配成功');
                 $cvid = $matches[1];
-                Log::debug($cvid);
                 $pendingReply = Conversation::get('reply', 'reject');
                 if (isset($pendingReply[$cvid])) {
-                    Log::debug('会话存在');
                     $from_id = $pendingReply[$cvid]['from_id'];
                     $from_nickname = $pendingReply[$cvid]['from_nickname'];
                     $user_id = $pendingReply[$cvid]['user_id'];

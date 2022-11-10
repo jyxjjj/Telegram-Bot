@@ -9,6 +9,7 @@ use App\Jobs\PassPendingJob;
 use App\Jobs\RejectPendingJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
+use Exception;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -24,13 +25,17 @@ class ContributeKeyword extends ContributeStep
         return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘投稿';
     }
 
+    /**
+     * @throws Exception
+     */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $user_id = $message->getChat()->getId();
         $sender = [
-            'chat_id' => $message->getChat()->getId(),
+            'chat_id' => $user_id,
             'text' => '',
         ];
-        $data = Conversation::get($message->getChat()->getId(), 'contribute');
+        $data = Conversation::get($user_id, 'contribute');
         if (isset($data['status']) && $data['status'] == 'contribute') {
             $cvid = $data['cvid'];
             switch ($data[$cvid]['status']) {
@@ -52,7 +57,7 @@ class ContributeKeyword extends ContributeStep
                         break;
                     }
                     $data[$cvid]['status'] = 'desc';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
                     $sender['text'] .= "请您发送关于分享文件的描述（如影片的<b>剧情梗概</b>；<b>500 字</b>以内，支持特殊格式）。\n";
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
@@ -74,7 +79,7 @@ class ContributeKeyword extends ContributeStep
                         break;
                     }
                     $data[$cvid]['status'] = 'pic';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
                     $sender['text'] .= "请发送一张与投稿内容相关的<b>静态图片</b>（如：电影海报），以便订阅者快速了解分享内容。\n";
                     $sender['text'] .= "<u><b>发送图片时请勿选择 “无压缩发送”</b></u>。如果不需要，请点击 “不附加图片”。\n";
                     $sender['reply_markup'] = new Keyboard([]);
@@ -102,7 +107,7 @@ class ContributeKeyword extends ContributeStep
                         $data[$cvid]['pic'] = null;
                     }
                     $data[$cvid]['status'] = 'link';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
                     $sender['text'] .= "请发送分享链接，频道接受阿里云盘、百度网盘、OneDrive 和 SharePoint 资源。请确保为永久分享，尽量不要设置提取码。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
@@ -123,7 +128,7 @@ class ContributeKeyword extends ContributeStep
                     }
                     $data[$cvid]['link'] = $link;
                     $data[$cvid]['status'] = 'tag';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
                     $sender['text'] .= "您将要分享的文件搜索词是？\n\n关键词越细分，越容易被查找到。关键词以 # 开头，多个关键词之间用空格分开。\n\n";
                     $sender['text'] .= "为方便群友搜索，关键词用于大家快速简洁的搜索到内容。建议比如电影：【怪奇物语】。关键词添加为：#怪奇 #物语 #怪奇物语 #4K #恐怖 #奇幻\n\n";
                     $sender['text'] .= "关键词越细分，越容易被查找到。关键词以 # 开头，多个关键词之间用空格分开。\n\n";
@@ -133,7 +138,7 @@ class ContributeKeyword extends ContributeStep
                 case 'tag':
                     $data[$cvid]['tag'] = $message->getText() ?? '无关键词';
                     $data[$cvid]['status'] = 'confirm';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
                     $hasPic = $data[$cvid]['pic'] != null;
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
@@ -172,7 +177,7 @@ class ContributeKeyword extends ContributeStep
                     $data['status'] = 'free';
                     unset($data['cvid']);
                     $data[$cvid]['status'] = 'pending';
-                    Conversation::save($message->getChat()->getId(), 'contribute', $data);
+                    Conversation::save($user_id, 'contribute', $data);
 
                     $sender['text'] .= "✅ 投稿成功，我们将稍后通过机器人告知您审核结果，请保持联系畅通 ~\n\n";
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
@@ -182,25 +187,27 @@ class ContributeKeyword extends ContributeStep
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
 
                     $data_pending = Conversation::get('pending', 'pending');
-                    $data_pending[$cvid] = $message->getChat()->getId();
+                    $data_pending[$cvid] = $user_id;
                     Conversation::save('pending', 'pending', $data_pending);
-                    if (WL::get($message->getChat()->getId())) {
+
+                    $user_link = "<a href='tg://user?id={$user_id}'>{$user_id}</a>";
+
+                    if (WL::get($user_id)) {
                         // 将 '白名单用户{name}的投稿已自动通过审核' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
-                        $sender['text'] = "白名单用户<a href='tg://user?id={$message->getChat()->getId()}'>{$data[$cvid]['name']}</a>的投稿已自动通过审核，投稿ID:<code>{$cvid}</code>";
+                        $sender['text'] = "白名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动通过审核\n\n投稿ID:<code>{$cvid}</code>";
                         $this->dispatch(new PassPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    } else if (BL::get($message->getChat()->getId())) {
+                    } else if (BL::get($user_id)) {
                         // 将 '黑名单用户{name}的投稿已自动拒绝' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
-                        $sender['text'] = "黑名单用户<a href='tg://user?id={$message->getChat()->getId()}'>{$data[$cvid]['name']}</a>的投稿已自动拒绝，投稿ID:<code>{$cvid}</code>";
+                        $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>{$cvid}</code>";
                         $this->dispatch(new RejectPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else {
                         //#region 发送投稿到审核群
                         // 判断是否含图片
                         $hasPic = (bool)$data[$cvid]['pic'];
-                        $bot_name = $telegram->getBotUsername();
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         // 生成消息
                         if ($hasPic) {
@@ -210,11 +217,13 @@ class ContributeKeyword extends ContributeStep
                             $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
                             $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                            $sender['caption'] .= "投稿人：{$user_link}\n";
                         } else {
                             $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
                             $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
                             $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                            $sender['text'] .= "投稿人：{$user_link}\n";
                         }
                         // InlineKeyboard
                         $sender['reply_markup'] = new InlineKeyboard([]);
@@ -243,7 +252,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['reply_markup']->addRow(
                             new InlineKeyboardButton([
                                 'text' => '联系用户',
-                                'url' => "tg://user?id={$message->getChat()->getId()}",
+                                'url' => "tg://user?id={$user_id}",
                             ])
                         );
                         // 发送消息
