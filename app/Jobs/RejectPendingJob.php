@@ -6,7 +6,6 @@ use App\Common\BotCommon;
 use App\Common\Conversation;
 use App\Jobs\Base\BaseQueue;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -22,17 +21,15 @@ class RejectPendingJob extends BaseQueue
     public function __construct(string|array $data, bool $needsReply = false)
     {
         parent::__construct();
-        Log::debug('RejectPendingJob', [$data, $needsReply]);
         if ($needsReply && is_array($data)) {
             $this->data = $data;
             $this->needsReply = $needsReply;
-        } else
-            if (!$needsReply && is_string($data)) {
-                $this->data = $data;
-                $this->needsReply = $needsReply;
-            } else {
-                throw new Exception('Invalid data type');
-            }
+        } else if (!$needsReply && is_string($data)) {
+            $this->data = $data;
+            $this->needsReply = $needsReply;
+        } else {
+            throw new Exception('Invalid data type');
+        }
     }
 
     /**
@@ -80,7 +77,7 @@ class RejectPendingJob extends BaseQueue
         $sender['reply_markup'] = $sender['reply_markup']->addRow($button1, $button2);
         SendMessageJob::dispatch($sender, null, 0);
         if ($needsReply) {
-            $pendingReply = Conversation::get($cvid, 'reject');
+            $pendingReply = Conversation::get('reply', 'reject');
             $pendingReply[$cvid] = [
                 'from_id' => $fromId,
                 'from_nickname' => $fromNickname,

@@ -31,11 +31,16 @@ class ContributeKeyword extends ContributeStep
             'text' => '',
         ];
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
-        if ($data['status'] == 'contribute') {
+        if (isset($data['status']) && $data['status'] == 'contribute') {
             $cvid = $data['cvid'];
             switch ($data[$cvid]['status']) {
                 case 'name':
                     $data[$cvid]['name'] = $message->getText();
+                    if ($data[$cvid]['name'] == null) {
+                        $sender['text'] = '投稿名称不能为空，请重新输入。';
+                        $this->dispatch(new SendMessageJob($sender, null, 0));
+                        return;
+                    }
                     if (strlen($data[$cvid]['name']) > 64) {
                         $sender['text'] .= "名称过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
@@ -53,6 +58,11 @@ class ContributeKeyword extends ContributeStep
                     break;
                 case 'desc':
                     $data[$cvid]['desc'] = $message->getText();
+                    if ($data[$cvid]['desc'] == null) {
+                        $sender['text'] = '投稿描述不能为空，请重新输入。';
+                        $this->dispatch(new SendMessageJob($sender, null, 0));
+                        return;
+                    }
                     if (strlen($data[$cvid]['desc']) > 512) {
                         $sender['text'] .= "描述过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
@@ -121,7 +131,7 @@ class ContributeKeyword extends ContributeStep
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 case 'tag':
-                    $data[$cvid]['tag'] = $message->getText();
+                    $data[$cvid]['tag'] = $message->getText() ?? '无关键词';
                     $data[$cvid]['status'] = 'confirm';
                     Conversation::save($message->getChat()->getId(), 'contribute', $data);
                     $hasPic = $data[$cvid]['pic'] != null;
