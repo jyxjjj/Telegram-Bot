@@ -56,28 +56,6 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
                     }
-                    $data[$cvid]['status'] = 'desc';
-                    Conversation::save($user_id, 'contribute', $data);
-                    $sender['text'] .= "请您发送关于分享文件的描述（如影片的<b>剧情梗概</b>；<b>500 字</b>以内，支持特殊格式）。\n";
-                    $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    break;
-                case 'desc':
-                    $data[$cvid]['desc'] = $message->getText();
-                    if ($data[$cvid]['desc'] == null) {
-                        $sender['text'] = '投稿描述不能为空，请重新输入。';
-                        $this->dispatch(new SendMessageJob($sender, null, 0));
-                        return;
-                    }
-                    if (strlen($data[$cvid]['desc']) > 2700) {
-                        $sender['text'] .= "描述过长，请重新输入。\n";
-                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                        break;
-                    }
-                    if (strlen($data[$cvid]['desc']) < 1) {
-                        $sender['text'] .= "描述过短，请重新输入。\n";
-                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                        break;
-                    }
                     $data[$cvid]['status'] = 'pic';
                     Conversation::save($user_id, 'contribute', $data);
                     $sender['text'] .= "请发送一张与投稿内容相关的<b>静态图片</b>（如：电影海报），以便订阅者快速了解分享内容。\n";
@@ -105,6 +83,28 @@ class ContributeKeyword extends ContributeStep
                         $data[$cvid]['pic'] = $photoFileId;
                     } else {
                         $data[$cvid]['pic'] = null;
+                    }
+                    $data[$cvid]['status'] = 'desc';
+                    Conversation::save($user_id, 'contribute', $data);
+                    $sender['text'] .= "请您发送关于分享文件的描述（如影片的<b>剧情梗概</b>；<b>500 字</b>以内，支持特殊格式）。\n";
+                    $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                    break;
+                case 'desc':
+                    $data[$cvid]['desc'] = $message->getText();
+                    if ($data[$cvid]['desc'] == null) {
+                        $sender['text'] = '投稿描述不能为空，请重新输入。';
+                        $this->dispatch(new SendMessageJob($sender, null, 0));
+                        return;
+                    }
+                    if (strlen($data[$cvid]['desc']) > 2700) {
+                        $sender['text'] .= "描述过长，请重新输入。\n";
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        break;
+                    }
+                    if (strlen($data[$cvid]['desc']) < 1) {
+                        $sender['text'] .= "描述过短，请重新输入。\n";
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        break;
                     }
                     $data[$cvid]['status'] = 'link';
                     Conversation::save($user_id, 'contribute', $data);
