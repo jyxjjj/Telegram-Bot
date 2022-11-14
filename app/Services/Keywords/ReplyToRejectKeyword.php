@@ -32,7 +32,7 @@ class ReplyToRejectKeyword extends ContributeStep
                     $user_id = $pendingReply[$cvid]['user_id'];
                     $message_name = $pendingReply[$cvid]['message_name'];
                     unset($pendingReply[$cvid]);
-                    Conversation::save($cvid, 'reject', $pendingReply);
+                    Conversation::save('reply', 'reject', $pendingReply);
                     $data = [
                         'chat_id' => $user_id,
                         'text' => '',
