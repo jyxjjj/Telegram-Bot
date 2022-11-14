@@ -20,6 +20,11 @@ class Test extends Command
             'reply_markup' => ['remove_keyboard' => true],
         ];
         $result = Request::sendMessage($data);
+        if (!$result->isOk()) {
+            $this->error($result->getErrorCode());
+            $this->error($result->getDescription());
+            $this->error('Error');
+        }
         return self::SUCCESS;
     }
 }

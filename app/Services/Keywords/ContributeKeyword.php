@@ -192,6 +192,7 @@ class ContributeKeyword extends ContributeStep
 
                     $user_link = "<a href='tg://user?id={$user_id}'>{$user_id}</a>";
 
+                    unset($sender['reply_markup']);
                     if (WL::get($user_id)) {
                         // 将 '白名单用户{name}的投稿已自动通过审核' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
