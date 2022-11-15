@@ -31,6 +31,8 @@ class ContributeKeyword extends ContributeStep
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $user_id = $message->getChat()->getId();
+        $user_name = ($message->getChat()->getFirstName() ?? '') . ($message->getChat()->getLastName() ?? '');
+        $user_account = $message->getChat()->getUsername() ?? '';
         $sender = [
             'chat_id' => $user_id,
             'text' => '',
@@ -220,12 +222,18 @@ class ContributeKeyword extends ContributeStep
                             $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                             $sender['caption'] .= "投稿人：{$user_link}\n";
+                            $sender['caption'] .= "投稿人昵称：{$user_name}\n";
+                            $sender['caption'] .= "投稿人账号：{$user_account}\n";
+                            $sender['caption'] .= "点击复制ID：<code>{$user_id}</code>\n";
                         } else {
                             $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
                             $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
                             $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                             $sender['text'] .= "投稿人：{$user_link}\n";
+                            $sender['text'] .= "投稿人昵称：{$user_name}\n";
+                            $sender['text'] .= "投稿人账号：{$user_account}\n";
+                            $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
                         }
                         // InlineKeyboard
                         $sender['reply_markup'] = new InlineKeyboard([]);
