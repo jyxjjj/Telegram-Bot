@@ -14,7 +14,7 @@ class AliYunPanKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() === '阿里云盘投稿';
+        return $message->getChat()->isPrivateChat() && $message->getText() === '阿里云盘分步投稿';
     }
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -39,7 +39,7 @@ class AliYunPanKeyword extends ContributeStep
 
         $data = [
             'chat_id' => $message->getChat()->getId(),
-            'text' => "🥳 欢迎投稿 ~\n分步投稿支持不包含或一张图片，多条链接，一步投稿必须包含图片，仅支持一张图片，一条链接。\n请阅读<a href='https://t.me/yunpanpan/14438'>投稿格式要求</a>，继续操作即代表您已知晓其内容。\n",
+            'text' => "🥳 欢迎投稿 ~\n\n分步投稿，可以不发送图片。并且支持多条链接发送。\n\n请阅读<a href='https://t.me/yunpanpan/14438'>投稿格式要求</a>，继续操作即代表您已知晓其内容。\n",
         ];
 
         $data2 = [

@@ -22,7 +22,7 @@ class ContributeKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘投稿' && $message->getText() !== '阿里云盘一步投稿';
+        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘分步投稿' && $message->getText() !== '阿里云盘一步投稿';
     }
 
     /**
@@ -183,7 +183,7 @@ class ContributeKeyword extends ContributeStep
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
-                    $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘分步投稿'));
                     $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘一步投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
 
@@ -271,7 +271,7 @@ class ContributeKeyword extends ContributeStep
                 });
                 $photos && $photoFileId = $photos[0]->getFileId();
                 if (!isset($photoFileId)) {
-                    $sender['text'] = "格式错误，请重新发送";
+                    $sender['text'] = "格式错误，必须包含图片，请重新发送";
                 } else {
                     $data[$cvid]['pic'] = $photoFileId;
                     $data['status'] = 'contribute';
