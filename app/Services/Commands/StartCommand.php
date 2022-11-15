@@ -53,7 +53,9 @@ class StartCommand extends BaseCommand
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
         $button1 = new KeyboardButton('阿里云盘投稿');
+        $button2 = new KeyboardButton('阿里云盘一步投稿');
         $data['reply_markup']->addRow($button1);
+        $data['reply_markup']->addRow($button2);
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }

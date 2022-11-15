@@ -22,7 +22,7 @@ class ContributeKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘投稿';
+        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘投稿' && $message->getText() !== '阿里云盘一步投稿';
     }
 
     /**
@@ -257,6 +257,42 @@ class ContributeKeyword extends ContributeStep
                     }
                     break;
             }
+        } else if (isset($data['status']) && $data['status'] == 'contribute2') {
+            $cvid = $data['cvid'];
+            if ($message->getCaption() && preg_match('/资源名称：(.*)\n\n资源简介：(.*)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.*)\n\n🔍 关键词：(.*)/', $message->getCaption(), $matches)) {
+                $data[$cvid]['name'] = $matches[1];
+                $data[$cvid]['desc'] = $matches[2];
+                $data[$cvid]['link'] = $matches[3];
+                $data[$cvid]['tag'] = $matches[4];
+                $photos = $message->getPhoto();
+                $photos && usort($photos, function (PhotoSize $a, PhotoSize $b) {
+                    return $a->getFileSize() <=> $b->getFileSize();
+                });
+                $photos && $photoFileId = $photos[0]->getFileId();
+                if (!isset($photoFileId)) {
+                    $sender['text'] = "格式错误，请重新发送";
+                } else {
+                    $data[$cvid]['pic'] = $photoFileId;
+                    $data['status'] = 'contribute';
+                    $data[$cvid]['status'] = 'confirm';
+                    Conversation::save($user_id, 'contribute', $data);
+                    $sender['photo'] = $data[$cvid]['pic'];
+                    $sender['text'] = null;
+                    $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                    $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                    $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
+                    $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                    $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                    $sender['reply_markup'] = new Keyboard([]);
+                    $sender['reply_markup']->setResizeKeyboard(true);
+                    $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                    $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                }
+            } else {
+                $sender['text'] = "格式错误，请重新发送";
+            }
+            $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
         } else {
             $sender['text'] .= "请先开始投稿。\n";
             $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));

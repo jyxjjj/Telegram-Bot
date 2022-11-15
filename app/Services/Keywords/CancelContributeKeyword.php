@@ -23,7 +23,7 @@ class CancelContributeKeyword extends ContributeStep
             'text' => '',
         ];
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
-        if (count($data) > 0 && $data['status'] != 'contribute') {
+        if (count($data) > 0 && ($data['status'] != 'contribute' || $data['status'] != 'contribute2')) {
             $sender['text'] .= "请先开始投稿。\n";
         } else {
             $data['status'] = 'free';
