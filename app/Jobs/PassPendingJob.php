@@ -61,14 +61,22 @@ class PassPendingJob extends BaseQueue
             $sender['caption'] .= "链接：{$message_link}\n\n";
             $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
             $sender['caption'] .= "{$shortAd}\n\n";
+            $sender2 = $sender;
+            $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendPhoto($sender);
+            sleep(1);
+            $serverResponse2 = Request::sendPhoto($sender2);
         } else {
             $sender['text'] .= "资源名称：{$message_name}\n\n";
             $sender['text'] .= "资源简介：{$message_desc}\n\n";
             $sender['text'] .= "链接：{$message_link}\n\n";
             $sender['text'] .= "🔍 关键词：{$message_tag}\n\n";
             $sender['text'] .= "{$shortAd}\n\n";
+            $sender2 = $sender;
+            $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendMessage($sender);
+            sleep(1);
+            $serverResponse2 = Request::sendMessage($sender2);
         }
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */
@@ -80,6 +88,16 @@ class PassPendingJob extends BaseQueue
             Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
             $messageId = 0;
         }
+        if ($serverResponse2->isOk()) {
+            /** @var Message $sendResult */
+            $sendResult2 = $serverResponse2->getResult();
+            $messageId2 = $sendResult2->getMessageId();
+        } else {
+            $errorCode = $serverResponse2->getErrorCode();
+            $errorDescription = $serverResponse2->getDescription();
+            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+            $messageId2 = 0;
+        }
         $sender = [
             'chat_id' => $user_id,
             'text' => '',
@@ -90,10 +108,18 @@ class PassPendingJob extends BaseQueue
         if ($messageId != 0) {
             $chatIdForLink = substr(env('YPP_TARGET_ID'), 4);
             $button = new InlineKeyboardButton([
-                'text' => '查看频道消息',
+                'text' => '查看主频道消息',
                 'url' => "https://t.me/c/{$chatIdForLink}/{$messageId}",
             ]);
             $sender['reply_markup']->addRow($button);
+        }
+        if ($messageId2 != 0) {
+            $chatIdForLink2 = substr(env('YPP_TARGET_ID_2'), 4);
+            $button2 = new InlineKeyboardButton([
+                'text' => '查看备份频道消息',
+                'url' => "https://t.me/c/{$chatIdForLink2}/{$messageId2}",
+            ]);
+            $sender['reply_markup']->addRow($button2);
         }
         $button1 = new InlineKeyboardButton([
             'text' => '技术支持',
@@ -104,6 +130,7 @@ class PassPendingJob extends BaseQueue
             'url' => "https://t.me/zaihua_bot",
         ]);
         $sender['reply_markup'] = $sender['reply_markup']->addRow($button1, $button2);
+        sleep(1);
         SendMessageJob::dispatch($sender, null, 0);
     }
 }
