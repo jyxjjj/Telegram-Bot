@@ -37,6 +37,13 @@ class StartCommand extends BaseCommand
         ];
 //        $payload && $data['text'] .= "<b>本次启动参数:</b> <code>$payload</code>\n";
         $data['text'] .= "你好，欢迎使用在花投稿机器人2.0。\n";
+        if (str_starts_with($payload, 'get')) {
+            $cvid = substr($payload, 3);
+            $linkData = Conversation::get($cvid, 'link');
+            $link = $linkData['link'] ?? '';
+            $data['text'] .= "\n\n您所获取的资源链接👇";
+            $data['text'] .= "\n{$link}\n\n";
+        }
         $data['text'] .= "命令列表请输入 /help 。\n";
         $data['text'] .= "<b>你的用户ID：</b> <a href='tg://user?id={$userId}'>{$userId}</a>\n";
         $data['text'] .= "使用问题及建议联系： @zaihua_bot \n";
@@ -44,12 +51,6 @@ class StartCommand extends BaseCommand
         $data['text'] .= "我们提供了DMCA及其他版权问题反馈通道\n";
         $data['text'] .= "如您有任何版权相关问题，请联系： @zaihua_bot\n";
         $data['text'] .= env('AD_TEXT');
-        if (str_starts_with($payload, 'get')) {
-            $cvid = substr($payload, 3);
-            $linkData = Conversation::get($cvid, 'link');
-            $link = $linkData['link'] ?? '';
-            $data['text'] .= "\n\n链接地址： {$link}\n\n";
-        }
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
         $button1 = new KeyboardButton('阿里云盘分步投稿');

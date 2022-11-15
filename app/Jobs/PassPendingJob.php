@@ -37,6 +37,8 @@ class PassPendingJob extends BaseQueue
             'disable_web_page_preview' => true,
             'allow_sending_without_reply' => true,
         ];
+        $sender3 = $sender;
+        $sender3['chat_id'] = env('YPP_TARGET_ID_3');
         $pendingData = Conversation::get('pending', 'pending');
         $user_id = $pendingData[$cvid];
         unset($pendingData[$cvid]);
@@ -49,34 +51,51 @@ class PassPendingJob extends BaseQueue
         $message_pic = $userData[$cvid]['pic'];
         $message_name = $userData[$cvid]['name'];
         $message_desc = $userData[$cvid]['desc'];
+        $original_link = $userData[$cvid]['link'];
         $message_link = "<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
         $shortAd = env('SHORT_AD');
         if ($hasPic) {
             unset($sender['text']);
+            unset($sender3['text']);
             $sender['photo'] = $message_pic;
             $sender['caption'] = "资源名称：{$message_name}\n\n";
             $sender['caption'] .= "资源简介：{$message_desc}\n\n";
             $sender['caption'] .= "链接：{$message_link}\n\n";
             $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
             $sender['caption'] .= "{$shortAd}\n\n";
+            $sender3['photo'] = $message_pic;
+            $sender3['caption'] = "资源名称：{$message_name}\n\n";
+            $sender3['caption'] .= "资源简介：{$message_desc}\n\n";
+            $sender3['caption'] .= "链接：{$original_link}\n\n";
+            $sender3['caption'] .= "🔍 关键词：{$message_tag}\n\n";
+            $sender3['caption'] .= "{$shortAd}\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendPhoto($sender);
             sleep(1);
             $serverResponse2 = Request::sendPhoto($sender2);
+            sleep(1);
+            $serverResponse3 = Request::sendPhoto($sender3);
         } else {
             $sender['text'] .= "资源名称：{$message_name}\n\n";
             $sender['text'] .= "资源简介：{$message_desc}\n\n";
             $sender['text'] .= "链接：{$message_link}\n\n";
             $sender['text'] .= "🔍 关键词：{$message_tag}\n\n";
             $sender['text'] .= "{$shortAd}\n\n";
+            $sender3['text'] .= "资源名称：{$message_name}\n\n";
+            $sender3['text'] .= "资源简介：{$message_desc}\n\n";
+            $sender3['text'] .= "链接：{$original_link}\n\n";
+            $sender3['text'] .= "🔍 关键词：{$message_tag}\n\n";
+            $sender3['text'] .= "{$shortAd}\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendMessage($sender);
             sleep(1);
             $serverResponse2 = Request::sendMessage($sender2);
+            sleep(1);
+            $serverResponse3 = Request::sendMessage($sender3);
         }
         if ($serverResponse->isOk()) {
             /** @var Message $sendResult */
@@ -98,6 +117,11 @@ class PassPendingJob extends BaseQueue
             Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
             $messageId2 = 0;
         }
+        if (!$serverResponse3->isOk()) {
+            $errorCode = $serverResponse3->getErrorCode();
+            $errorDescription = $serverResponse3->getDescription();
+            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+        }
         $sender = [
             'chat_id' => $user_id,
             'text' => '',
@@ -115,11 +139,11 @@ class PassPendingJob extends BaseQueue
         }
         if ($messageId2 != 0) {
             $chatIdForLink2 = substr(env('YPP_TARGET_ID_2'), 4);
-            $button2 = new InlineKeyboardButton([
+            $buttonb = new InlineKeyboardButton([
                 'text' => '查看备份频道消息',
                 'url' => "https://t.me/c/{$chatIdForLink2}/{$messageId2}",
             ]);
-            $sender['reply_markup']->addRow($button2);
+            $sender['reply_markup']->addRow($buttonb);
         }
         $button1 = new InlineKeyboardButton([
             'text' => '技术支持',
