@@ -268,7 +268,7 @@ class ContributeKeyword extends ContributeStep
             }
         } else if (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
-            if ($message->getCaption() && preg_match('/(?:资源)?名称：(.+?)\n\n(?:资源简介|描述)：((?:.|\n)+?)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+?)\n\n.+(?:关键词|标签)：(.*)/s', $message->getCaption(), $matches)) {
+            if ($message->getCaption() && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $message->getCaption(), $matches)) {
                 $data[$cvid]['name'] = $matches[1];
                 $data[$cvid]['desc'] = $matches[2];
                 $data[$cvid]['link'] = $matches[3];
