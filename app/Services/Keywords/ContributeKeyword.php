@@ -199,13 +199,21 @@ class ContributeKeyword extends ContributeStep
                     if (WL::get($user_id)) {
                         // 将 '白名单用户{name}的投稿已自动通过审核' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
-                        $sender['text'] = "白名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动通过审核\n\n投稿ID:<code>{$cvid}</code>";
+                        $sender['text'] = "白名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动通过审核\n\n投稿ID:<code>{$cvid}</code>\n\n";
+                        $sender['text'] .= "投稿人：{$user_link}\n";
+                        $sender['text'] .= "投稿人昵称：{$user_name}\n";
+                        $sender['text'] .= "投稿人账号：{$user_account}\n";
+                        $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
                         $this->dispatch(new PassPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else if (BL::get($user_id)) {
                         // 将 '黑名单用户{name}的投稿已自动拒绝' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
-                        $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>{$cvid}</code>";
+                        $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>{$cvid}</code>\n\n";
+                        $sender['text'] .= "投稿人：{$user_link}\n";
+                        $sender['text'] .= "投稿人昵称：{$user_name}\n";
+                        $sender['text'] .= "投稿人账号：{$user_account}\n";
+                        $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
                         $this->dispatch(new RejectPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else {
