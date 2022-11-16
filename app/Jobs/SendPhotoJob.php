@@ -35,6 +35,10 @@ class SendPhotoJob extends TelegramBaseQueue
     public function handle()
     {
         BotCommon::getTelegram();
+        if (isset($this->data['is_file']) && $this->data['is_file']) {
+            $this->data['photo'] = Request::encodeFile($this->data['photo']);
+            unset($this->data['is_file']);
+        }
         $serverResponse = Request::sendPhoto($this->data);
         if ($serverResponse->isOk()) {
             if ($this->delete !== 0) {

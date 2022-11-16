@@ -3,17 +3,16 @@
 namespace App\Services\Commands;
 
 use App\Common\Config;
+use App\Jobs\DeletePixivFileJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC6986\Hash;
-use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Longman\TelegramBot\Entities\Message;
-use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 use Throwable;
 
@@ -43,27 +42,23 @@ class PixivCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data));
             return;
         }
+        if (Cache::has('PixivCommand')) {
+            $data = [
+                'chat_id' => $chatId,
+                'reply_to_message_id' => $messageId,
+                'text' => "*Error:* This command can be only used once per minute.\n",
+            ];
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
+        Cache::put('PixivCommand', 1, Carbon::now()->addMinute());
         [$photo, $caption] = $this->getPhotoAndCaption();
         if ($photo && $caption) {
-            try {
-                Log::debug($photo);
-                $photo = Request::encodeFile($photo);
-                if (!$photo) {
-                    throw new Exception('Photo encode failed.');
-                }
-            } catch (Throwable) {
-                $data = [
-                    'chat_id' => $chatId,
-                    'reply_to_message_id' => $messageId,
-                    'text' => "*Error:* Get a random picture failed when encoding file.\n",
-                ];
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            }
             $data = [
                 'chat_id' => $chatId,
                 'reply_to_message_id' => $messageId,
                 'photo' => $photo,
+                'is_file' => true,
                 'caption' => $caption,
                 'protect_content' => true,
             ];
@@ -105,10 +100,13 @@ class PixivCommand extends BaseCommand
         $author = $item['author'];
         $author_url = $item['author_url'];
         $url = $item['url'];
-        $caption = "Artwork: [{$title}]({$artwork_url})\n";
+        $caption = "⚠️ #NSFW\n";
+        $caption .= "Artwork: [{$title}]({$artwork_url})\n";
         $caption .= "Author: [{$author}]({$author_url})\n";
-        $caption .= "Source: {$url}\n";
-        $caption .= "Date: {$date}\n";
+        $caption .= "Date: {$date}\n\n";
+        $caption .= "⚠️Content has its own copyright\n";
+        $caption .= "DMCA Request: @jyxjjj\n";
+        $caption .= "⚠️ #NSFW\n";
         try {
             $path = $this->download($url);
             if ($path) {
@@ -133,8 +131,8 @@ class PixivCommand extends BaseCommand
             $body = $response->body();
             $name = Hash::sha256($body);
             $path = "pixiv/{$name}.jpg";
-            $s = Storage::disk('public')->put($path, $body);
-            Log::debug($s);
+            Storage::disk('public')->put($path, $body);
+            $this->dispatch(new DeletePixivFileJob($path));
             return Storage::disk('public')->path($path);
         }
         return null;

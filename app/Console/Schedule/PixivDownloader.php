@@ -99,7 +99,7 @@ class PixivDownloader extends Command
             return;
         }
         $data = [
-            'date' => $date,
+            'date' => $date->format('Y-m-d'),
             'total' => $total,
             'data' => $data,
         ];
