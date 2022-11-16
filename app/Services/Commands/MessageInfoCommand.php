@@ -60,6 +60,7 @@ class MessageInfoCommand extends BaseCommand
         $chatId = $chat->getId();
         $chatTitle = $chat->getTitle();
         $chatType = $chat->getType();
+        $chatIsForum = $chat->getIsForum();
         $chatUsername = $chat->getUsername();
         $date = $replyTo->getDate();
         $forwardDate = $replyTo->getForwardDate();
@@ -79,6 +80,8 @@ class MessageInfoCommand extends BaseCommand
         $fromUsername = $from->getUsername();
         $fromIsPremium = $from->getIsPremium() ? 'true' : 'false';
         $fromLanguageCode = $from->getLanguageCode();
+        $isTopicMessage = $replyTo->getIsTopicMessage() ? 'true' : 'false';
+        $messageThreadId = $replyTo->getMessageThreadId();
         $messageId = $replyTo->getMessageId();
         $text = $replyTo->getText();
         $caption = $replyTo->getCaption();
@@ -122,6 +125,7 @@ class MessageInfoCommand extends BaseCommand
         $chatId && $return[] = "Chat ID: $chatId";
         $chatTitle && $return[] = "Chat Title: $chatTitle";
         $chatType && $return[] = "Chat Type: $chatType";
+        $chatIsForum && $return[] = "Chat Is Forum: $chatIsForum";
         $chatUsername && $return[] = "Chat Username: $chatUsername";
         $return[] = "Date: $date";
         $forwardDate && $return[] = "Forward Date: $forwardDate";
@@ -139,6 +143,8 @@ class MessageInfoCommand extends BaseCommand
         $fromUsername && $return[] = "From Username: $fromUsername";
         $return[] = "From Is Premium: $fromIsPremium";
         $fromLanguageCode && $return[] = "From Language Code: $fromLanguageCode";
+        $return[] = "Is Topic Message: $isTopicMessage";
+        $messageThreadId && $return[] = "Message Thread ID: $messageThreadId";
         $return[] = "Message ID: $messageId";
         $text && $return[] = "Text: $text";
         $caption && $return[] = "Caption: $caption";

@@ -63,10 +63,14 @@ class MessageHandleService extends BaseService
 //            'successful_payment':
 //            'passport_data':
 //            'proximity_alert_triggered':
+//            'forum_topic_created':
+//            'forum_topic_closed':
+//            'forum_topic_reopened':
 //            'voice_chat_scheduled':
 //            'voice_chat_started':
 //            'voice_chat_ended':
 //            'voice_chat_participants_invited':
+//            'web_app_data':
 //            'reply_markup':
     }
 

@@ -49,6 +49,7 @@ class RestrictMemberJob extends TelegramBaseQueue
                     'can_change_info' => false,
                     'can_invite_users' => false,
                     'can_pin_messages' => false,
+                    'can_manage_topics' => false,
                 ] : [
                     'can_send_messages' => false,
                     'can_send_media_messages' => false,
@@ -58,6 +59,7 @@ class RestrictMemberJob extends TelegramBaseQueue
                     'can_change_info' => false,
                     'can_invite_users' => false,
                     'can_pin_messages' => false,
+                    'can_manage_topics' => false,
                 ]
             ),
         ];
