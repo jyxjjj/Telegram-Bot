@@ -44,7 +44,7 @@ class StartCommand extends BaseCommand
             $data['text'] .= "\n\n👇👇👇您所获取的链接👇👇👇";
             $data['text'] .= "\n{$link}\n\n";
         }
-        $data['text'] .= "DMCA及其他版权、技术反馈发送 /help 。\n";
+        $data['text'] .= "DMCA及版权反馈、技术支持，请发送 /help 。\n";
         $data['text'] .= env('AD_TEXT');
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
