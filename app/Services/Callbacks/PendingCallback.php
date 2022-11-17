@@ -8,6 +8,7 @@ use App\Jobs\IgnorePendingJob;
 use App\Jobs\PassPendingJob;
 use App\Jobs\RejectPendingJob;
 use App\Services\Base\BaseCallback;
+use Exception;
 use Longman\TelegramBot\Entities\CallbackQuery;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -20,6 +21,7 @@ class PendingCallback extends BaseCallback
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws Exception
      */
     public function handle(CallbackQuery $message, Telegram $telegram, int $updateId): void
     {
