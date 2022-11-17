@@ -50,7 +50,7 @@ class AboutCommand extends BaseCommand
         $data['reply_markup']->addRow($personal, $contact);
         $github = new InlineKeyboardButton([
             'text' => 'GitHub',
-            'url' => 'https://github.com/jyxjjj/Telegram-Bot',
+            'url' => 'https://github.com/jyxjjj/Telegram-Bot/tree/ZaiHuaTouGao',
         ]);
         $website = new InlineKeyboardButton([
             'text' => '官方网站',
@@ -66,6 +66,11 @@ class AboutCommand extends BaseCommand
             'url' => 'https://t.me/ZaihuaChat',
         ]);
         $data['reply_markup']->addRow($channel, $group);
+        $dmca = new InlineKeyboardButton([
+            'text' => 'DMCA Request',
+            'url' => 'https://t.me/zaihua_bot',
+        ]);
+        $data['reply_markup']->addRow($dmca);
         $this->dispatch(new SendMessageJob($data));
     }
 }
