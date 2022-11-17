@@ -27,7 +27,7 @@ class PendingCallback extends BaseCallback
         $data = [
             'callback_query_id' => $callbackQueryId,
             'text' => '',
-            'show_alert' => true,
+            'show_alert' => false,
         ];
         $isSelfSent = $telegram->getBotId() === $message->getMessage()->getFrom()->getId();
         if (!$isSelfSent) {
