@@ -26,19 +26,20 @@ class HelpCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
+        $userId = $message->getFrom()->getId();
         $param = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
-            'text' => $this->getHelp($param),
+            'text' => $this->getHelp2($userId),
         ];
         $data['text'] && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     /**
-     * @param $commandName
+     * @param string|null $commandName
      * @return string
      */
-    private function getHelp($commandName): string
+    private function getHelp(?string $commandName): string
     {
         $path = app_path('Services/Commands');
         $files = new RegexIterator(
@@ -87,5 +88,20 @@ class HelpCommand extends BaseCommand
             }
             return "Command `$commandName` not found";
         }
+    }
+
+    /**
+     * @param int $param
+     * @return string
+     */
+    private function getHelp2(int $param): string
+    {
+        return <<<EOF
+你的用户ID： {$param}
+使用问题及建议联系： @zaihua_bot
+技术支持请联系： @jyxjjj
+我们提供了DMCA及其他版权问题反馈通道
+如您有任何版权相关问题，请联系： @zaihua_bot
+EOF;
     }
 }
