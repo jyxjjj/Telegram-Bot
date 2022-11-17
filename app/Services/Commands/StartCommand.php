@@ -41,15 +41,10 @@ class StartCommand extends BaseCommand
             $cvid = substr($payload, 3);
             $linkData = Conversation::get($cvid, 'link');
             $link = $linkData['link'] ?? '';
-            $data['text'] .= "\n\n您所获取的资源链接👇";
+            $data['text'] .= "\n\n👇👇👇您所获取的链接👇👇👇";
             $data['text'] .= "\n{$link}\n\n";
         }
-        $data['text'] .= "命令列表请输入 /help 。\n";
-        $data['text'] .= "<b>你的用户ID：</b> <a href='tg://user?id={$userId}'>{$userId}</a>\n";
-        $data['text'] .= "使用问题及建议联系： @zaihua_bot \n";
-        $data['text'] .= "技术支持请联系： @jyxjjj \n";
-        $data['text'] .= "我们提供了DMCA及其他版权问题反馈通道\n";
-        $data['text'] .= "如您有任何版权相关问题，请联系： @zaihua_bot\n";
+        $data['text'] .= "DMCA及其他版权、技术反馈发送 /help 。\n";
         $data['text'] .= env('AD_TEXT');
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
