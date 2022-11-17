@@ -4,6 +4,8 @@ namespace App\Services\Commands;
 
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use RecursiveDirectoryIterator;
@@ -30,8 +32,29 @@ class HelpCommand extends BaseCommand
         $param = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
-            'text' => $this->getHelp2($userId),
+//            'text' => $this->getHelp($param),
+            'text' => '',
         ];
+        $data['text'] .= "你的用户ID： {$userId}";
+        $data['reply_markup'] = new InlineKeyboard([]);
+        $button1 = new InlineKeyboardButton([
+            'text' => 'DMCA Request',
+            'url' => 'https://t.me/zaihua_bot',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => '版权反馈',
+            'url' => 'https://t.me/zaihua_bot',
+        ]);
+        $button3 = new InlineKeyboardButton([
+            'text' => '意见建议',
+            'url' => 'https://t.me/zaihua_bot',
+        ]);
+        $button4 = new InlineKeyboardButton([
+            'text' => '技术支持',
+            'url' => 'https://t.me/jyxjjj',
+        ]);
+        $data['reply_markup']->addRow($button1, $button2);
+        $data['reply_markup']->addRow($button3, $button4);
         $data['text'] && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
@@ -88,20 +111,5 @@ class HelpCommand extends BaseCommand
             }
             return "Command `$commandName` not found";
         }
-    }
-
-    /**
-     * @param int $param
-     * @return string
-     */
-    private function getHelp2(int $param): string
-    {
-        return <<<EOF
-你的用户ID： {$param}
-使用问题及建议联系： @zaihua_bot
-技术支持请联系： @jyxjjj
-我们提供了DMCA及其他版权问题反馈通道
-如您有任何版权相关问题，请联系： @zaihua_bot
-EOF;
     }
 }
