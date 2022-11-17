@@ -23,10 +23,10 @@ class PixivDownloader extends Command
     public function handle(): int
     {
         try {
-            [$data, $date, $total] = $this->getRanks();
+            [$data, $date] = $this->getRanks();
             self::info("Last Update: {$date}");
             $data = $this->buildData($data);
-            $this->saveData($date, $total, $data);
+            $this->saveData($date, $data);
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error("Error({$e->getCode()}):{$e->getMessage()}@{$e->getFile()}:{$e->getLine()}");
@@ -42,10 +42,9 @@ class PixivDownloader extends Command
         $data = [];
         $json['next'] = 1;
         $date = Carbon::createFromFormat('Ymd', '19700101');
-        $total = 500;
         while ($json['next']) {
             self::info("Getting Page {$json['next']}");
-            $url = "https://www.pixiv.net/ranking.php?mode=daily&p={$json['next']}&format=json";
+            $url = "https://www.pixiv.net/ranking.php?mode=daily&content=illust&p={$json['next']}&format=json";
             $response = Http::withHeaders($headers)
                 ->connectTimeout(10)
                 ->timeout(10)
@@ -59,10 +58,9 @@ class PixivDownloader extends Command
             }
             $data = array_merge($data, $json['contents']);
             $date = Carbon::createFromFormat('Ymd', $json['date']);
-            $total = $json['rank_total'];
             sleep(1);
         }
-        return [$data, $date, $total];
+        return [$data, $date];
     }
 
     private function buildData(array $data): array
@@ -90,21 +88,16 @@ class PixivDownloader extends Command
         return $result;
     }
 
-    private function saveData(Carbon $date, int $total, array $data)
+    private function saveData(Carbon $date, array $data)
     {
         $storage = Storage::disk('public');
         $path = "pixiv/{$date->format('Y-m-d')}.json";
-        if (count($data) != $total) {
-            self::error("Data Error");
-            return;
-        }
         $data = [
-            'date' => $date->format('Y-m-d'),
-            'total' => $total,
+            'date' => $date->format('Y-m-d H:i:s'),
             'data' => $data,
         ];
         $data = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $storage->put($path, $data);
-        self::info("Saved to {$storage->get($path)}");
+        self::info("Saved to {$storage->path($path)}");
     }
 }
