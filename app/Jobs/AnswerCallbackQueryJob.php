@@ -31,8 +31,12 @@ class AnswerCallbackQueryJob extends TelegramBaseQueue
         if (!$serverResponse->isOk()) {
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
-            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
-            $this->release(1);
+            if (
+                $errorDescription != 'Bad Request: query is too old and response timeout expired or query ID is invalid'
+            ) {
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+                $this->release(1);
+            }
         }
     }
 }
