@@ -54,8 +54,12 @@ class SendPhotoJob extends TelegramBaseQueue
         } else {
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
-            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
-            $this->release(1);
+            if (
+                $errorDescription != 'Forbidden: bot was blocked by the user'
+            ) {
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+                $this->release(1);
+            }
         }
     }
 }
