@@ -45,6 +45,9 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Software::MariaDBDocker->name,
                     Software::Redis->name,
                     Software::RedisDocker->name,
+                    Software::NodeJS->name,
+                    Software::Kernel->name,
+                    Software::OpenSSL->name,
                 ])) {
                     continue;
                 }

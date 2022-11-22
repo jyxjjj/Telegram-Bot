@@ -10,7 +10,7 @@ class BaseModel extends Model
     use SoftDeletes;
 
     public $incrementing = true;
-    public $timestamps = true;
+    public $timestamps = false;
     protected $connection = 'mysql';
     protected $primaryKey = 'id';
     protected $keyType = 'int';
