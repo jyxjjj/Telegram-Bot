@@ -29,23 +29,22 @@ class StartCommand extends BaseCommand
             return;
         }
         $chatId = $message->getChat()->getId();
-        $userId = $message->getFrom()->getId();
         $payload = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
             'text' => '',
         ];
 //        $payload && $data['text'] .= "<b>本次启动参数:</b> <code>$payload</code>\n";
-        $data['text'] .= "你好，欢迎使用在花投稿机器人2.0。\n";
+        $data['text'] .= env('LONG_START_AD');
         if (str_starts_with($payload, 'get')) {
             $cvid = substr($payload, 3);
             $linkData = Conversation::get($cvid, 'link');
             $link = $linkData['link'] ?? '';
-            $data['text'] .= "\n\n👇👇👇您所获取的链接👇👇👇";
-            $data['text'] .= "\n{$link}\n\n";
+            $data['text'] .= "\n👇👇👇您所获取的链接👇👇👇";
+            $data['text'] .= "\n{$link}\n";
         }
-        $data['text'] .= "DMCA及版权反馈、技术支持，请发送 /help 。\n";
-        $data['text'] .= env('AD_TEXT');
+        $data['text'] .= "\nDMCA及版权反馈、技术支持\n";
+        $data['text'] .= "请向本机器人发送 /help 命令\n";
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
         $button1 = new KeyboardButton('阿里云盘分步投稿');
