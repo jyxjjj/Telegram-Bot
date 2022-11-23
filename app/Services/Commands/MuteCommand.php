@@ -101,9 +101,9 @@ class MuteCommand extends BaseCommand
         }
 
         $data = [
-            'chatId' => $chatId,
-            'messageId' => $messageId,
-            'restrictUserId' => $restrictUserId,
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+            'user_id' => $restrictUserId,
         ];
         $this->dispatch(new RestrictMemberJob($data, $time));
     }

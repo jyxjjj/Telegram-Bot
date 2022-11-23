@@ -91,6 +91,9 @@ class MessageInfoCommand extends BaseCommand
         });
         $photo && $photoFileId = $photo[0]->getFileId();
         $photo && $photoFileSize = $photo[0]->getFileSize();
+        $dice = $replyTo->getDice();
+        $dice && $diceEmoji = $dice->getEmoji();
+        $dice && $diceValue = $dice->getValue();
         $audio = $replyTo->getAudio();
         $audio && $audioFileId = $audio->getFileId();
         $audio && $audioDuration = $audio->getDuration();
@@ -150,6 +153,8 @@ class MessageInfoCommand extends BaseCommand
         $caption && $return[] = "Caption: $caption";
         $photo && isset($photoFileId) && $return[] = "Photo File ID: $photoFileId";
         $photo && isset($photoFileSize) && $return[] = "Photo File Size: $photoFileSize";
+        $dice && isset($diceEmoji) && $return[] = "Dice Emoji: $diceEmoji";
+        $dice && isset($diceValue) && $return[] = "Dice Value: $diceValue";
         $audio && isset($audioFileId) && $return[] = "Audio File ID: $audioFileId";
         $audio && isset($audioDuration) && $return[] = "Audio Duration: $audioDuration";
         $audio && isset($audioPerformer) && $return[] = "Audio Performer: $audioPerformer";

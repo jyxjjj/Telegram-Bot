@@ -5,6 +5,7 @@ namespace App\Services\Keywords;
 use App\Exceptions\Handler;
 use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
+use App\Jobs\RestrictMemberJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
@@ -132,10 +133,27 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function reply(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        if (!isset($data['type'])) {
+            return;
+        }
         $sender = [
             'chat_id' => $message->getChat()->getId(),
             'reply_to_message_id' => $message->getMessageId(),
         ];
+        switch ($data['type']) {
+            case 'text':
+                if (!isset($data['text'])) {
+                    return;
+                }
+                $sender['text'] = $data['text'];
+                $this->dispatch(new SendMessageJob($sender, null, 0));
+                break;
+            case 'sticker':
+                if (!isset($data['sticker'])) {
+                    return;
+                }
+                break;
+        }
     }
 
     private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
@@ -175,7 +193,18 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $deleter = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+        ];
+        $this->dispatch(new DeleteMessageJob($deleter, 0));
 
+        $restrictor = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+            'user_id' => $message->getFrom()->getId(),
+        ];
+        $this->dispatch(new RestrictMemberJob($restrictor, $data['time'] ?? 86400));
     }
 
     private function forward(array $data, Message $message, Telegram $telegram, int $updateId)

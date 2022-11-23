@@ -36,8 +36,8 @@ class RestrictMemberJob extends TelegramBaseQueue
         BotCommon::getTelegram();
         $origin = $this->data;
         $restricter = [
-            'chat_id' => $origin['chatId'],
-            'user_id' => $origin['restrictUserId'],
+            'chat_id' => $origin['chat_id'],
+            'user_id' => $origin['user_id'],
             'until_date' => Carbon::now()->addSeconds($this->time)->getTimestamp(),
             'permissions' => new ChatPermissions(
                 $this->revoke ? [
@@ -64,15 +64,15 @@ class RestrictMemberJob extends TelegramBaseQueue
             ),
         ];
         $sender = [
-            'chat_id' => $origin['chatId'],
-            'reply_to_message_id' => $origin['messageId'],
+            'chat_id' => $origin['chat_id'],
+            'reply_to_message_id' => $origin['reply_to_message_id'],
             'text' => '',
         ];
         $serverResponse = Request::restrictChatMember($restricter);
         if ($serverResponse->isOk()) {
             $sender['text'] .= "*User restricted for {$this->time} seconds.*\n";
             $sender['text'] .= "*Until:* {$restricter['until_date']}\n";
-            $sender['text'] .= "*User ID:* [{$origin['restrictUserId']}](tg://user?id={$origin['restrictUserId']})\n";
+            $sender['text'] .= "*User ID:* [{$origin['user_id']}](tg://user?id={$origin['user_id']})\n";
         } else {
             $sender['text'] .= "*Error restricting user.*\n";
             $sender['text'] .= "*Error Code:* `{$serverResponse->getErrorCode()}`\n";
