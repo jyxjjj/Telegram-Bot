@@ -3,12 +3,14 @@
 namespace App\Services\Keywords;
 
 use App\Exceptions\Handler;
+use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
 use App\Services\Base\BaseKeyword;
+use Illuminate\Database\Eloquent\Collection;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -26,7 +28,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        /** @var TChatKeywords[] $keywords */
+        /** @var Collection<TChatKeywords> $keywords */
         $keywords = TChatKeywords::getKeywords($message->getChat()->getId());
         foreach ($keywords as $keyword) {
             try {
@@ -65,21 +67,33 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_FROMNAME:
-                $fromName = ($message->getForwardFrom()->getFirstName() ?? '') . ($message->getForwardFrom()->getLastName() ?? '');
-                if (str_contains($fromName, $keyword)) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                if ($message->getForwardFrom()) {
+                    $fromName = ($message->getForwardFrom()->getFirstName() ?? '') . ($message->getForwardFrom()->getLastName() ?? '');
+                    if (str_contains($fromName, $keyword)) {
+                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    }
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_TITLE:
-                $title = $message->getForwardFromChat()->getTitle();
-                if (str_contains($title, $keyword)) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                if ($message->getForwardFromChat()) {
+                    $title = $message->getForwardFromChat()->getTitle();
+                    if (str_contains($title, $keyword)) {
+                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    }
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_TEXT:
                 $text = $message->getText() ?? $message->getCaption() ?? '';
                 if (str_contains($text, $keyword)) {
                     $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                }
+                break;
+            case TChatKeywordsTargetEnum::TARGET_DICE:
+                if ($message->getDice()) {
+                    $text = $message->getDice()->getEmoji() ?? '';
+                    if (strtoupper(bin2hex($text)) == strtoupper($keyword)) {
+                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    }
                 }
                 break;
         }
@@ -145,7 +159,13 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
     {
-
+        $banner = [
+            'chatId' => $message->getChat()->getId(),
+            'messageId' => $message->getMessageId(),
+            'replyToMessageId' => $message->getMessageId(),
+            'banUserId' => $message->getFrom()->getId(),
+        ];
+        $this->dispatch(new BanMemberJob($banner));
     }
 
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
