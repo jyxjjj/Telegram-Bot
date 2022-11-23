@@ -47,6 +47,7 @@ class MessageHandleService extends BaseService
 //            'location':
 //            'venue':
 //            'poll':
+//            'dice':
 //            'new_chat_members':
 //            'left_chat_member':
 //            'new_chat_title':
