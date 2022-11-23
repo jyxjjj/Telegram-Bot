@@ -12,6 +12,8 @@ use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -146,6 +148,41 @@ class KeywordDetectKeyword extends BaseKeyword
                     return;
                 }
                 $sender['text'] = $data['text'];
+                if (isset($data['button'])) {
+                    $sender['reply_markup'] = new InlineKeyboard([]);
+//                    $data['button'] = [
+//                        [
+//                            [
+//                                'text' => 'text',
+//                                'url' => 'url',
+//                            ],
+//                            [
+//                                'text' => 'text',
+//                                'url' => 'url',
+//                            ],
+//                        ],
+//                        [
+//                            [
+//                                'text' => 'text',
+//                                'url' => 'url',
+//                            ],
+//                            [
+//                                'text' => 'text',
+//                                'url' => 'url',
+//                            ],
+//                        ],
+//                    ];
+                    foreach ($data['button'] as $row) {
+                        $buttons = [];
+                        foreach ($row as $button) {
+                            $buttons[] = new InlineKeyboardButton([
+                                'text' => $button['text'],
+                                'url' => $button['url'],
+                            ]);
+                        }
+                        $sender['reply_markup']->addRow(...$buttons);
+                    }
+                }
                 $this->dispatch(new SendMessageJob($sender, null, 0));
                 break;
             case 'sticker':
