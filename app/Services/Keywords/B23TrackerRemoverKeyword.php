@@ -39,7 +39,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
 
     private function handle(string $text, array &$data)
     {
-        $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.|live\.|space\.)?bilibili\.com)\/(video\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
+        $pattern = '/(http(s)?:\/\/)?(b23\.tv|(www\.|live\.|space\.)?bilibili\.com)\/(video\/)?(read\/)?(mobile\/)?[a-zA-Z\d]+(\?p=(\d){1,3})?/';
         $pattern_av = '/https:\/\/www\.bilibili\.com\/(video\/)?(av|AV)\d+/';
         $pattern_bv = '/https:\/\/www\.bilibili\.com\/(video\/)?(bv|BV)[a-zA-Z\d]+/';
         $pattern_cv = '/https:\/\/www\.bilibili\.com\/(read\/)?(mobile\/)?(cv|CV)?\d+/';
@@ -48,7 +48,6 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         if (preg_match_all($pattern, $text, $matches)) {
             $data['text'] .= "Bilibili Tracker Removed\n";
             $data['text'] .= "*Warning:* Beta Function, if error occured, contact @jyxjjj .\n";
-            $data['reply_markup'] = new InlineKeyboard([]);
             if (count($matches[0]) > 3) {
                 $count = 3;
             } else {
@@ -73,6 +72,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
                     preg_match($pattern_space, $link, $matchedLocation) ||
                     preg_match($pattern_live, $link, $matchedLocation)
                 ) {
+                    !isset($data['reply_markup']) && $data['reply_markup'] = new InlineKeyboard([]);
                     $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
                     $button = new InlineKeyboardButton([
                         'text' => $matchedLocation[0],
