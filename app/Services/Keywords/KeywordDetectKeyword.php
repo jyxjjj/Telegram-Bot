@@ -159,11 +159,16 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $deleter = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+        ];
+        $this->dispatch(new DeleteMessageJob($deleter, 0));
+
         $banner = [
-            'chatId' => $message->getChat()->getId(),
-            'messageId' => $message->getMessageId(),
-            'replyToMessageId' => $message->getMessageId(),
-            'banUserId' => $message->getFrom()->getId(),
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+            'user_id' => $message->getFrom()->getId(),
         ];
         $this->dispatch(new BanMemberJob($banner));
     }

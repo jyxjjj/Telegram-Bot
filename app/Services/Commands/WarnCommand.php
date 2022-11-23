@@ -2,7 +2,7 @@
 
 namespace App\Services\Commands;
 
-use App\Jobs\BanMemberByWarnJob;
+use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatAdmins;
@@ -103,11 +103,11 @@ class WarnCommand extends BaseCommand
             $data['text'] .= "*Warning:* Banning user [$userId](tg://user?id=$userId).\n";
             $this->dispatch(new SendMessageJob($data));
             $data = [
-                'chatId' => $chatId,
-                'messageId' => $messageId,
-                'banUserId' => $userId,
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+                'user_id' => $userId,
             ];
-            $this->dispatch(new BanMemberByWarnJob($data));
+            $this->dispatch(new BanMemberJob($data));
         } else {
             TChatWarns::addUserWarn($chatId, $userId);
             $warns++;

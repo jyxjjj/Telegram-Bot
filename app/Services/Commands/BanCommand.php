@@ -3,6 +3,7 @@
 namespace App\Services\Commands;
 
 use App\Jobs\BanMemberJob;
+use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatAdmins;
 use App\Services\Base\BaseCommand;
@@ -63,13 +64,16 @@ class BanCommand extends BaseCommand
             return;
         }
 
-        $replyToMessageId = $replyTo->getMessageId();
+        $deleter = [
+            'chat_id' => $chatId,
+            'message_id' => $replyTo->getMessageId(),
+        ];
+        $this->dispatch(new DeleteMessageJob($deleter, 0));
 
         $data = [
-            'chatId' => $chatId,
-            'messageId' => $messageId,
-            'replyToMessageId' => $replyToMessageId,
-            'banUserId' => $banUserId,
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+            'user_id' => $banUserId,
         ];
         $this->dispatch(new BanMemberJob($data));
     }

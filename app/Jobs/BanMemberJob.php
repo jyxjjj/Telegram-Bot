@@ -29,25 +29,20 @@ class BanMemberJob extends TelegramBaseQueue
         BotCommon::getTelegram();
         $origin = $this->data;
         $banner = [
-            'chat_id' => $origin['chatId'],
-            'user_id' => $origin['banUserId'],
+            'chat_id' => $origin['chat_id'],
+            'user_id' => $origin['user_id'],
             'until_date' => Carbon::now()->addSecond()->getTimestamp(),
             'revoke_messages' => true,
         ];
-        $deleter = [
-            'chat_id' => $origin['chatId'],
-            'message_id' => $origin['replyToMessageId'],
-        ];
         $sender = [
-            'chat_id' => $origin['chatId'],
-            'reply_to_message_id' => $origin['messageId'],
+            'chat_id' => $origin['chat_id'],
+            'reply_to_message_id' => $origin['message_id'],
             'text' => '',
         ];
         $serverResponse = Request::banChatMember($banner);
         if ($serverResponse->isOk()) {
             $sender['text'] .= "*User banned from chat.*\n";
-            $sender['text'] .= "*User ID:* [{$origin['banUserId']}](tg://user?id={$origin['banUserId']})\n";
-            DeleteMessageJob::dispatch($deleter, 0);
+            $sender['text'] .= "*User ID:* [{$origin['user_id']}](tg://user?id={$origin['user_id']})\n";
         } else {
             $sender['text'] .= "*Error banning user.*\n";
             $sender['text'] .= "*Error Code:* `{$serverResponse->getErrorCode()}`\n";
