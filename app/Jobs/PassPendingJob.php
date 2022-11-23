@@ -74,9 +74,7 @@ class PassPendingJob extends BaseQueue
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendPhoto($sender);
-            sleep(1);
             $serverResponse2 = Request::sendPhoto($sender2);
-            sleep(1);
             $serverResponse3 = Request::sendPhoto($sender3);
         } else {
             $sender['text'] .= "资源名称：{$message_name}\n\n";
@@ -92,9 +90,7 @@ class PassPendingJob extends BaseQueue
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendMessage($sender);
-            sleep(1);
             $serverResponse2 = Request::sendMessage($sender2);
-            sleep(1);
             $serverResponse3 = Request::sendMessage($sender3);
         }
         if ($serverResponse->isOk()) {
@@ -154,7 +150,6 @@ class PassPendingJob extends BaseQueue
             'url' => "https://t.me/zaihua_bot",
         ]);
         $sender['reply_markup'] = $sender['reply_markup']->addRow($button1, $button2);
-        sleep(1);
         SendMessageJob::dispatch($sender, null, 0);
     }
 }
