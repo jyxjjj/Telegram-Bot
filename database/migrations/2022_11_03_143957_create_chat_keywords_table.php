@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->json('data')->default(DB::raw('JSON_OBJECT()'))->comment('操作数据');
             $table->boolean('enable')->default(1)->comment('启用');
             $table->timestamp('created_at')->useCurrent()->comment('创建时间');
-            $table->timestamp('updated_at')->useCurrent()->comment('更新时间');
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate()->comment('更新时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
             $table->comment('聊天关键字表');
             $table->index(['chat_id',], 'chat_id');

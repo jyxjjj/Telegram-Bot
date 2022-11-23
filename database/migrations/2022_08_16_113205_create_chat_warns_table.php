@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->BigInteger('user_id')->default(0)->comment('用户ID');
             $table->unsignedInteger('times')->default(0)->comment('警告次数');
             $table->timestamp('created_at')->useCurrent()->comment('创建时间');
-            $table->timestamp('updated_at')->useCurrent()->comment('更新时间');
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate()->comment('更新时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
             $table->comment('聊天用户被警告表');
             $table->index(['chat_id', 'user_id'], 'chat_user');
