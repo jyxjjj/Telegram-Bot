@@ -6,10 +6,10 @@ use App\Common\Config;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseCommand;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
+use Throwable;
 
 class SpeedTestCommand extends BaseCommand
 {
@@ -59,7 +59,7 @@ class SpeedTestCommand extends BaseCommand
                     Http::withHeaders(Config::CURL_HEADERS)
                         ->timeout(1)
                         ->get($url);
-                } catch (Exception) {
+                } catch (Throwable) {
 
                 }
             }
@@ -107,7 +107,7 @@ class SpeedTestCommand extends BaseCommand
             try {
                 Http::withHeaders(Config::CURL_HEADERS)
                     ->get($url);
-            } catch (Exception) {
+            } catch (Throwable) {
                 return -1;
             }
         }
@@ -128,7 +128,7 @@ class SpeedTestCommand extends BaseCommand
                 Http::withHeaders(Config::CURL_HEADERS)
                     ->withBody($data, 'image/jpeg')
                     ->post($url);
-            } catch (Exception) {
+            } catch (Throwable) {
                 return -1;
             }
         }
