@@ -15,8 +15,8 @@ use Illuminate\Session\Middleware\StartSession;
 class Kernel extends HttpKernel
 {
     protected $middleware = [
-        EncryptCookies::class,
-        StartSession::class,
+//        EncryptCookies::class,
+//        StartSession::class,
         TrustProxies::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
@@ -24,8 +24,8 @@ class Kernel extends HttpKernel
         ConvertEmptyStringsToNull::class,
     ];
     protected $middlewarePriority = [
-        EncryptCookies::class,
-        StartSession::class,
+//        EncryptCookies::class,
+//        StartSession::class,
         TrustProxies::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
