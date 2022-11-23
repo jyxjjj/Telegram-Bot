@@ -55,7 +55,7 @@ class PassPendingJob extends BaseQueue
         $message_link = "<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
-        $shortAd = env('SHORT_AD');
+        $adText = env('AD_TEXT');
         if ($hasPic) {
             unset($sender['text']);
             unset($sender3['text']);
@@ -64,13 +64,13 @@ class PassPendingJob extends BaseQueue
             $sender['caption'] .= "资源简介：{$message_desc}\n\n";
             $sender['caption'] .= "链接：{$message_link}\n\n";
             $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender['caption'] .= "{$shortAd}\n\n";
+            $sender['caption'] .= "{$adText}\n\n";
             $sender3['photo'] = $message_pic;
             $sender3['caption'] = "资源名称：{$message_name}\n\n";
             $sender3['caption'] .= "资源简介：{$message_desc}\n\n";
             $sender3['caption'] .= "链接：{$original_link}\n\n";
             $sender3['caption'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender3['caption'] .= "{$shortAd}\n\n";
+            $sender3['caption'] .= "{$adText}\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendPhoto($sender);
@@ -83,12 +83,12 @@ class PassPendingJob extends BaseQueue
             $sender['text'] .= "资源简介：{$message_desc}\n\n";
             $sender['text'] .= "链接：{$message_link}\n\n";
             $sender['text'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender['text'] .= "{$shortAd}\n\n";
+            $sender['text'] .= "{$adText}\n\n";
             $sender3['text'] .= "资源名称：{$message_name}\n\n";
             $sender3['text'] .= "资源简介：{$message_desc}\n\n";
             $sender3['text'] .= "链接：{$original_link}\n\n";
             $sender3['text'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender3['text'] .= "{$shortAd}\n\n";
+            $sender3['text'] .= "{$adText}\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendMessage($sender);
