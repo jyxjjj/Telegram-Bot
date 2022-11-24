@@ -119,6 +119,8 @@ class ContributeKeyword extends ContributeStep
                 case 'link':
                     $link = $message->getText();
                     if (
+                        !$link ||
+                        strlen($link) < 8 ||
                         !str_starts_with($link, 'https://www.aliyundrive.com/s/') &&
                         !str_starts_with($link, 'https://pan.baidu.com/s/') &&
                         !str_starts_with($link, 'https://1drv.ms/') &&
@@ -201,6 +203,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         $sender['text'] = "白名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动通过审核\n\n投稿ID:<code>{$cvid}</code>\n\n";
                         $sender['text'] .= "投稿人：{$user_link}\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                         $sender['text'] .= "投稿人昵称：{$user_name}\n";
                         $sender['text'] .= "投稿人账号：{$user_account}\n";
                         $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
@@ -211,6 +214,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>{$cvid}</code>\n\n";
                         $sender['text'] .= "投稿人：{$user_link}\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                         $sender['text'] .= "投稿人昵称：{$user_name}\n";
                         $sender['text'] .= "投稿人账号：{$user_account}\n";
                         $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
