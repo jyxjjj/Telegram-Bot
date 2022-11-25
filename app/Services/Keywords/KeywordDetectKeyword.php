@@ -12,6 +12,8 @@ use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -219,12 +221,16 @@ class KeywordDetectKeyword extends BaseKeyword
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
-
+        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
         $banner = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
             'user_id' => $message->getFrom()->getId(),
         ];
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $this->dispatch(new BanMemberJob($banner));
     }
 
