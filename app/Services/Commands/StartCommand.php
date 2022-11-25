@@ -34,7 +34,7 @@ class StartCommand extends BaseCommand
             'chat_id' => $chatId,
             'text' => '',
         ];
-//        $payload && $data['text'] .= "<b>本次启动参数:</b> <code>$payload</code>\n";
+//        $payload && $data['text'] .= "<b>本次启动参数</b>: <code>$payload</code>\n";
         $data['text'] .= env('LONG_START_AD');
         if (str_starts_with($payload, 'get')) {
             $cvid = substr($payload, 3);
