@@ -27,7 +27,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     {
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
-        $text = $message->getText();
+        $text = $message->getText() ?? $message->getCaption();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
