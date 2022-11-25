@@ -62,11 +62,11 @@ class BilibiliSubscribe extends Command
                 if (isset($video)) {
                     self::info("New video of $mid is {$video['bvid']}");
                     $message['photo'] = $video['pic'];
-                    $message['caption'] .= "Name: *{$video['title']}*\n";
-                    $message['caption'] .= "Author: `{$video['author']}`\n";
-                    $message['caption'] .= "Created: `{$video['created']}`\n";
-                    $message['caption'] .= "AV No.: [{$video['aid']}](https://www.bilibili.com/av{$video['aid']})\n";
-                    $message['caption'] .= "BV ID: [{$video['bvid']}](https://www.bilibili.com/{$video['bvid']})\n";
+                    $message['caption'] .= "Name: <b>{$video['title']}</b>\n";
+                    $message['caption'] .= "Author: <code>{$video['author']}</code>\n";
+                    $message['caption'] .= "Created: <code>{$video['created']}</code>\n";
+                    $message['caption'] .= "AV No.: <a href='https://www.bilibili.com/av{$video['aid']}'>{$video['aid']}</a>\n";
+                    $message['caption'] .= "BV ID: <a href='https://www.bilibili.com/{$video['bvid']}'>{$video['bvid']}</a>\n";
                     $message['caption'] .= "Comments: {$video['comment']}\n";
                     $message['caption'] .= "Viewed Times: {$video['video_review']}\n";
                     $message['reply_markup'] = new InlineKeyboard([]);
@@ -97,17 +97,17 @@ class BilibiliSubscribe extends Command
      */
     private function getVideoList(int $mid): array
     {
-        $data = Cache::get("Schedule::BilibiliSubscribe::mid_info::{$mid}", false);
+        $data = Cache::get("Schedule::BilibiliSubscribe::mid_info::$mid", false);
         if ($data) {
             return $data;
         }
-        $url = "https://api.bilibili.com/x/space/arc/search?mid={$mid}&ps=5&order=pubdate";
+        $url = "https://api.bilibili.com/x/space/arc/search?mid=$mid&ps=5&order=pubdate";
         $json = $this->getJson($url);
         $vlist = $json['data']['list']['vlist'];
         foreach ($vlist as &$video) {
             $video['created'] = Carbon::createFromTimestamp($video['created'])->format('Y-m-d H:i:s');
         }
-        Cache::put("Schedule::BilibiliSubscribe::mid_info::{$mid}", $vlist, Carbon::now()->addMinutes(15));
+        Cache::put("Schedule::BilibiliSubscribe::mid_info::$mid", $vlist, Carbon::now()->addMinutes(15));
         return $vlist;
     }
 
@@ -133,7 +133,7 @@ class BilibiliSubscribe extends Command
      */
     private function getLastSend(int $chat_id, int $mid): string|false
     {
-        return Cache::get("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", false);
+        return Cache::get("Schedule::BilibiliSubscribe::last_send::$chat_id::$mid", false);
     }
 
     /**
@@ -144,6 +144,6 @@ class BilibiliSubscribe extends Command
      */
     private function setLastSend(int $chat_id, int $mid, string $bvid): bool
     {
-        return Cache::put("Schedule::BilibiliSubscribe::last_send::{$chat_id}::{$mid}", $bvid, Carbon::now()->addMonths(3));
+        return Cache::put("Schedule::BilibiliSubscribe::last_send::$chat_id::$mid", $bvid, Carbon::now()->addMonths(3));
     }
 }

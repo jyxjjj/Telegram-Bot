@@ -22,7 +22,7 @@ class TBilibiliSubscribes extends BaseModel
      */
     public static function addSubscribe(int $chat_id, int $mid): Builder|Model|false
     {
-        $data = Cache::get("DB::TBilibiliSubscribes::bilibili_subscribes::{$chat_id}");
+        $data = Cache::get("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
         if (is_array($data)) {
             foreach ($data as $item) {
                 if ($item['mid'] === $mid) {
@@ -38,7 +38,7 @@ class TBilibiliSubscribes extends BaseModel
             ->first();
         if ($data == null) {
             Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::{$chat_id}");
+            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
             return self::query()
                 ->create([
                     'chat_id' => $chat_id,
@@ -55,7 +55,7 @@ class TBilibiliSubscribes extends BaseModel
     public static function removeAllSubscribe(int $chat_id): int
     {
         Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::{$chat_id}");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
         return self::query()
             ->where('chat_id', $chat_id)
             ->delete();
@@ -69,7 +69,7 @@ class TBilibiliSubscribes extends BaseModel
     public static function removeSubscribe(int $chat_id, int $mid): int
     {
         Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::{$chat_id}");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
         return self::query()
             ->where([
                 'chat_id' => $chat_id,
@@ -100,7 +100,7 @@ class TBilibiliSubscribes extends BaseModel
      */
     public static function getAllSubscribeByChat(int $chatId): array
     {
-        $data = Cache::get("DB::TBilibiliSubscribes::bilibili_subscribes::{$chatId}");
+        $data = Cache::get("DB::TBilibiliSubscribes::bilibili_subscribes::$chatId");
         if (is_array($data)) {
             return $data;
         }
@@ -108,7 +108,7 @@ class TBilibiliSubscribes extends BaseModel
             ->where('chat_id', $chatId)
             ->get()
             ->toArray();
-        Cache::put("DB::TBilibiliSubscribes::bilibili_subscribes::{$chatId}", $data, Carbon::now()->addMinutes(5));
+        Cache::put("DB::TBilibiliSubscribes::bilibili_subscribes::$chatId", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 }

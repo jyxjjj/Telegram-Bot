@@ -33,7 +33,7 @@ class UpdateChatAdministratorsCommand extends BaseCommand
         ];
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -50,10 +50,10 @@ class UpdateChatAdministratorsCommand extends BaseCommand
                 TChatAdmins::addAdmin($chatId, $admin->getUser()->getId());
             }
             $data['text'] .= "Updated chat administrators successfully.\n";
-            $data['text'] .= "*This group is a* `$chatType`.\n";
-            $data['text'] .= "*There are* `$i` admins in this group.\n";
+            $data['text'] .= "<b>This group is a</b> <code>$chatType</code>.\n";
+            $data['text'] .= "<b>There are</b> <code>$i</code> admins in this group.\n";
         } catch (Throwable $e) {
-            $data['text'] .= "*Error({$e->getCode()}):* database error.\n";
+            $data['text'] .= "<b>Error({$e->getCode()})</b>: database error.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }

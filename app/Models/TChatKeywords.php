@@ -31,7 +31,7 @@ class TChatKeywords extends BaseModel
      */
     public static function getKeywords(int $chat_id): mixed
     {
-        $data = Cache::get("DB::TChatKeywords::chat_keywords::{$chat_id}");
+        $data = Cache::get("DB::TChatKeywords::chat_keywords::$chat_id");
         if ($data) {
             return $data;
         }
@@ -40,7 +40,7 @@ class TChatKeywords extends BaseModel
             ->where('chat_id', $chat_id)
             ->where('enable', 1)
             ->get();
-        Cache::put("DB::TChatKeywords::chat_keywords::{$chat_id}", $data, Carbon::now()->addMinutes(5));
+        Cache::put("DB::TChatKeywords::chat_keywords::$chat_id", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 }

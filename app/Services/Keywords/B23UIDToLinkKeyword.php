@@ -39,11 +39,11 @@ class B23UIDToLinkKeyword extends BaseKeyword
     {
         if (preg_match_all($this->pattern, $text, $matches)) {
             $data['text'] .= "Bilibili UID Detected\n";
-            $data['text'] .= "*Warning:* UID detected does not necessarily mean Bilibili UID\n\n";
+            $data['text'] .= "<b>Warning</b>: UID detected does not necessarily mean Bilibili UID\n\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (isset($matches[1]) && isset($matches[1][0])) {
-                $data['text'] .= "UID: `{$matches[1][0]}`\n";
-                $data['text'] .= "Link: https://space.bilibili.com/{$matches[1][0]}\n";
+                $data['text'] .= "UID: <code>{$matches[1][0]}</code>\n";
+                $data['text'] .= "Link: <code>https://space.bilibili.com/{$matches[1][0]}</code>\n";
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => "UID: {$matches[1][0]}",

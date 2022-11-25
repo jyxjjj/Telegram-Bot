@@ -33,7 +33,7 @@ class BilibiliGetSubscribeCommand extends BaseCommand
         //#region Detect Chat Type
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -42,21 +42,21 @@ class BilibiliGetSubscribeCommand extends BaseCommand
         $admins = TChatAdmins::getChatAdmins($chatId);
         $userId = $message->getFrom()->getId();
         if (!in_array($userId, $admins, true)) {
-            $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n\n";
-            $data['text'] .= "*Warning:* This command can be used by people who was an admin before update admin list.\n\n";
-            $data['text'] .= "*Notice:* Send /updatechatadministrators to update chat admin list.\n\n";
+            $data['text'] .= "<b>Error</b>: You should be an admin of this chat to use this command.\n\n";
+            $data['text'] .= "<b>Warning</b>: This command can be used by people who was an admin before update admin list.\n\n";
+            $data['text'] .= "<b>Notice</b>: Send /updatechatadministrators to update chat admin list.\n\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
         //#endregion
         $subscribes = TBilibiliSubscribes::getAllSubscribeByChat($chatId);
         if (count($subscribes) > 0) {
-            $data['text'] .= "*Subscribed UPs:*\n";
+            $data['text'] .= "<b>Subscribed UPs</b>:\n";
             foreach ($subscribes as $subscribe) {
-                $data['text'] .= "[{$subscribe['mid']}](https://space.bilibili.com/{$subscribe['mid']})\n";
+                $data['text'] .= "<a href='https://space.bilibili.com/{$subscribe['mid']}'>{$subscribe['mid']}</a>\n";
             }
         } else {
-            $data['text'] .= "*Error:* This chat did not subscribe anything.\n";
+            $data['text'] .= "<b>Error</b>: This chat did not subscribe anything.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }

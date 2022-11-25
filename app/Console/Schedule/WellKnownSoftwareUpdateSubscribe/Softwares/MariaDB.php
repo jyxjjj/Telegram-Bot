@@ -35,7 +35,7 @@ class MariaDB implements SoftwareInterface
                 }
             }
         }
-        $release_id = "{$major}.{$minor}";
+        $release_id = "$major.$minor";
         $release = $this->getLatest($release_id);
         $release = $release['releases'];
         $version = '';
@@ -44,6 +44,36 @@ class MariaDB implements SoftwareInterface
             break;
         }
         return $version;
+    }
+
+    /**
+     * @param int $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of MariaDB($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => "https://mariadb.org/download/?t=mariadb&p=mariadb&r=$version&os=source",
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'Download',
+            'url' => "https://downloads.mariadb.org/rest-api/mariadb/$version/mariadb-$version.tar.gz",
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        return $message;
     }
 
     /**
@@ -71,37 +101,7 @@ class MariaDB implements SoftwareInterface
         $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
-            ->get("https://downloads.mariadb.org/rest-api/mariadb/{$release_id}/latest")
+            ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")
             ->json();
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "{$emoji} A new version of MariaDB($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => "https://mariadb.org/download/?t=mariadb&p=mariadb&r={$version}&os=source",
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => 'Download',
-            'url' => "https://downloads.mariadb.org/rest-api/mariadb/{$version}/mariadb-{$version}.tar.gz",
-        ]);
-        $message['reply_markup']->addRow($button1, $button2);
-        return $message;
     }
 }

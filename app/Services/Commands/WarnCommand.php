@@ -36,7 +36,7 @@ class WarnCommand extends BaseCommand
 
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -44,9 +44,9 @@ class WarnCommand extends BaseCommand
 
         $userId = $message->getFrom()->getId();
         if (!in_array($userId, $admins, true)) {
-            $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n\n";
-            $data['text'] .= "*Warning:* This command can be used by people who was an admin before update admin list.\n\n";
-            $data['text'] .= "*Notice:* Send /updatechatadministrators to update chat admin list.\n\n";
+            $data['text'] .= "<b>Error</b>: You should be an admin of this chat to use this command.\n\n";
+            $data['text'] .= "<b>Warning</b>: This command can be used by people who was an admin before update admin list.\n\n";
+            $data['text'] .= "<b>Notice</b>: Send /updatechatadministrators to update chat admin list.\n\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -58,7 +58,7 @@ class WarnCommand extends BaseCommand
             if ($replyTo != null) {
                 $userId = $replyTo->getFrom()->getId();
                 if (in_array($userId, $admins, true)) {
-                    $data['text'] .= "*Error:* You can't warn an admin.\n";
+                    $data['text'] .= "<b>Error</b>: You can't warn an admin.\n";
                     $this->dispatch(new SendMessageJob($data));
                     return;
                 }
@@ -91,16 +91,16 @@ class WarnCommand extends BaseCommand
         }
         if (!is_numeric($userId)) {
             $data['text'] .= "Invalid user id.\n";
-            $data['text'] .= "*Usage:* Reply to his message with /warn.\n";
-            $data['text'] .= "*Usage:* /warn @username.\n";
-            $data['text'] .= "*Usage:* /warn user\_id.\n";
+            $data['text'] .= "<b>Usage</b>: Reply to his message with /warn.\n";
+            $data['text'] .= "<b>Usage</b>: /warn @username.\n";
+            $data['text'] .= "<b>Usage</b>: /warn user_id.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
         $warns = TChatWarns::getUserWarns($chatId, $userId);
         if ($warns + 1 >= 3 || $warns >= 3) {
-            $data['text'] .= "*Warning:* This user [$userId](tg://user?id=$userId) has been warned 3 times.\n";
-            $data['text'] .= "*Warning:* Banning user [$userId](tg://user?id=$userId).\n";
+            $data['text'] .= "<b>Warning</b>: This user <a href='tg://user?id=$userId'>$userId</a> has been warned 3 times.\n";
+            $data['text'] .= "<b>Warning</b>: Banning user <a href='tg://user?id=$userId'>$userId</a>.\n";
             $this->dispatch(new SendMessageJob($data));
             $data = [
                 'chat_id' => $chatId,
@@ -111,8 +111,8 @@ class WarnCommand extends BaseCommand
         } else {
             TChatWarns::addUserWarn($chatId, $userId);
             $warns++;
-            $data['text'] .= "Warning user [$userId](tg://user?id=$userId).\n";
-            $data['text'] .= "*Current warn times:* $warns.\n";
+            $data['text'] .= "Warning user <a href='tg://user?id=$userId'>$userId</a>.\n";
+            $data['text'] .= "<b>Current warn times</b>: $warns.\n";
             $this->dispatch(new SendMessageJob($data));
         }
     }

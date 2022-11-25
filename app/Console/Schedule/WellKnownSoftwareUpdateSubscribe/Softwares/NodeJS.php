@@ -53,7 +53,7 @@ class NodeJS implements SoftwareInterface
         $emoji = Common::emoji();
         $message = [
             'chat_id' => $chat_id,
-            'text' => "{$emoji} A new version of NodeJS($version) is now available.",
+            'text' => "$emoji A new version of NodeJS($version) is now available.",
             'reply_markup' => new InlineKeyboard([]),
         ];
         $button1 = new InlineKeyboardButton([
@@ -62,7 +62,7 @@ class NodeJS implements SoftwareInterface
         ]);
         $button2 = new InlineKeyboardButton([
             'text' => 'Download',
-            'url' => "https://nodejs.org/dist/latest/node-v{$version}-linux-x64.tar.gz",
+            'url' => "https://nodejs.org/dist/latest/node-v$version-linux-x64.tar.gz",
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;

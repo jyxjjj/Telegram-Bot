@@ -34,7 +34,7 @@ class AboutCommand extends BaseCommand
         $commits = $commits[0];
         $home = $commits['html_url'];
         $version = substr(strtoupper($commits['sha']), 0, 7);
-        $version = "[$version]($home)";
+        $version = "<a href='$home'>$version</a>";
         $date = date('Y-m-d H:i:s', strtotime($commits['commit']['committer']['date']));
         $data = [
             'chat_id' => $chatId,
@@ -45,12 +45,12 @@ class AboutCommand extends BaseCommand
         $data['text'] .= sprintf("Copyright (C) %s\n", date('Y'));
         $data['text'] .= "DESMG All rights reserved.\n";
         $data['text'] .= "DESMG Main API(DESMG)\n";
-        $data['text'] .= "*Version:* $version\n";
-        $data['text'] .= "*Updated:* `$date`\n";
-        $data['text'] .= sprintf("*System Time:* `%s`\n", date('Y-m-d H:i:s'));
-        $data['text'] .= sprintf("*Device Name:* `%s`\n", php_uname('n'));
-        $data['text'] .= sprintf("*System Version:* `%s %s %s`\n", php_uname('s'), php_uname('r'), php_uname('m'));
-        $data['text'] .= sprintf("*PHP Version:* `%s %s %s`\n", PHP_VERSION, PHP_SAPI, PHP_OS);
+        $data['text'] .= "<b>Version</b>: $version\n";
+        $data['text'] .= "<b>Updated</b>: <code>$date</code>\n";
+        $data['text'] .= sprintf("<b>System Time</b>: <code>%s</code>\n", date('Y-m-d H:i:s'));
+        $data['text'] .= sprintf("<b>Device Name</b>: <code>%s</code>\n", php_uname('n'));
+        $data['text'] .= sprintf("<b>System Version</b>: <code>%s %s %s</code>\n", php_uname('s'), php_uname('r'), php_uname('m'));
+        $data['text'] .= sprintf("<b>PHP Version</b>: <code>%s %s %s</code>\n", PHP_VERSION, PHP_SAPI, PHP_OS);
         $data['reply_markup'] = new InlineKeyboard([]);
         $personal = new InlineKeyboardButton([
             'text' => '个人频道',

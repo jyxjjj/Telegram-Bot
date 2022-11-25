@@ -33,7 +33,7 @@ class ShowMyWarnCommand extends BaseCommand
 
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -69,19 +69,19 @@ class ShowMyWarnCommand extends BaseCommand
 
         if (!is_numeric($userId)) {
             $data['text'] .= "Invalid user id.\n";
-            $data['text'] .= "*Usage:* /showmywarn to show your own warn times.\n";
-            $data['text'] .= "*Usage:* Reply to his message with /showmywarn.\n";
-            $data['text'] .= "*Usage:* /showmywarn @username.\n";
-            $data['text'] .= "*Usage:* /showmywarn user\_id.\n";
+            $data['text'] .= "<b>Usage</b>: /showmywarn to show your own warn times.\n";
+            $data['text'] .= "<b>Usage</b>: Reply to his message with /showmywarn.\n";
+            $data['text'] .= "<b>Usage</b>: /showmywarn @username.\n";
+            $data['text'] .= "<b>Usage</b>: /showmywarn user_id.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
 
         $warns = TChatWarns::getUserWarns($chatId, $userId);
         if ($warns > 0) {
-            $data['text'] .= "This user [$userId](tg://user?id=$userId) has been warned for $warns times.\n";
+            $data['text'] .= "This user <a href='tg://user?id=$userId'>$userId</a> has been warned for $warns times.\n";
         } else {
-            $data['text'] .= "This user [$userId](tg://user?id=$userId) had never been warned.\n";
+            $data['text'] .= "This user <a href='tg://user?id=$userId'>$userId</a> had never been warned.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }

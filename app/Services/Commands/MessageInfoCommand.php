@@ -34,14 +34,14 @@ class MessageInfoCommand extends BaseCommand
 
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
 
         $replyTo = $message->getReplyToMessage();
         if (!$replyTo) {
-            $data['text'] .= "*Error:* You should reply to a message for using this command.\n";
+            $data['text'] .= "<b>Error</b>: You should reply to a message for using this command.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }

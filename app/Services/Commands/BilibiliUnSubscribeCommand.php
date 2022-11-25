@@ -34,7 +34,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         //#region Detect Chat Type
         $chatType = $message->getChat()->getType();
         if (!in_array($chatType, ['group', 'supergroup'], true)) {
-            $data['text'] .= "*Error:* This command is available only for groups.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for groups.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -43,9 +43,9 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         $admins = TChatAdmins::getChatAdmins($chatId);
         $userId = $message->getFrom()->getId();
         if (!in_array($userId, $admins, true)) {
-            $data['text'] .= "*Error:* You should be an admin of this chat to use this command.\n\n";
-            $data['text'] .= "*Warning:* This command can be used by people who was an admin before update admin list.\n\n";
-            $data['text'] .= "*Notice:* Send /updatechatadministrators to update chat admin list.\n\n";
+            $data['text'] .= "<b>Error</b>: You should be an admin of this chat to use this command.\n\n";
+            $data['text'] .= "<b>Warning</b>: This command can be used by people who was an admin before update admin list.\n\n";
+            $data['text'] .= "<b>Notice</b>: Send /updatechatadministrators to update chat admin list.\n\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -53,7 +53,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         //#region Check params
         if (!is_numeric($mid)) {
             $data['text'] .= "Invalid mid.\n";
-            $data['text'] .= "*Usage:* /bilibilisubscribe mid.\n";
+            $data['text'] .= "<b>Usage</b>: /bilibilisubscribe mid.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -61,7 +61,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         if (TBilibiliSubscribes::removeSubscribe($chatId, $mid) > 0) {
             $data['text'] .= "Unsubscribe successfully.\n";
         } else {
-            $data['text'] .= "*Error:* Unsubscribe failed.\n";
+            $data['text'] .= "<b>Error</b>: Unsubscribe failed.\n";
             $data['text'] .= "One possibility is that this chat did not subscribe anything.\n";
         }
         $this->dispatch(new SendMessageJob($data));

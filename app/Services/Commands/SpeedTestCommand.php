@@ -36,13 +36,13 @@ class SpeedTestCommand extends BaseCommand
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
             'photo' => $share,
-            'caption' => "*SpeedTest*\n",
+            'caption' => "<b>SpeedTest<b>\n",
         ];
-        $data['caption'] .= "*Server:* `{$server['name']}`\n";
-        $data['caption'] .= "*Sponsor:* `{$server['sponsor']}`\n";
-        $data['caption'] .= "*Upload:* `$upload` Kbps\n";
-        $data['caption'] .= "*Download:* `$download` Kbps\n";
-        $data['caption'] .= "*Latency:* `{$server['latency']}`\n";
+        $data['caption'] .= "<b>Server</b>: <code>{$server['name']}</code>\n";
+        $data['caption'] .= "<b>Sponsor</b>: <code>{$server['sponsor']}</code>\n";
+        $data['caption'] .= "<b>Upload</b>: <code>$upload</code> Kbps\n";
+        $data['caption'] .= "<b>Download</b>: <code>$download</code> Kbps\n";
+        $data['caption'] .= "<b>Latency</b>: <code>{$server['latency']}</code>\n";
         $this->dispatch(new SendPhotoJob($data, 0));
     }
 

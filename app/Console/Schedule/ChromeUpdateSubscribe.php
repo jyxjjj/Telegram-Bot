@@ -137,17 +137,17 @@ class ChromeUpdateSubscribe extends Command
             }
         }
         return <<<STR
-*New Versions of Chrome Updated*
+<b>New Versions of Chrome Updated</b>
 ================
-*Mac*: `{$data['StableMacVersion']}`
-*Windows*: `{$data['StableWindowsVersion']}`
-*Linux*: `{$data['StableLinuxVersion']}`
-*Android*: `{$data['StableAndroidVersion']}`
-*iOS*: `{$data['StableiOSVersion']}`
+<b>Mac</b>: <code>{$data['StableMacVersion']}</code>
+<b>Windows</b>: <code>{$data['StableWindowsVersion']}</code>
+<b>Linux</b>: <code>{$data['StableLinuxVersion']}</code>
+<b>Android</b>: <code>{$data['StableAndroidVersion']}</code>
+<b>iOS</b>: <code>{$data['StableiOSVersion']}</code>
 STR;
-//*Mac*(_Canary_): `{$data['CanaryMacVersion']}`
-//*Windows*(_Canary_): `{$data['CanaryWindowsVersion']}`
-//*Android*(_Canary_): `{$data['CanaryAndroidVersion']}`
+//<b>Mac</b>(_Canary_): <code>{$data['CanaryMacVersion']}</code>
+//<b>Windows</b>(_Canary_): <code>{$data['CanaryWindowsVersion']}</code>
+//<b>Android</b>(_Canary_): <code>{$data['CanaryAndroidVersion']}</code>
 //STR;
     }
 
@@ -158,7 +158,7 @@ STR;
      */
     private function getLastVersion(int $chat_id, string $key): string|false
     {
-        return Cache::get("Schedule::UpdateSubscribe::last_version::{$chat_id}::Chrome::{$key}", false);
+        return Cache::get("Schedule::UpdateSubscribe::last_version::$chat_id::Chrome::$key", false);
     }
 
     /**
@@ -169,7 +169,7 @@ STR;
      */
     private function setLastVersion(int $chat_id, string $key, $version): bool
     {
-        return Cache::put("Schedule::UpdateSubscribe::last_version::{$chat_id}::Chrome::{$key}", $version, Carbon::now()->addMonths(3));
+        return Cache::put("Schedule::UpdateSubscribe::last_version::$chat_id::Chrome::$key", $version, Carbon::now()->addMonths(3));
     }
 
     /**
@@ -178,7 +178,7 @@ STR;
      */
     private function getLastSend(int $chat_id): string|false
     {
-        return Cache::get("Schedule::UpdateSubscribe::last_send::{$chat_id}::Chrome", false);
+        return Cache::get("Schedule::UpdateSubscribe::last_send::$chat_id::Chrome", false);
     }
 
     /**
@@ -188,6 +188,6 @@ STR;
      */
     private function setLastSend(int $chat_id, string $hash): bool
     {
-        return Cache::put("Schedule::UpdateSubscribe::last_send::{$chat_id}::Chrome", $hash, Carbon::now()->addMonths(3));
+        return Cache::put("Schedule::UpdateSubscribe::last_send::$chat_id::Chrome", $hash, Carbon::now()->addMonths(3));
     }
 }

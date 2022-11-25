@@ -41,12 +41,12 @@ class BanMemberJob extends TelegramBaseQueue
         ];
         $serverResponse = Request::banChatMember($banner);
         if ($serverResponse->isOk()) {
-            $sender['text'] .= "*User banned from chat.*\n";
-            $sender['text'] .= "*User ID:* [{$origin['user_id']}](tg://user?id={$origin['user_id']})\n";
+            $sender['text'] .= "<b>User banned from chat.</b>\n";
+            $sender['text'] .= "<b>User ID</b>: <a href='tg://user?id={$origin['user_id']}'>{$origin['user_id']}</a>\n";
         } else {
-            $sender['text'] .= "*Error banning user.*\n";
-            $sender['text'] .= "*Error Code:* `{$serverResponse->getErrorCode()}`\n";
-            $sender['text'] .= "*Error Msg:* `{$serverResponse->getDescription()}`\n";
+            $sender['text'] .= "<b>Error banning user.</b>\n";
+            $sender['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
+            $sender['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n";
         }
         SendMessageJob::dispatch($sender);
     }

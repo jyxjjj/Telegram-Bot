@@ -21,7 +21,7 @@ class TStarted extends BaseModel
      */
     public static function addUser($user_id): Builder|Model
     {
-        $data = Cache::get("DB::TStarted::user::{$user_id}");
+        $data = Cache::get("DB::TStarted::user::$user_id");
         if ($data) {
             return $data;
         }
@@ -42,7 +42,7 @@ class TStarted extends BaseModel
      */
     public static function getUser($user_id): bool
     {
-        $data = Cache::get("DB::TStarted::user::{$user_id}");
+        $data = Cache::get("DB::TStarted::user::$user_id");
         if ($data) {
             return true;
         }
@@ -54,7 +54,7 @@ class TStarted extends BaseModel
             )
             ->first();
         if ($data) {
-            Cache::put("DB::TStarted::user::{$user_id}", $data, Carbon::now()->addMinutes(5));
+            Cache::put("DB::TStarted::user::$user_id", $data, Carbon::now()->addMinutes(5));
             return true;
         }
         return false;

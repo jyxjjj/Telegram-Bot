@@ -70,13 +70,13 @@ class RestrictMemberJob extends TelegramBaseQueue
         ];
         $serverResponse = Request::restrictChatMember($restricter);
         if ($serverResponse->isOk()) {
-            $sender['text'] .= "*User restricted for {$this->time} seconds.*\n";
-            $sender['text'] .= "*Until:* {$restricter['until_date']}\n";
-            $sender['text'] .= "*User ID:* [{$origin['user_id']}](tg://user?id={$origin['user_id']})\n";
+            $sender['text'] .= "<b>User restricted for $this->time seconds.</b>\n";
+            $sender['text'] .= "<b>Until</b>: {$restricter['until_date']}\n";
+            $sender['text'] .= "<b>User ID</b>: <a href='tg://user?id={$origin['user_id']}'>{$origin['user_id']}</a>\n";
         } else {
-            $sender['text'] .= "*Error restricting user.*\n";
-            $sender['text'] .= "*Error Code:* `{$serverResponse->getErrorCode()}`\n";
-            $sender['text'] .= "*Error Msg:* `{$serverResponse->getDescription()}`\n";
+            $sender['text'] .= "<b>Error restricting user.</b>\n";
+            $sender['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
+            $sender['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n";
         }
         SendMessageJob::dispatch($sender);
     }

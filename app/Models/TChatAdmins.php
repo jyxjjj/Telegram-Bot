@@ -22,7 +22,7 @@ class TChatAdmins extends BaseModel
      */
     public static function getChatAdmins($chat_id): array
     {
-        $data = Cache::get("DB::TChatAdmins::chat_admins::{$chat_id}");
+        $data = Cache::get("DB::TChatAdmins::chat_admins::$chat_id");
         if (is_array($data)) {
             return $data;
         }
@@ -30,7 +30,7 @@ class TChatAdmins extends BaseModel
             ->where('chat_id', $chat_id)
             ->pluck('admin_id')
             ->toArray();
-        Cache::put("DB::TChatAdmins::chat_admins::{$chat_id}", $data, Carbon::now()->addMinutes(5));
+        Cache::put("DB::TChatAdmins::chat_admins::$chat_id", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 
@@ -40,7 +40,7 @@ class TChatAdmins extends BaseModel
      */
     public static function clearAdmin($chat_id): int
     {
-        Cache::forget("DB::TChatAdmins::chat_admins::{$chat_id}");
+        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
         return self::query()
             ->where('chat_id', $chat_id)
             ->delete();

@@ -79,7 +79,7 @@ class Common
      */
     public static function getLastSend(Software $software, int $chat_id): string
     {
-        return Cache::get("Schedule::UpdateSubscribe::last_send::{$chat_id}::$software->value", '');
+        return Cache::get("Schedule::UpdateSubscribe::last_send::$chat_id::$software->value", '');
     }
 
     /**
@@ -91,6 +91,6 @@ class Common
      */
     public static function setLastSend(Software $software, int $chat_id, string $version): bool
     {
-        return Cache::put("Schedule::UpdateSubscribe::last_send::{$chat_id}::$software->value", $version, Carbon::now()->addMonths(3));
+        return Cache::put("Schedule::UpdateSubscribe::last_send::$chat_id::$software->value", $version, Carbon::now()->addMonths(3));
     }
 }

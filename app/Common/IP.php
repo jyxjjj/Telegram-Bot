@@ -4,7 +4,7 @@ namespace App\Common;
 
 final class IP
 {
-    public final static function getClientIpInfos(): ?string
+    public static function getClientIpInfos(): ?string
     {
         $ip = self::getClientIp();
         $country = self::getClientIpCountry();
@@ -30,32 +30,32 @@ final class IP
                 );
     }
 
-    public final static function getClientIp(): ?string
+    public static function getClientIp(): ?string
     {
         return request()->header('cf-connecting-ip', request()->getClientIp());
     }
 
-    public final static function getClientIpCountry(): ?string
+    public static function getClientIpCountry(): ?string
     {
         return request()->header('cf-ipcountry');
     }
 
-    public final static function getClientIpContinent(): ?string
+    public static function getClientIpContinent(): ?string
     {
         return request()->header('cf-ipcontinent');
     }
 
-    public final static function getClientIpCity(): ?string
+    public static function getClientIpCity(): ?string
     {
         return request()->header('cf-ipcity');
     }
 
-    public final static function getClientIpLatitude(): ?string
+    public static function getClientIpLatitude(): ?string
     {
         return request()->header('cf-iplatitude');
     }
 
-    public final static function getClientIpLongitude(): ?string
+    public static function getClientIpLongitude(): ?string
     {
         return request()->header('cf-iplongitude');
     }

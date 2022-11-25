@@ -32,19 +32,19 @@ class BilibiliGetSubscribeCommand extends BaseCommand
         //#region Detect Chat Type
         $chatType = $message->getChat()->getType();
         if ($chatType !== 'channel') {
-            $data['text'] .= "*Error:* This command is available only for channels.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for channels.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
         //#endregion
         $subscribes = TBilibiliSubscribes::getAllSubscribeByChat($chatId);
         if (count($subscribes) > 0) {
-            $data['text'] .= "*Subscribed UPs:*\n";
+            $data['text'] .= "<b>Subscribed UPs</b>:\n";
             foreach ($subscribes as $subscribe) {
-                $data['text'] .= "[{$subscribe['mid']}](https://space.bilibili.com/{$subscribe['mid']})\n";
+                $data['text'] .= "<a href='https://space.bilibili.com/{$subscribe['mid']}'>{$subscribe['mid']}</a>\n";
             }
         } else {
-            $data['text'] .= "*Error:* This chat did not subscribe anything.\n";
+            $data['text'] .= "<b>Error</b>: This chat did not subscribe anything.\n";
         }
         $this->dispatch(new SendMessageJob($data));
     }

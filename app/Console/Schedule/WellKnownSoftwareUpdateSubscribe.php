@@ -37,7 +37,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
 //                    }
 //                }
             foreach (Software::cases() as $software) {
-                self::info("Checking {$software->name}...");
+                self::info("Checking $software->name...");
                 if (!in_array($software->name, [
                     Software::PHP->name,
                     Software::Nginx->name,
@@ -58,7 +58,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                         $chat_id = $data['chat_id'];
                         $version = $software->getInstance()->getVersion();
                         $lastVersion = Common::getLastVersion($software);
-                        self::info("{$software->name} Current:{$version} Latest:{$lastVersion}");
+                        self::info("$software->name Current:$version Latest:$lastVersion");
                         if ($version && $lastVersion != $version) {
                             $message = $software->getInstance()->generateMessage($chat_id, $version);
                             $this->dispatch(new SendMessageJob($message, null, 0));

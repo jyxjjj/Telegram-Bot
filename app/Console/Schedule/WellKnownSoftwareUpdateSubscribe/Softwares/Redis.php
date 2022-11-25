@@ -40,7 +40,37 @@ class Redis implements SoftwareInterface
                 }
             }
         }
-        return "{$major}.{$minor}.{$patch}";
+        return "$major.$minor.$patch";
+    }
+
+    /**
+     * @param int $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of Redis($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => 'https://redis.io/download/',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'Download',
+            'url' => "https://download.redis.io/releases/redis-$version.tar.gz",
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        return $message;
     }
 
     /**
@@ -69,35 +99,5 @@ class Redis implements SoftwareInterface
             return 304;
         }
         return false;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "{$emoji} A new version of Redis($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => 'https://redis.io/download/',
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => 'Download',
-            'url' => "https://download.redis.io/releases/redis-{$version}.tar.gz",
-        ]);
-        $message['reply_markup']->addRow($button1, $button2);
-        return $message;
     }
 }

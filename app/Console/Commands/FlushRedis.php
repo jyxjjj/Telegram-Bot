@@ -30,7 +30,7 @@ class FlushRedis extends Command
         $keys = Redis::connection($connection)->command('KEYS', [$pattern]);
         sort($keys);
         $datas = [];
-        foreach ($keys as &$key) {
+        foreach ($keys as $key) {
             if (!str_starts_with($key, $prefix)) continue;
             $datas[] = str_replace($prefix, '', $key);
         }
@@ -48,7 +48,7 @@ class FlushRedis extends Command
         }
         $deleted = Redis::connection($connection)->command('DEL', $datas);
         if ($deleted) {
-            self::info("Deleted {$deleted} keys.");
+            self::info("Deleted $deleted keys.");
         } else {
             self::info("No keys deleted.");
         }

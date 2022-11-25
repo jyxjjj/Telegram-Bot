@@ -41,12 +41,12 @@ class PingCommand extends BaseCommand
         $telegramIP = Cache::get("TelegramIP_$updateId", '');
         $endTime = Carbon::now()->getTimestampMs();
         $message_latency = $endTime - $startTime;
-        $data['text'] .= "*Send Time:* `$sendTime`\n";
-        $data['text'] .= "*Start Time:* `$startTime`\n";
-        $data['text'] .= "*End Time:* `$endTime`\n";
-        $data['text'] .= "*Server Latency:* `$server_latency` ms\n";
-        $data['text'] .= "*Message Latency:* `$message_latency` ms\n";
-        $data['text'] .= "*Telegram Update IP:* `$telegramIP`\n";
+        $data['text'] .= "<b>Send Time</b>: <code>$sendTime</code>\n";
+        $data['text'] .= "<b>Start Time</b>: <code>$startTime</code>\n";
+        $data['text'] .= "<b>End Time</b>: <code>$endTime</code>\n";
+        $data['text'] .= "<b>Server Latency</b>: <code>$server_latency</code> ms\n";
+        $data['text'] .= "<b>Message Latency</b>: <code>$message_latency</code> ms\n";
+        $data['text'] .= "<b>Telegram Update IP</b>: <code>$telegramIP</code>\n";
         $IPs = [
             '149.154.175.53',
             '149.154.167.51',
@@ -57,7 +57,7 @@ class PingCommand extends BaseCommand
         for ($i = 1; $i <= count($IPs); $i++) {
             $IP = $IPs[$i - 1];
             $ping = $this->ping($IP);
-            $data['text'] .= "*DC$i($IP) Latency:* `$ping ms`\n";
+            $data['text'] .= "<b>DC$i($IP) Latency</b>: <code>$ping ms</code>\n";
         }
         $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
     }

@@ -33,7 +33,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         //#region Detect Chat Type
         $chatType = $message->getChat()->getType();
         if ($chatType !== 'channel') {
-            $data['text'] .= "*Error:* This command is available only for channels.\n";
+            $data['text'] .= "<b>Error</b>: This command is available only for channels.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -41,7 +41,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         //#region Check params
         if (!is_numeric($mid)) {
             $data['text'] .= "Invalid mid.\n";
-            $data['text'] .= "*Usage:* /bilibilisubscribe mid.\n";
+            $data['text'] .= "<b>Usage</b>: /bilibilisubscribe mid.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -49,7 +49,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
         if (TBilibiliSubscribes::removeSubscribe($chatId, $mid) > 0) {
             $data['text'] .= "Unsubscribe successfully.\n";
         } else {
-            $data['text'] .= "*Error:* Unsubscribe failed.\n";
+            $data['text'] .= "<b>Error</b>: Unsubscribe failed.\n";
             $data['text'] .= "One possibility is that this chat did not subscribe anything.\n";
         }
         $this->dispatch(new SendMessageJob($data));

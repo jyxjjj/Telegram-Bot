@@ -24,7 +24,7 @@ class PixivDownloader extends Command
     {
         try {
             [$data, $date] = $this->getRanks();
-            self::info("Last Update: {$date}");
+            self::info("Last Update: $date");
             $data = $this->buildData($data);
             $this->saveData($date, $data);
             return self::SUCCESS;
@@ -53,7 +53,7 @@ class PixivDownloader extends Command
             $json = $response->json();
             $code = $response->status();
             if (!isset($json['contents'])) {
-                self::error("Pixiv API Error: {$code}");
+                self::error("Pixiv API Error: $code");
                 break;
             }
             $data = array_merge($data, $json['contents']);
@@ -73,8 +73,8 @@ class PixivDownloader extends Command
             $title = $item['title'];
             $author = $item['user_name'];
             $author_id = $item['user_id'];
-            $artwork_url = "https://www.pixiv.net/artworks/{$artwork_id}";
-            $author_url = "https://www.pixiv.net/users/{$author_id}";
+            $artwork_url = "https://www.pixiv.net/artworks/$artwork_id";
+            $author_url = "https://www.pixiv.net/users/$author_id";
             $result[] = [
                 'artwork_id' => $artwork_id,
                 'title' => $title,

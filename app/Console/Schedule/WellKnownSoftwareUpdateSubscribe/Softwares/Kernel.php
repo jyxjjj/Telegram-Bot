@@ -57,7 +57,7 @@ class Kernel implements SoftwareInterface
         $emoji = Common::emoji();
         $message = [
             'chat_id' => $chat_id,
-            'text' => "{$emoji} A new version of Kernel($version) is now available.",
+            'text' => "$emoji A new version of Kernel($version) is now available.",
             'reply_markup' => new InlineKeyboard([]),
         ];
         $button1 = new InlineKeyboardButton([

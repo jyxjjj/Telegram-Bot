@@ -35,20 +35,6 @@ class MariaDBDocker implements SoftwareInterface
     }
 
     /**
-     * @return array
-     */
-    private function getLatest(): array
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-MariaDBDocker-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
-            ->get('https://registry.hub.docker.com/v2/repositories/library/mariadb/tags/latest/images')
-            ->json();
-    }
-
-    /**
      * @param int $chat_id
      * @param string $version
      * @return array
@@ -63,7 +49,7 @@ class MariaDBDocker implements SoftwareInterface
         $emoji = Common::emoji();
         $message = [
             'chat_id' => $chat_id,
-            'text' => "{$emoji} A new version of MariaDB Docker($version) is now available.",
+            'text' => "$emoji A new version of MariaDB Docker($version) is now available.",
             'reply_markup' => new InlineKeyboard([]),
         ];
         $button1 = new InlineKeyboardButton([
@@ -72,5 +58,19 @@ class MariaDBDocker implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button1);
         return $message;
+    }
+
+    /**
+     * @return array
+     */
+    private function getLatest(): array
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= "; Telegram-MariaDBDocker-Subscriber-Runner/$ts";
+        return Http::
+        withHeaders($headers)
+            ->get('https://registry.hub.docker.com/v2/repositories/library/mariadb/tags/latest/images')
+            ->json();
     }
 }

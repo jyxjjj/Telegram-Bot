@@ -57,7 +57,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
                 $location = urldecode($location);
                 if (preg_match($pattern, $location, $matchedLocation)) {
                     $location = "https://www.amap.com/place/$matchedLocation[2]";
-                    $data['text'] .= "*Link:* `$location`\n";
+                    $data['text'] .= "<b>Link:</b> <code>$location</code>\n";
                     $button = new InlineKeyboardButton([
                         'text' => $location,
                         'url' => $location,

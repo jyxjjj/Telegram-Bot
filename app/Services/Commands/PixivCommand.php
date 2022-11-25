@@ -37,7 +37,7 @@ class PixivCommand extends BaseCommand
             $data = [
                 'chat_id' => $chatId,
                 'reply_to_message_id' => $messageId,
-                'text' => "*Error:* This command is available only for groups.\n",
+                'text' => "<b>Error</b>: This command is available only for groups.\n",
             ];
             $this->dispatch(new SendMessageJob($data));
             return;
@@ -46,7 +46,7 @@ class PixivCommand extends BaseCommand
             $data = [
                 'chat_id' => $chatId,
                 'reply_to_message_id' => $messageId,
-                'text' => "*Error:* This command can be only used once per minute.\n",
+                'text' => "<b>Error</b>: This command can be only used once per minute.\n",
             ];
             $this->dispatch(new SendMessageJob($data));
             return;
@@ -67,7 +67,7 @@ class PixivCommand extends BaseCommand
             $data = [
                 'chat_id' => $chatId,
                 'reply_to_message_id' => $messageId,
-                'text' => "*Error:* Get a random picture failed.\n",
+                'text' => "<b>Error</b>: Get a random picture failed.\n",
             ];
             $this->dispatch(new SendMessageJob($data));
         }
@@ -78,13 +78,13 @@ class PixivCommand extends BaseCommand
         $storage = Storage::disk('public');
         $now = Carbon::now();
         $date = $now->clone()->format('Y-m-d');
-        $path = "pixiv/{$date}.json";
+        $path = "pixiv/$date.json";
         if (!$storage->exists($path)) {
             $date = $now->clone()->subDay()->format('Y-m-d');
-            $path = "pixiv/{$date}.json";
+            $path = "pixiv/$date.json";
             if (!$storage->exists($path)) {
                 $date = $now->clone()->subDays(2)->format('Y-m-d');
-                $path = "pixiv/{$date}.json";
+                $path = "pixiv/$date.json";
                 if (!$storage->exists($path)) {
                     return [null, null];
                 }
@@ -101,9 +101,9 @@ class PixivCommand extends BaseCommand
         $author_url = $item['author_url'];
         $url = $item['url'];
         $caption = "⚠️ #NSFW\n";
-        $caption .= "Artwork: [{$title}]({$artwork_url})\n";
-        $caption .= "Author: [{$author}]({$author_url})\n";
-        $caption .= "Date: {$date}\n\n";
+        $caption .= "Artwork: <a href='$artwork_url'>$title</a>\n";
+        $caption .= "Author: <a href='$author_url'>$author</a>\n";
+        $caption .= "Date: $date\n\n";
         $caption .= "⚠️Content has its own copyright\n";
         $caption .= "DMCA Request: @jyxjjj\n";
         $caption .= "⚠️ #NSFW\n";
@@ -130,7 +130,7 @@ class PixivCommand extends BaseCommand
         if ($response->successful()) {
             $body = $response->body();
             $name = Hash::sha256($body);
-            $path = "pixiv/{$name}.jpg";
+            $path = "pixiv/$name.jpg";
             Storage::disk('public')->put($path, $body);
             $this->dispatch(new DeletePixivFileJob($path));
             return Storage::disk('public')->path($path);

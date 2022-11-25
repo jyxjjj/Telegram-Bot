@@ -39,8 +39,8 @@ class RestartCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= "Sent restart signal.\n";
-        $data['text'] .= "*Returned Code:* `$code`\n";
-        $data['text'] .= "*Returned Msg:* `$msg`\n";
+        $data['text'] .= "<b>Returned Code</b>: <code>$code</code>\n";
+        $data['text'] .= "<b>Returned Msg</b>: <code>$msg</code>\n";
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }

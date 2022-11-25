@@ -47,7 +47,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         $pattern_live = '/https:\/\/live\.bilibili\.com\/[a-zA-Z\d]+/';
         if (preg_match_all($pattern, $text, $matches)) {
             $data['text'] .= "Bilibili Tracker Removed\n";
-            $data['text'] .= "*Warning:* Beta Function, if error occured, contact @jyxjjj .\n";
+            $data['text'] .= "<b>Warning</b>: Beta Function, if error occured, contact @jyxjjj .\n";
             if (count($matches[0]) > 3) {
                 $count = 3;
             } else {
@@ -73,7 +73,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
                     preg_match($pattern_live, $link, $matchedLocation)
                 ) {
                     !isset($data['reply_markup']) && $data['reply_markup'] = new InlineKeyboard([]);
-                    $data['text'] .= "*Link:* `$matchedLocation[0]`\n";
+                    $data['text'] .= "<b>Link</b>: <code>$matchedLocation[0]</code>\n";
                     $button = new InlineKeyboardButton([
                         'text' => $matchedLocation[0],
                         'url' => $matchedLocation[0],

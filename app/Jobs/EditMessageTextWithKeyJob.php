@@ -22,7 +22,7 @@ class EditMessageTextWithKeyJob extends TelegramBaseQueue
     {
         parent::__construct();
         $this->data = array_merge($data, [
-            'parse_mode' => 'Markdown',
+            'parse_mode' => 'HTML',
             'disable_web_page_preview' => true,
             'allow_sending_without_reply' => true,
         ]);
