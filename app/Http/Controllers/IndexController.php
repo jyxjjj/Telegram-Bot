@@ -16,12 +16,11 @@ use Longman\TelegramBot\Exception\TelegramException;
 class IndexController extends BaseController
 {
     /**
-     * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        return $this->plain(IP::getClientIpAndCountry());
+        return $this->plain(IP::getClientIpInfos());
     }
 
     /**
@@ -38,7 +37,7 @@ class IndexController extends BaseController
             $update = new Update($request->all(), $telegram->getBotUsername());
             $updateId = $update->getUpdateId();
             $now = Carbon::createFromTimestamp(LARAVEL_START);
-            $clientIP = IP::getClientIpAndCountry();
+            $clientIP = IP::getClientIp();
             $expireTime = Carbon::now()->addMinutes(5);
             Cache::put("TelegramUpdateStartTime_$updateId", $now->getTimestampMs(), $expireTime);
             Cache::put("TelegramIP_$updateId", $clientIP, $expireTime);
