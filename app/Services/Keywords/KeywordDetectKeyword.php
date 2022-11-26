@@ -12,8 +12,6 @@ use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -25,6 +23,7 @@ class KeywordDetectKeyword extends BaseKeyword
     public string $name = 'Keyword Detecter';
     public string $description = 'Match Keywords';
     protected string $pattern = '//';
+    private bool $stop = false;
 
     public function preExecute(Message $message): bool
     {
@@ -40,6 +39,9 @@ class KeywordDetectKeyword extends BaseKeyword
                 $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
             } catch (Throwable $e) {
                 Handler::logError($e);
+            }
+            if ($this->stop) {
+                break;
             }
         }
     }
@@ -111,20 +113,13 @@ class KeywordDetectKeyword extends BaseKeyword
     )
     {
         switch ($operation) {
-            case TChatKeywordsOperationEnum::OPERATION_REPLY:
-                $this->reply($data, $message, $telegram, $updateId);
+            case TChatKeywordsOperationEnum::OPERATION_BAN:
+                $this->ban($data, $message, $telegram, $updateId);
+                $this->stop = true;
                 break;
             case TChatKeywordsOperationEnum::OPERATION_DELETE:
                 $this->delete($data, $message, $telegram, $updateId);
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_WARN:
-                $this->warn($data, $message, $telegram, $updateId);
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_BAN:
-                $this->ban($data, $message, $telegram, $updateId);
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_RESTRICT:
-                $this->restrict($data, $message, $telegram, $updateId);
+                $this->stop = true;
                 break;
             case TChatKeywordsOperationEnum::OPERATION_FORWARD:
                 $this->forward($data, $message, $telegram, $updateId);
@@ -132,7 +127,59 @@ class KeywordDetectKeyword extends BaseKeyword
             case TChatKeywordsOperationEnum::OPERATION_REPEAT:
                 $this->repeat($data, $message, $telegram, $updateId);
                 break;
+            case TChatKeywordsOperationEnum::OPERATION_REPLY:
+                $this->reply($data, $message, $telegram, $updateId);
+                break;
+            case TChatKeywordsOperationEnum::OPERATION_RESTRICT:
+                $this->restrict($data, $message, $telegram, $updateId);
+                $this->stop = true;
+                break;
+            case TChatKeywordsOperationEnum::OPERATION_WARN:
+                $this->warn($data, $message, $telegram, $updateId);
+                $this->stop = true;
+                break;
         }
+    }
+
+    private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
+    {
+        $deleter = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+        ];
+        $this->dispatch(new DeleteMessageJob($deleter, 0));
+
+        $banner = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+            'user_id' => $message->getFrom()->getId(),
+        ];
+        $this->dispatch(new BanMemberJob($banner));
+    }
+
+    private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
+    {
+        $deleter = [
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+        ];
+        $this->dispatch(new DeleteMessageJob($deleter, 0));
+
+        $sender = [
+            'chat_id' => $message->getChat()->getId(),
+        ];
+        isset($data['text']) && $sender['text'] = $data['text'];
+        count($sender) > 1 && $this->dispatch(new SendMessageJob($sender));
+    }
+
+    private function forward(array $data, Message $message, Telegram $telegram, int $updateId)
+    {
+
+    }
+
+    private function repeat(array $data, Message $message, Telegram $telegram, int $updateId)
+    {
+
     }
 
     private function reply(array $data, Message $message, Telegram $telegram, int $updateId)
@@ -195,45 +242,6 @@ class KeywordDetectKeyword extends BaseKeyword
         }
     }
 
-    private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
-    {
-        $deleter = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-        ];
-        $this->dispatch(new DeleteMessageJob($deleter, 0));
-        $sender = [
-            'chat_id' => $message->getChat()->getId(),
-        ];
-        isset($data['text']) && $sender['text'] = $data['text'];
-        count($sender) > 1 && $this->dispatch(new SendMessageJob($sender));
-    }
-
-    private function warn(array $data, Message $message, Telegram $telegram, int $updateId)
-    {
-
-    }
-
-    private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
-    {
-        $deleter = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-        ];
-        $this->dispatch(new DeleteMessageJob($deleter, 0));
-        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        $banner = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-            'user_id' => $message->getFrom()->getId(),
-        ];
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $this->dispatch(new BanMemberJob($banner));
-    }
-
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
     {
         $deleter = [
@@ -250,12 +258,7 @@ class KeywordDetectKeyword extends BaseKeyword
         $this->dispatch(new RestrictMemberJob($restrictor, $data['time'] ?? 86400));
     }
 
-    private function forward(array $data, Message $message, Telegram $telegram, int $updateId)
-    {
-
-    }
-
-    private function repeat(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function warn(array $data, Message $message, Telegram $telegram, int $updateId)
     {
 
     }
