@@ -4,7 +4,6 @@ A PHP Laravel Telegram Bot
 
 * [License](#license)
 * [Versions](#versions)
-* [TODO](#todo)
 * [Install](#install)
     * [Pre-install](#pre-install)
     * [Run](#run)
@@ -22,20 +21,15 @@ A PHP Laravel Telegram Bot
 
 # Versions
 
-[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=23e8653b361a&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+[![DigitalOcean](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://m.do.co/c/23e8653b361a)
 
-[![Fedora](https://img.shields.io/badge/Fedora-36-blue.svg?style=flat-square)](https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso)
+[![Fedora](https://img.shields.io/badge/Fedora-37-blue.svg?style=flat-square)](https://getfedora.org)
 
 [![PHP](https://img.shields.io/badge/PHP-^8.1-blue.svg?style=flat-square)](https://www.php.net/downloads.php)
 
-[![Mariadb](https://img.shields.io/badge/MariaDB-^10.8-yellow.svg?style=flat-square)](https://mariadb.org/download/)
+[![Mariadb](https://img.shields.io/badge/MariaDB-^10.10-yellow.svg?style=flat-square)](https://mariadb.org/download/)
 
 [![Redis](https://img.shields.io/badge/Redis-^7.0-red.svg?style=flat-square)](https://redis.io/download)
-
-# TODO
-
-- [ ] Support both channel and group
-- [ ] Migrate to MarkdownV2
 
 # Install
 
@@ -47,6 +41,8 @@ This is a doc of supervisor + crontab version that laravel recommended.
 You can do anything you want.
 
 ## Pre-install
+
+* All this repo commands are tested on Fedora 37
 
 Make a file tree like this:
 
@@ -86,10 +82,7 @@ systemctl enable --now container-mariadb.service
 systemctl enable --now container-redis.service
 
 composer install
-chown -R www:www .
-chmod -R 755 .
-chmod -R 777 bootstrap/cache/
-chmod -R 777 storage/
+./permission.sh
 
 php artisan key:generate
 vim .env
