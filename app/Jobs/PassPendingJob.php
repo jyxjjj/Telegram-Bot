@@ -40,6 +40,9 @@ class PassPendingJob extends BaseQueue
         $sender3 = $sender;
         $sender3['chat_id'] = env('YPP_TARGET_ID_3');
         $pendingData = Conversation::get('pending', 'pending');
+        if (!isset($pendingData[$cvid])) {
+            return;
+        }
         $user_id = $pendingData[$cvid];
         unset($pendingData[$cvid]);
         Conversation::save('pending', 'pending', $pendingData);

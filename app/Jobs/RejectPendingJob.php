@@ -35,8 +35,7 @@ class RejectPendingJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public
-    function handle()
+    public function handle()
     {
         BotCommon::getTelegram();
         $data = $this->data;
@@ -51,6 +50,9 @@ class RejectPendingJob extends BaseQueue
             $cvid = $data;
         }
         $pendingData = Conversation::get('pending', 'pending');
+        if (!isset($pendingData[$cvid])) {
+            return;
+        }
         $user_id = $pendingData[$cvid];
         unset($pendingData[$cvid]);
         Conversation::save('pending', 'pending', $pendingData);
