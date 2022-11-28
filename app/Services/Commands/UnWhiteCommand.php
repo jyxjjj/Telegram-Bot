@@ -8,11 +8,11 @@ use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
-class WLRemoveCommand extends BaseCommand
+class UnWhiteCommand extends BaseCommand
 {
-    public string $name = 'wlremove';
+    public string $name = 'unwhite';
     public string $description = 'Remove Whitelist';
-    public string $usage = '/wlremove {用户ID}';
+    public string $usage = '/unwhite {用户ID}';
     public bool $private = false;
 
     /**

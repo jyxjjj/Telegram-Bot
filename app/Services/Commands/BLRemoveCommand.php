@@ -38,7 +38,7 @@ class BLRemoveCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data, null, 0));
             return;
         }
-        $data['text'] = BL::remove($userId) ? '白名单添加成功' : '白名单添加失败';
+        $data['text'] = BL::remove($userId) ? '黑名单删除成功' : '黑名单删除失败';
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }

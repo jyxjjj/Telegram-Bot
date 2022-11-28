@@ -2,17 +2,17 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Log\WL;
+use App\Common\Log\BL;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
-class WLRemoveCommand extends BaseCommand
+class UnBlackCommand extends BaseCommand
 {
-    public string $name = 'wlremove';
-    public string $description = 'Remove Whitelist';
-    public string $usage = '/wlremove {用户ID}';
+    public string $name = 'unblack';
+    public string $description = 'Remove Blacklist';
+    public string $usage = '/unblack {用户ID}';
     public bool $private = false;
 
     /**
@@ -38,7 +38,7 @@ class WLRemoveCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data, null, 0));
             return;
         }
-        $data['text'] = WL::remove($userId) ? '白名单删除成功' : '白名单删除失败';
+        $data['text'] = BL::remove($userId) ? '黑名单删除成功' : '黑名单删除失败';
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }

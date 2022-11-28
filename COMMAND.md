@@ -52,3 +52,8 @@
 /bladd uid
 /wlremove uid
 /blremove uid
+
+/white uid
+/unwhite uid
+/black uid
+/unblack uid
