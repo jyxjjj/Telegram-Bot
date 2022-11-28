@@ -48,7 +48,7 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch(new SendMessageJob($sender, null, 0));
                         return;
                     }
-                    if (strlen($data[$cvid]['name']) > 300) {
+                    if (strlen($data[$cvid]['name']) > 150) {
                         $sender['text'] .= "名称过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
@@ -98,7 +98,7 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch(new SendMessageJob($sender, null, 0));
                         return;
                     }
-                    if (strlen($data[$cvid]['desc']) > 2700) {
+                    if (strlen($data[$cvid]['desc']) > 1500) {
                         $sender['text'] .= "描述过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
