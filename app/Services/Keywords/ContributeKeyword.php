@@ -42,7 +42,7 @@ class ContributeKeyword extends ContributeStep
             $cvid = $data['cvid'];
             switch ($data[$cvid]['status']) {
                 case 'name':
-                    $data[$cvid]['name'] = $message->getText();
+                    $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
                     if ($data[$cvid]['name'] == null) {
                         $sender['text'] = '投稿名称不能为空，请重新输入。';
                         $this->dispatch(new SendMessageJob($sender, null, 0));
@@ -92,7 +92,7 @@ class ContributeKeyword extends ContributeStep
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 case 'desc':
-                    $data[$cvid]['desc'] = $message->getText();
+                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
                     if ($data[$cvid]['desc'] == null) {
                         $sender['text'] = '投稿描述不能为空，请重新输入。';
                         $this->dispatch(new SendMessageJob($sender, null, 0));
@@ -281,8 +281,8 @@ class ContributeKeyword extends ContributeStep
         } else if (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
             if ($message->getCaption() && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $message->getCaption(), $matches)) {
-                $data[$cvid]['name'] = $matches[1];
-                $data[$cvid]['desc'] = $matches[2];
+                $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
+                $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                 $data[$cvid]['link'] = $matches[3];
                 $data[$cvid]['tag'] = $matches[4];
                 $photos = $message->getPhoto();
