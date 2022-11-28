@@ -3,8 +3,11 @@
 namespace App\Services\Keywords;
 
 use App\Common\Conversation;
+use App\Common\Log\BL;
 use App\Jobs\SendMessageJob;
 use DESMG\RFC4122\UUID;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -19,6 +22,16 @@ class AliYunPanKeyword extends ContributeStep
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $blackList = BL::get($message->getChat()->getId());
+        if ($blackList) {
+            $data = [
+                'chat_id' => $message->getChat()->getId(),
+                'text' => "您在黑名单中，无法投稿，请联系客服。\n",
+            ];
+            $data['reply_markup'] = (new InlineKeyboard([]))->addRow(new InlineKeyboardButton(['text' => '联系客服', 'url' => 'https://t.me/zaihuabot'],));
+            $this->dispatch((new SendMessageJob($data, null, 0))->delay(0));
+            return;
+        }
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
         if (count($data) > 0 && $data['status'] != 'free') {
             $data = [

@@ -27,7 +27,7 @@ class BL
         if (!in_array($user_id, $data)) {
             return false;
         }
-        $data = array_diff($data, [$user_id]);
+        $data = array_values(array_diff($data, [$user_id]));
         return Conversation::save('blacklist', 'blacklist', $data);
     }
 }
