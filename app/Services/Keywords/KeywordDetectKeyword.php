@@ -145,7 +145,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
     {
-        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
             return;
         }
@@ -155,6 +155,11 @@ class KeywordDetectKeyword extends BaseKeyword
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
+        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $banner = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
@@ -275,7 +280,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
     {
-        $cacheKey = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
             return;
         }
@@ -285,6 +290,11 @@ class KeywordDetectKeyword extends BaseKeyword
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
+        $cacheKey = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $restrictor = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
