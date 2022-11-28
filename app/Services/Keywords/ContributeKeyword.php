@@ -17,6 +17,7 @@ use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\PhotoSize;
 use Longman\TelegramBot\Telegram;
+use Throwable;
 
 class ContributeKeyword extends ContributeStep
 {
@@ -107,6 +108,14 @@ class ContributeKeyword extends ContributeStep
                         $sender['text'] .= "描述过短，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
+                    }
+                    // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
+                    try {
+                        $data[$cvid]['desc'] = preg_replace_callback('/\[([^]]+)]\(([^)]+)\)/', function ($linkmatches) {
+                            return "<a href='$linkmatches[2]'>$linkmatches[1]</a>";
+                        }, $data[$cvid]['desc']);
+                    } catch (Throwable) {
+                        $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
                     }
                     $data[$cvid]['status'] = 'link';
                     Conversation::save($user_id, 'contribute', $data);
@@ -283,6 +292,14 @@ class ContributeKeyword extends ContributeStep
             if ($message->getCaption() && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $message->getCaption(), $matches)) {
                 $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
                 $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
+                // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
+                try {
+                    $data[$cvid]['desc'] = preg_replace_callback('/\[([^]]+)]\(([^)]+)\)/', function ($linkmatches) {
+                        return "<a href='$linkmatches[2]'>$linkmatches[1]</a>";
+                    }, $data[$cvid]['desc']);
+                } catch (Throwable) {
+                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
+                }
                 $data[$cvid]['link'] = $matches[3];
                 $data[$cvid]['tag'] = $matches[4];
                 $photos = $message->getPhoto();
