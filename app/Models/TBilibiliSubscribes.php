@@ -31,19 +31,21 @@ class TBilibiliSubscribes extends BaseModel
             }
         }
         $data = self::query()
+            ->select('id')
             ->where([
                 'chat_id' => $chat_id,
                 'mid' => $mid,
             ])
             ->first();
         if ($data == null) {
-            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
-            return self::query()
+            $data = self::query()
                 ->create([
                     'chat_id' => $chat_id,
                     'mid' => $mid,
                 ]);
+            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
+            Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
+            return $data;
         }
         return false;
     }
@@ -54,11 +56,12 @@ class TBilibiliSubscribes extends BaseModel
      */
     public static function removeAllSubscribe(int $chat_id): int
     {
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
-        return self::query()
+        $int = self::query()
             ->where('chat_id', $chat_id)
             ->delete();
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
+        return $int;
     }
 
     /**
@@ -68,14 +71,15 @@ class TBilibiliSubscribes extends BaseModel
      */
     public static function removeSubscribe(int $chat_id, int $mid): int
     {
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
-        return self::query()
+        $int = self::query()
             ->where([
                 'chat_id' => $chat_id,
                 'mid' => $mid,
             ])
             ->delete();
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
+        return $int;
     }
 
     /**
@@ -88,6 +92,7 @@ class TBilibiliSubscribes extends BaseModel
             return $data;
         }
         $data = self::query()
+            ->select('chat_id', 'mid')
             ->get()
             ->toArray();
         Cache::put("DB::TBilibiliSubscribes::bilibili_subscribes", $data, Carbon::now()->addMinutes(5));
@@ -105,6 +110,7 @@ class TBilibiliSubscribes extends BaseModel
             return $data;
         }
         $data = self::query()
+            ->select('mid')
             ->where('chat_id', $chatId)
             ->get()
             ->toArray();

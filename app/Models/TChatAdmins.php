@@ -27,6 +27,7 @@ class TChatAdmins extends BaseModel
             return $data;
         }
         $data = self::query()
+            ->select('admin_id')
             ->where('chat_id', $chat_id)
             ->pluck('admin_id')
             ->toArray();
@@ -36,14 +37,14 @@ class TChatAdmins extends BaseModel
 
     /**
      * @param $chat_id
-     * @return int
+     * @return void
      */
-    public static function clearAdmin($chat_id): int
+    public static function clearAdmin($chat_id): void
     {
-        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
-        return self::query()
+        self::query()
             ->where('chat_id', $chat_id)
             ->delete();
+        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
     }
 
     /**
@@ -53,12 +54,14 @@ class TChatAdmins extends BaseModel
      */
     public static function addAdmin($chat_id, $admin_id): Builder|Model
     {
-        return self::query()
+        $data = self::query()
             ->create(
                 [
                     'chat_id' => $chat_id,
                     'admin_id' => $admin_id,
                 ]
             );
+        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
+        return $data;
     }
 }

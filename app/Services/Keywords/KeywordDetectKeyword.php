@@ -12,6 +12,8 @@ use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -68,14 +70,14 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_NAME:
-                $name = ($message->getFrom()->getFirstName() ?? '') . ($message->getFrom()->getLastName() ?? '');
+                $name = strtoupper(($message->getFrom()->getFirstName() ?? '') . ($message->getFrom()->getLastName() ?? ''));
                 if (str_contains($name, $keyword)) {
                     $this->runOperation($operation, $data, $message, $telegram, $updateId);
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_FROMNAME:
                 if ($message->getForwardFrom()) {
-                    $fromName = ($message->getForwardFrom()->getFirstName() ?? '') . ($message->getForwardFrom()->getLastName() ?? '');
+                    $fromName = strtoupper(($message->getForwardFrom()->getFirstName() ?? '') . ($message->getForwardFrom()->getLastName() ?? ''));
                     if (str_contains($fromName, $keyword)) {
                         $this->runOperation($operation, $data, $message, $telegram, $updateId);
                     }
@@ -83,14 +85,14 @@ class KeywordDetectKeyword extends BaseKeyword
                 break;
             case TChatKeywordsTargetEnum::TARGET_TITLE:
                 if ($message->getForwardFromChat()) {
-                    $title = $message->getForwardFromChat()->getTitle();
+                    $title = strtoupper($message->getForwardFromChat()->getTitle());
                     if (str_contains($title, $keyword)) {
                         $this->runOperation($operation, $data, $message, $telegram, $updateId);
                     }
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_TEXT:
-                $text = $message->getText() ?? $message->getCaption() ?? '';
+                $text = strtoupper($message->getText() ?? $message->getCaption() ?? '');
                 if (str_contains($text, $keyword)) {
                     $this->runOperation($operation, $data, $message, $telegram, $updateId);
                 }
@@ -143,12 +145,16 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $deleter = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
-
         $banner = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
@@ -159,12 +165,16 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $deleter = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
-
         $sender = [
             'chat_id' => $message->getChat()->getId(),
         ];
@@ -174,16 +184,37 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function forward(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+            return;
+        }
 
     }
 
     private function repeat(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+            return;
+        }
 
     }
 
     private function reply(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+            return;
+        }
         if (!isset($data['type'])) {
             return;
         }
@@ -244,12 +275,16 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $cacheKey = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         $deleter = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),
         ];
         $this->dispatch(new DeleteMessageJob($deleter, 0));
-
         $restrictor = [
             'chat_id' => $message->getChat()->getId(),
             'message_id' => $message->getMessageId(),

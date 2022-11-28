@@ -38,13 +38,14 @@ class TUpdateSubscribes extends BaseModel
             ])
             ->first();
         if ($data == null) {
-            Cache::forget("DB::TUpdateSubscribes::update_subscribes");
-            Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
-            return self::query()
+            $data = self::query()
                 ->create([
                     'chat_id' => $chat_id,
                     'software' => $software,
                 ]);
+            Cache::forget("DB::TUpdateSubscribes::update_subscribes");
+            Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
+            return $data;
         }
         return false;
     }
@@ -55,11 +56,12 @@ class TUpdateSubscribes extends BaseModel
      */
     public static function removeAllSubscribe(int $chat_id): int
     {
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
-        return self::query()
+        $int = self::query()
             ->where('chat_id', $chat_id)
             ->delete();
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
+        return $int;
     }
 
     /**
@@ -69,14 +71,15 @@ class TUpdateSubscribes extends BaseModel
      */
     public static function removeSubscribe(int $chat_id, string $software): int
     {
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
-        return self::query()
+        $int = self::query()
             ->where([
                 'chat_id' => $chat_id,
                 'software' => $software,
             ])
             ->delete();
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
+        return $int;
     }
 
     /**

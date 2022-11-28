@@ -82,27 +82,27 @@ class UnWarnCommand extends BaseCommand
                     }
                 }
             }
-            if (!is_numeric($userId)) {
-                $data['text'] .= "Invalid user id.\n";
-                $data['text'] .= "<b>Usage</b>: Reply to his message with /unwarn.\n";
-                $data['text'] .= "<b>Usage</b>: /unwarn @username.\n";
-                $data['text'] .= "<b>Usage</b>: /unwarn user_id.\n";
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            }
-            $warns = TChatWarns::getUserWarns($chatId, $userId);
-            if ($warns <= 0) {
-                $data['text'] .= "<b>Error</b>: This user has no warns.\n";
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            }
-            TChatWarns::revokeUserWarn($chatId, $userId);
-            $data['text'] .= "Remove once warning of user <a href='tg://user?id=$userId'>$userId</a>.\n";
-            $data['text'] .= "<b>Current warn times</b>: $warns.\n";
-            $data['text'] .= "Since you are unwarning it,\n";
-            $data['text'] .= "which seems to mean that the user has not continued to make mistakes,\n";
-            $data['text'] .= "this command will not ban users with more than 3 warnings.\n";
-            $this->dispatch(new SendMessageJob($data));
         }
+        if (!is_numeric($userId)) {
+            $data['text'] .= "Invalid user id.\n";
+            $data['text'] .= "<b>Usage</b>: Reply to his message with /unwarn.\n";
+            $data['text'] .= "<b>Usage</b>: /unwarn @username.\n";
+            $data['text'] .= "<b>Usage</b>: /unwarn user_id.\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
+        $warns = TChatWarns::getUserWarns($chatId, $userId);
+        if ($warns <= 0) {
+            $data['text'] .= "<b>Error</b>: This user has no warns.\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
+        TChatWarns::revokeUserWarn($chatId, $userId);
+        $data['text'] .= "Remove once warning of user <a href='tg://user?id=$userId'>$userId</a>.\n";
+        $data['text'] .= "<b>Current warn times</b>: $warns.\n";
+        $data['text'] .= "Since you are unwarning it,\n";
+        $data['text'] .= "which seems to mean that the user has not continued to make mistakes,\n";
+        $data['text'] .= "this command will not ban users with more than 3 warnings.\n";
+        $this->dispatch(new SendMessageJob($data));
     }
 }

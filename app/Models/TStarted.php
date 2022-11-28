@@ -25,15 +25,18 @@ class TStarted extends BaseModel
         if ($data) {
             return $data;
         }
-        return self::query()
-            ->firstOrCreate(
-                [
+        $data = self::query()
+            ->select('user_id')
+            ->where('user_id', $user_id)
+            ->first();
+        if ($data == null) {
+            $data = self::query()
+                ->create([
                     'user_id' => $user_id,
-                ],
-                [
-                    'user_id' => $user_id,
-                ]
-            );
+                ]);
+            Cache::put("DB::TStarted::user::$user_id", $data, Carbon::now()->addMinutes(5));
+        }
+        return $data;
     }
 
     /**
