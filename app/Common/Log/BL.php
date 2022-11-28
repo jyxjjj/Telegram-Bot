@@ -30,4 +30,9 @@ class BL
         $data = array_values(array_diff($data, [$user_id]));
         return Conversation::save('blacklist', 'blacklist', $data);
     }
+
+    public static function getAll(): array
+    {
+        return Conversation::get('blacklist', 'blacklist');
+    }
 }

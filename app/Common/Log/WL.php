@@ -30,4 +30,9 @@ class WL
         $data = array_values(array_diff($data, [$user_id]));
         return Conversation::save('whitelist', 'whitelist', $data);
     }
+
+    public static function getAll(): array
+    {
+        return Conversation::get('whitelist', 'whitelist');
+    }
 }
