@@ -31,6 +31,10 @@ class ContributeKeyword extends ContributeStep
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $msgType = $message->getType();
+        if ($msgType == 'command') {
+            return;
+        }
         $user_id = $message->getChat()->getId();
         $user_name = ($message->getChat()->getFirstName() ?? '') . ($message->getChat()->getLastName() ?? '');
         $user_account = $message->getChat()->getUsername() ?? '';
@@ -43,12 +47,12 @@ class ContributeKeyword extends ContributeStep
             $cvid = $data['cvid'];
             switch ($data[$cvid]['status']) {
                 case 'name':
-                    $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
-                    if ($data[$cvid]['name'] == null) {
+                    if ($message->getText() == null) {
                         $sender['text'] = '投稿名称不能为空，请重新输入。';
                         $this->dispatch(new SendMessageJob($sender, null, 0));
                         return;
                     }
+                    $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
                     if (strlen($data[$cvid]['name']) > 150) {
                         $sender['text'] .= "名称过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
@@ -93,12 +97,12 @@ class ContributeKeyword extends ContributeStep
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     break;
                 case 'desc':
-                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
-                    if ($data[$cvid]['desc'] == null) {
+                    if ($message->getText() == null) {
                         $sender['text'] = '投稿描述不能为空，请重新输入。';
                         $this->dispatch(new SendMessageJob($sender, null, 0));
                         return;
                     }
+                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
                     if (strlen($data[$cvid]['desc']) > 1500) {
                         $sender['text'] .= "描述过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
