@@ -44,8 +44,8 @@ class TChatWarns extends BaseModel
         $data = self::query()
             ->where('chat_id', $chat_id)
             ->where('user_id', $user_id)
-            ->doesntExist();
-        if ($data) {
+            ->first();
+        if ($data == null) {
             self::query()
                 ->create(
                     [
@@ -71,8 +71,8 @@ class TChatWarns extends BaseModel
         $data = self::query()
             ->where('chat_id', $chat_id)
             ->where('user_id', $user_id)
-            ->doesntExist();
-        if ($data) {
+            ->first();
+        if ($data == null) {
             return;
         }
         $data->times--;
