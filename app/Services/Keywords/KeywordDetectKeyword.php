@@ -196,6 +196,10 @@ class KeywordDetectKeyword extends BaseKeyword
         if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
             return;
         }
+        $cacheKey = "Keyword::FORWARD::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
 
     }
 
@@ -206,6 +210,10 @@ class KeywordDetectKeyword extends BaseKeyword
         $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
         $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+            return;
+        }
+        $cacheKey = "Keyword::REPEAT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey)) {
             return;
         }
 
@@ -220,6 +228,11 @@ class KeywordDetectKeyword extends BaseKeyword
         if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
             return;
         }
+        $cacheKey = "Keyword::REPLY::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
         if (!isset($data['type'])) {
             return;
         }
