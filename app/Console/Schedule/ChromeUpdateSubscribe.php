@@ -6,7 +6,7 @@ use App\Common\Config;
 use App\Exceptions\Handler;
 use App\Jobs\SendMessageJob;
 use App\Models\TUpdateSubscribes;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use DESMG\RFC6986\Hash;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;

@@ -6,7 +6,7 @@ use App\Common\Config;
 use App\Exceptions\Handler;
 use App\Jobs\SendPhotoJob;
 use App\Models\TBilibiliSubscribes;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Cache;

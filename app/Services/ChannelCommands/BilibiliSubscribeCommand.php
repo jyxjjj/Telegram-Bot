@@ -6,7 +6,7 @@ use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Models\TBilibiliSubscribes;
 use App\Services\Base\BaseCommand;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;

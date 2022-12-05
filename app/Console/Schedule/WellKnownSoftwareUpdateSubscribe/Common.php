@@ -2,7 +2,7 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class Common

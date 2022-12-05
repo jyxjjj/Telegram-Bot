@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Common\BotCommon;
 use App\Common\IP;
 use App\Jobs\WebhookJob;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

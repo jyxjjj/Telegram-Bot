@@ -5,7 +5,7 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Support\Facades\Http;

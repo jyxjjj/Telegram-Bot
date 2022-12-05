@@ -6,7 +6,7 @@ use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;

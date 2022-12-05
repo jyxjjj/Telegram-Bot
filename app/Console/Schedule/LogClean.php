@@ -3,7 +3,7 @@
 namespace App\Console\Schedule;
 
 use App\Exceptions\Handler;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use RecursiveDirectoryIterator;
