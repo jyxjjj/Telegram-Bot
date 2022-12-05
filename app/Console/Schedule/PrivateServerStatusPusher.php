@@ -106,10 +106,10 @@ class PrivateServerStatusPusher extends Command
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
             $bool = 0;
-            @socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && @socket_recv($socket, $recv, 255, 0) || $bool++;
-            @socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && @socket_recv($socket, $recv, 255, 0) || $bool++;
-            @socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && @socket_recv($socket, $recv, 255, 0) || $bool++;
-            @socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && @socket_recv($socket, $recv, 255, 0) || $bool++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
             socket_close($socket);
         } catch (Throwable $e) {
             return "Error: {$e->getMessage()}";
@@ -147,7 +147,7 @@ class PrivateServerStatusPusher extends Command
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
-            $bool = @socket_connect($socket, $host, $port);
+            $bool = socket_connect($socket, $host, $port);
             socket_close($socket);
         } catch (Throwable $e) {
             return "Error: {$e->getMessage()}";
@@ -164,6 +164,7 @@ class PrivateServerStatusPusher extends Command
         $text = "⚠️ Server abnormal occurred ⚠️\n";
         $count = 0;
         foreach ($errs as $ip => $reason) {
+            $this->warn("$ip: $reason");
             if (Cache::has("PrivateServerStatusPusher::$ip")) {
                 continue;
             }
