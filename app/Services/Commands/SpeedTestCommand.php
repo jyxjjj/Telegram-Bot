@@ -36,7 +36,7 @@ class SpeedTestCommand extends BaseCommand
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
             'photo' => $share,
-            'caption' => "<b>SpeedTest<b>\n",
+            'caption' => "<b>SpeedTest</b>\n",
         ];
         $data['caption'] .= "<b>Server</b>: <code>{$server['name']}</code>\n";
         $data['caption'] .= "<b>Sponsor</b>: <code>{$server['sponsor']}</code>\n";
