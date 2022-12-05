@@ -27,10 +27,8 @@ class PrivateServerStatusPusher extends Command
         try {
             $this->info('Start to run the server status monitor');
             $icmpServerLists = env('MONITORING_SERVER_LISTS_ICMP', '');
-            $tcpServerLists = env('MONITORING_SERVER_LISTS_TCP', '');
             $icmpServerLists = explode(',', $icmpServerLists);
-            $tcpServerLists = explode(',', $tcpServerLists);
-            $errs = $this->detect($icmpServerLists, $tcpServerLists);
+            $errs = $this->detect($icmpServerLists);
             if (count($errs) > 0) {
                 $this->pushToOwner($errs);
             }
@@ -50,7 +48,7 @@ class PrivateServerStatusPusher extends Command
      * @param array $httpServerLists
      * @return array
      */
-    private function detect(array $icmpServerLists, array $tcpServerLists): array
+    private function detect(array $icmpServerLists): array
     {
         $errs = [];
         $this->info('Start ICMP detection');
@@ -71,27 +69,6 @@ class PrivateServerStatusPusher extends Command
                 $errs[$icmpServer] = $ping;
             }
         }
-        $this->info('Start TCP detection');
-        $tcpServerLists = $this->splitServerListToIpAndPort($tcpServerLists);
-        foreach ($tcpServerLists as $tcpServer) {
-            foreach ($tcpServer as $tcpIp => $tcpPort) {
-                if (filter_var($tcpIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_RES_RANGE)) {
-                    $ip = $tcpIp;
-                } else if (filter_var($tcpIp, FILTER_VALIDATE_DOMAIN)) {
-                    $ip = gethostbyname($tcpIp);
-                    if ($ip === $tcpIp) {
-                        $errs["$tcpIp:$tcpPort"] = 'DNS Resolve Failed';
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-                $ping = $this->tcpPing($ip, $tcpPort);
-                if ($ping) {
-                    $errs["$tcpIp:$tcpPort"] = $ping;
-                }
-            }
-        }
         return $errs;
     }
 
@@ -105,57 +82,21 @@ class PrivateServerStatusPusher extends Command
             $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
-            $bool = 0;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $bool++;
+            $loss = 0;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
             socket_close($socket);
         } catch (Throwable $e) {
             return "Error: {$e->getMessage()}";
         }
-        if ($bool >= 3) {
-            return 'Packet loss >= 75%';
-        }
-        return "";
-    }
-
-    /**
-     * @param array $tcpServerLists
-     * @return array
-     */
-    private function splitServerListToIpAndPort(array $tcpServerLists): array
-    {
-        $result = [];
-        foreach ($tcpServerLists as $tcpServer) {
-            $tcpServer = explode(':', $tcpServer);
-            if (count($tcpServer) == 2) {
-                $result[] = [$tcpServer[0] => $tcpServer[1]];
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @param string $host
-     * @param int $port
-     * @return float
-     */
-    private function tcpPing(string $host, int $port): string
-    {
-        try {
-            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-            socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
-            socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
-            $bool = socket_connect($socket, $host, $port) ||
-                socket_connect($socket, $host, $port) ||
-                socket_connect($socket, $host, $port) ||
-                socket_connect($socket, $host, $port);
-            socket_close($socket);
-        } catch (Throwable $e) {
-            return "Error: {$e->getMessage()}";
-        }
-        return $bool ? "" : "Cannot connect to server";
+        $rate = number_format($loss / 8 * 100, 2, '.', '');
+        return $rate >= 37.5 ? "Packet loss rate: {$rate} >= 37.5%" : "";
     }
 
     /**
@@ -166,14 +107,13 @@ class PrivateServerStatusPusher extends Command
     {
         $text = "⚠️ Server abnormal occurred ⚠️\n";
         $count = 0;
-        foreach ($errs as $ip => $reason) {
-            $this->warn("$ip: $reason");
+        foreach ($errs as $ip) {
             if (Cache::has("PrivateServerStatusPusher::$ip")) {
                 continue;
             }
             $time = Carbon::now();
             Cache::put("PrivateServerStatusPusher::$ip", $time->clone()->getTimestampMs(), $time->clone()->addMinutes(10));
-            $text .= "<code>$ip: $reason</code>\n";
+            $text .= "<code>$ip</code>\n";
             $count++;
         }
         if ($count == 0) {
