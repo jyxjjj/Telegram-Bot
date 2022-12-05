@@ -147,7 +147,10 @@ class PrivateServerStatusPusher extends Command
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
-            $bool = socket_connect($socket, $host, $port);
+            $bool = socket_connect($socket, $host, $port) ||
+                socket_connect($socket, $host, $port) ||
+                socket_connect($socket, $host, $port) ||
+                socket_connect($socket, $host, $port);
             socket_close($socket);
         } catch (Throwable $e) {
             return "Error: {$e->getMessage()}";
