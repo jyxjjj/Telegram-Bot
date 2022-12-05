@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Common\BotCommon;
 use App\Jobs\Base\TelegramBaseQueue;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
