@@ -184,7 +184,7 @@ class PrivateServerStatusPusher extends Command
                     'chat_id' => $user,
                     'text' => $text,
                 ];
-                $this->dispatch(new SendMessageJob($message, null, 0));
+                $this->dispatch(new SendMessageJob($message, null, 300));
                 if ($user != end($to)) {
                     $this->info('Sleep for 5 seconds');
                     sleep(5);
