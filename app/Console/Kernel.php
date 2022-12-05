@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Schedule\ChromeUpdateSubscribe;
 use App\Console\Schedule\LogClean;
 use App\Console\Schedule\PixivDownloader;
+use App\Console\Schedule\PrivateServerStatusPusher;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(ChromeUpdateSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
         $schedule->command(WellKnownSoftwareUpdateSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
         $schedule->command(PixivDownloader::class)->twiceDaily()->runInBackground()->withoutOverlapping(120);
+        $schedule->command(PrivateServerStatusPusher::class)->everyMinute()->runInBackground()->withoutOverlapping(5);
 //        $schedule->command(BilibiliSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
     }
 
