@@ -11,4 +11,5 @@ enum TChatKeywordsTargetEnum: string
     case TARGET_TITLE = 'TITLE';
     case TARGET_TEXT = 'TEXT';
     case TARGET_DICE = 'DICE';
+    case TARGET_STICKER = 'STICKER';
 }

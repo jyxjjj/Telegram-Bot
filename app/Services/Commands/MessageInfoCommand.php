@@ -103,6 +103,7 @@ class MessageInfoCommand extends BaseCommand
         $audio && $audioFileSize = $audio->getFileSize();
         $sticker = $replyTo->getSticker();
         $sticker && $stickerFileId = $sticker->getFileId();
+        $sticker && $stickerFileUniqueId = $sticker->getFileUniqueId();
         $sticker && $stickerFileSize = $sticker->getFileSize();
         $sticker && $stickerIsAnimated = $sticker->getIsAnimated() ? 'true' : 'false';
         $sticker && $stickerIsVideo = $sticker->getIsVideo() ? 'true' : 'false';
@@ -162,6 +163,7 @@ class MessageInfoCommand extends BaseCommand
         $audio && isset($audioMimeType) && $return[] = "Audio MIME Type: $audioMimeType";
         $audio && isset($audioFileSize) && $return[] = "Audio File Size: $audioFileSize";
         $sticker && isset($stickerFileId) && $return[] = "Sticker File ID: $stickerFileId";
+        $sticker && isset($stickerFileUniqueId) && $return[] = "Sticker File Unique ID: $stickerFileUniqueId";
         $sticker && isset($stickerFileSize) && $return[] = "Sticker File Size: $stickerFileSize";
         $sticker && isset($stickerIsAnimated) && $return[] = "Sticker Is Animated: $stickerIsAnimated";
         $sticker && isset($stickerIsVideo) && $return[] = "Sticker Is Video: $stickerIsVideo";

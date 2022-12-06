@@ -14,6 +14,7 @@ use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -105,6 +106,13 @@ class KeywordDetectKeyword extends BaseKeyword
                     }
                 }
                 break;
+            case TChatKeywordsTargetEnum::TARGET_STICKER:
+                if ($message->getSticker()) {
+                    $fileUniqueId = $message->getSticker()->getFileUniqueId() ?? '';
+                    if ($fileUniqueId == $keyword) {
+                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    }
+                }
         }
     }
 
