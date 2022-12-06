@@ -43,9 +43,6 @@ class PrivateServerStatusPusher extends Command
 
     /**
      * @param array $icmpServerLists
-     * @param array $tcpServerLists
-     * @param array $udpServerLists
-     * @param array $httpServerLists
      * @return array
      */
     private function detect(array $icmpServerLists): array
@@ -74,29 +71,47 @@ class PrivateServerStatusPusher extends Command
 
     /**
      * @param string $host
-     * @return float
+     * @return string
      */
     private function ping(string $host): string
     {
+        function getCheckSum(string $package): string
+        {
+            strlen($package) % 2 && $package .= "\x00";
+            $sum = array_sum(unpack('n*', $package));
+            while ($sum >> 16) {
+                $sum = ($sum >> 16) + ($sum & 0xffff);
+            }
+            return pack('n*', ~$sum);
+        }
+
         try {
             $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
             $loss = 0;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
-            socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0) && socket_recv($socket, $recv, 255, 0) || $loss++;
+            for ($i = 0; $i < 8; $i++) {
+                $start = Carbon::now()->getPreciseTimestamp();
+                $checksum = hex2bin('0000');
+                $seq_number = hex2bin(str_pad($i, 4, '0', STR_PAD_LEFT));
+                $package = hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
+                $checksum = getCheckSum($package);
+                $package = hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
+                socket_sendto($socket, $package, strlen($package), 0, $host, 0);
+                $len = socket_recv($socket, $buffer, 256, 0);
+                !$len && $loss++;
+                $end = Carbon::now()->getPreciseTimestamp();
+                $time = $end - $start;
+                $time < 1000000 && usleep(1000000 - $time);
+                $this->info(sprintf("%s %s %s %s ms", $host, bin2hex($package), bin2hex($buffer), number_format($time / 1000, 3, '.', '')));
+            }
             socket_close($socket);
         } catch (Throwable $e) {
-            return "Error: {$e->getMessage()}";
+            $this->error($e->getMessage());
+            return "$host: Error: {$e->getMessage()}";
         }
         $rate = number_format($loss / 8 * 100, 2, '.', '');
-        return $rate >= 37.5 ? "Packet loss rate: {$rate} >= 37.5%" : "";
+        return $rate >= 75 ? "$host: Packet loss rate: $rate >= 75%" : "";
     }
 
     /**
