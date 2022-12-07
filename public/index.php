@@ -1,6 +1,6 @@
 <?php
 
-if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 1) {
+if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 2) {
     echo "PHP Version Mismatch\n";
     exit(130);
 }

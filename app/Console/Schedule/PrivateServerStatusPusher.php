@@ -103,7 +103,7 @@ class PrivateServerStatusPusher extends Command
                 $end = Carbon::now()->getPreciseTimestamp();
                 $time = $end - $start;
                 $time < 1000000 && usleep(1000000 - $time);
-                $this->info(sprintf("%s %s %s %s ms", $host, bin2hex($package), bin2hex($buffer), number_format($time / 1000, 3, '.', '')));
+                $len && $this->info(sprintf("%s %s %s %s ms", $host, bin2hex($package), bin2hex($buffer), number_format($time / 1000, 3, '.', '')));
             }
             socket_close($socket);
         } catch (Throwable $e) {

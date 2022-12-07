@@ -9,7 +9,7 @@
     ],
     "license": "GPL-3.0-only",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-dom": "*",
@@ -19,7 +19,7 @@
         "ext-sockets": "*",
         "desmg/php-common": "^2.0.0",
         "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^9.42.2",
+        "laravel/framework": "^9.43.0",
         "laravel/tinker": "^2.7.3",
         "longman/telegram-bot": "^0.80.0",
         "nunomaduro/collision": "^6.3.1",
