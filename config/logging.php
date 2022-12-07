@@ -1,29 +1,54 @@
 <?php
 
-use App\Common\Log\LogFormatter;
-
-$logging = [];
-$channels = [
-    'single',
-    'sql',
-    'perf',
-    'deprecations',
-    'emergency'
-];
+use App\Common\Log\DataBaseLogger;
 
 $date = date('Y-m-d');
-foreach ($channels as $channel) {
-    $logging['channels'][$channel]['driver'] = 'single';
-    $logging['channels'][$channel]['name'] = $channel;
-    $logging['channels'][$channel]['path'] = storage_path("logs/$date.$channel.log");
-    $logging['channels'][$channel]['formatter'] = LogFormatter::class;
-    $logging['channels'][$channel]['level'] = 'debug';
-    $logging['channels'][$channel]['permission'] = 0644;
-    $logging['channels'][$channel]['bubble'] = false;
-    $logging['channels'][$channel]['locking'] = false;
-}
 
-$logging['default'] = 'single';
-$logging['deprecations'] = 'deprecations';
-
-return $logging;
+return [
+    'default' => 'mysql',
+    'deprecations' => 'deprecations',
+    'channels' => [
+        'mysql' => [
+            'driver' => 'monolog',
+            'name' => 'mysql',
+            'handler' => DataBaseLogger::class,
+            'level' => 'debug',
+            'bubble' => false,
+            'locking' => false,
+        ],
+        'deprecations' => [
+            'driver' => 'monolog',
+            'name' => 'deprecations',
+            'handler' => DataBaseLogger::class,
+            'level' => 'debug',
+            'bubble' => false,
+            'locking' => false,
+        ],
+        'perf' => [
+            'driver' => 'monolog',
+            'name' => 'perf',
+            'handler' => DataBaseLogger::class,
+            'level' => 'debug',
+            'bubble' => false,
+            'locking' => false,
+        ],
+        'sql' => [
+            'driver' => 'single',
+            'name' => 'sql',
+            'path' => storage_path("logs/$date.sql.log"),
+            'level' => 'debug',
+            'permission' => 0644,
+            'bubble' => false,
+            'locking' => false,
+        ],
+        'emergency' => [
+            'driver' => 'single',
+            'name' => 'emergency',
+            'path' => storage_path("logs/$date.emergency.log"),
+            'level' => 'debug',
+            'permission' => 0644,
+            'bubble' => false,
+            'locking' => false,
+        ],
+    ],
+];
