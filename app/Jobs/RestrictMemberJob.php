@@ -65,7 +65,7 @@ class RestrictMemberJob extends TelegramBaseQueue
         ];
         $sender = [
             'chat_id' => $origin['chat_id'],
-            'reply_to_message_id' => $origin['reply_to_message_id'],
+            'reply_to_message_id' => $origin['message_id'],
             'text' => '',
         ];
         $serverResponse = Request::restrictChatMember($restricter);
