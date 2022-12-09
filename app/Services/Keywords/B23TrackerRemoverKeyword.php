@@ -47,7 +47,6 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         $pattern_live = '/https:\/\/live\.bilibili\.com\/[a-zA-Z\d]+/';
         if (preg_match_all($pattern, $text, $matches)) {
             $data['text'] .= "Bilibili Tracker Removed\n";
-            $data['text'] .= "<b>Warning</b>: Beta Function, if error occured, contact @jyxjjj .\n";
             if (count($matches[0]) > 3) {
                 $count = 3;
             } else {
