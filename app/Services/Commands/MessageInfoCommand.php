@@ -90,6 +90,7 @@ class MessageInfoCommand extends BaseCommand
             return $a->getFileSize() <=> $b->getFileSize();
         });
         $photo && $photoFileId = $photo[0]->getFileId();
+        $photo && $photoFileUniqueId = $photo[0]->getFileUniqueId();
         $photo && $photoFileSize = $photo[0]->getFileSize();
         $dice = $replyTo->getDice();
         $dice && $diceEmoji = $dice->getEmoji();
@@ -157,6 +158,7 @@ class MessageInfoCommand extends BaseCommand
         $text && $return[] = "Text: $text";
         $caption && $return[] = "Caption: $caption";
         $photo && isset($photoFileId) && $return[] = "Photo File ID: $photoFileId";
+        $photo && isset($photoFileUniqueId) && $return[] = "Photo File Unique ID: $photoFileUniqueId";
         $photo && isset($photoFileSize) && $return[] = "Photo File Size: $photoFileSize";
         $dice && isset($diceEmoji) && $return[] = "Dice Emoji: $diceEmoji";
         $dice && isset($diceValue) && $return[] = "Dice Value: $diceValue";
