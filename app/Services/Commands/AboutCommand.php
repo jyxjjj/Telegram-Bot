@@ -29,6 +29,7 @@ class AboutCommand extends BaseCommand
         $commits = Http::
         withHeaders(Config::CURL_HEADERS)
             ->accept('application/vnd.github.v3+json')
+            ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/jyxjjj/Telegram-Bot/commits?per_page=1')
             ->json();
         $commits = $commits[0];
