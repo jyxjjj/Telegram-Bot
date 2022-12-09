@@ -50,12 +50,12 @@ class PassPendingJob extends BaseQueue
         $userData = Conversation::get($user_id, 'contribute');
         $userData[$cvid]['status'] = 'pass';
         Conversation::save($user_id, 'contribute', $userData);
-        Conversation::save($cvid, 'link', ['link' => $userData[$cvid]['link']]);
+        Conversation::save('link', 'link', [$cvid => $userData[$cvid]['link']]);
         $message_pic = $userData[$cvid]['pic'];
         $message_name = $userData[$cvid]['name'];
         $message_desc = $userData[$cvid]['desc'];
         $original_link = $userData[$cvid]['link'];
-        $message_link = "<a href='https://t.me/{$bot_name}?start=get{$cvid}'>点击获取</a>";
+        $message_link = "<a href='https://t.me/$bot_name?start=get$cvid'>点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
         $adText = env('AD_TEXT');
@@ -63,33 +63,33 @@ class PassPendingJob extends BaseQueue
             unset($sender['text']);
             unset($sender3['text']);
             $sender['photo'] = $message_pic;
-            $sender['caption'] = "资源名称：{$message_name}\n\n";
-            $sender['caption'] .= "资源简介：{$message_desc}\n\n";
-            $sender['caption'] .= "链接：{$message_link}\n\n";
-            $sender['caption'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender['caption'] .= "{$adText}\n\n";
+            $sender['caption'] = "资源名称：$message_name\n\n";
+            $sender['caption'] .= "资源简介：$message_desc\n\n";
+            $sender['caption'] .= "链接：$message_link\n\n";
+            $sender['caption'] .= "🔍 关键词：$message_tag\n\n";
+            $sender['caption'] .= "$adText\n\n";
             $sender3['photo'] = $message_pic;
-            $sender3['caption'] = "资源名称：{$message_name}\n\n";
-            $sender3['caption'] .= "资源简介：{$message_desc}\n\n";
-            $sender3['caption'] .= "链接：{$original_link}\n\n";
-            $sender3['caption'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender3['caption'] .= "{$adText}\n\n";
+            $sender3['caption'] = "资源名称：$message_name\n\n";
+            $sender3['caption'] .= "资源简介：$message_desc\n\n";
+            $sender3['caption'] .= "链接：$original_link\n\n";
+            $sender3['caption'] .= "🔍 关键词：$message_tag\n\n";
+            $sender3['caption'] .= "$adText\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendPhoto($sender);
             $serverResponse2 = Request::sendPhoto($sender2);
             $serverResponse3 = Request::sendPhoto($sender3);
         } else {
-            $sender['text'] .= "资源名称：{$message_name}\n\n";
-            $sender['text'] .= "资源简介：{$message_desc}\n\n";
-            $sender['text'] .= "链接：{$message_link}\n\n";
-            $sender['text'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender['text'] .= "{$adText}\n\n";
-            $sender3['text'] .= "资源名称：{$message_name}\n\n";
-            $sender3['text'] .= "资源简介：{$message_desc}\n\n";
-            $sender3['text'] .= "链接：{$original_link}\n\n";
-            $sender3['text'] .= "🔍 关键词：{$message_tag}\n\n";
-            $sender3['text'] .= "{$adText}\n\n";
+            $sender['text'] .= "资源名称：$message_name\n\n";
+            $sender['text'] .= "资源简介：$message_desc\n\n";
+            $sender['text'] .= "链接：$message_link\n\n";
+            $sender['text'] .= "🔍 关键词：$message_tag\n\n";
+            $sender['text'] .= "$adText\n\n";
+            $sender3['text'] .= "资源名称：$message_name\n\n";
+            $sender3['text'] .= "资源简介：$message_desc\n\n";
+            $sender3['text'] .= "链接：$original_link\n\n";
+            $sender3['text'] .= "🔍 关键词：$message_tag\n\n";
+            $sender3['text'] .= "$adText\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
             $serverResponse = Request::sendMessage($sender);
@@ -125,14 +125,14 @@ class PassPendingJob extends BaseQueue
             'chat_id' => $user_id,
             'text' => '',
         ];
-        $sender['text'] .= "您的资源<code>{$message_name}</code>已通过审核，已经发布到频道中。\n\n";
+        $sender['text'] .= "您的资源<code>$message_name</code>已通过审核，已经发布到频道中。\n\n";
         $sender['text'] .= "请点击下方按钮查看频道内消息，如未看到“查看频道消息”按钮，或按钮无法正常跳转，则说明发送到频道时遇到问题，请联系Bot技术支持。\n\n";
         $sender['reply_markup'] = new InlineKeyboard([]);
         if ($messageId != 0) {
             $chatIdForLink = substr(env('YPP_TARGET_ID'), 4);
             $button = new InlineKeyboardButton([
                 'text' => '查看主频道消息',
-                'url' => "https://t.me/c/{$chatIdForLink}/{$messageId}",
+                'url' => "https://t.me/c/$chatIdForLink/$messageId",
             ]);
             $sender['reply_markup']->addRow($button);
         }
@@ -140,7 +140,7 @@ class PassPendingJob extends BaseQueue
             $chatIdForLink2 = substr(env('YPP_TARGET_ID_2'), 4);
             $buttonb = new InlineKeyboardButton([
                 'text' => '查看备份频道消息',
-                'url' => "https://t.me/c/{$chatIdForLink2}/{$messageId2}",
+                'url' => "https://t.me/c/$chatIdForLink2/$messageId2",
             ]);
             $sender['reply_markup']->addRow($buttonb);
         }
