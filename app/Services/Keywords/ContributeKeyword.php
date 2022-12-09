@@ -208,7 +208,7 @@ class ContributeKeyword extends ContributeStep
                     $data_pending[$cvid] = $user_id;
                     Conversation::save('pending', 'pending', $data_pending);
 
-                    $user_link = "<a href='tg://user?id={$user_id}'>{$user_id}</a>";
+                    $user_link = "<a href='tg://user?id=$user_id'>$user_id</a>";
 
                     unset($sender['reply_markup']);
                     if (WL::get($user_id)) {
@@ -216,21 +216,21 @@ class ContributeKeyword extends ContributeStep
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         $sender['text'] = "白名单：\n";
                         $sender['text'] .= "<a href='{$data[$cvid]['link']}'>{$data[$cvid]['name']}</a>\n\n";
-                        $sender['text'] .= "投稿人：{$user_link}\n";
-                        $sender['text'] .= "投稿人昵称：{$user_name}\n";
-                        $sender['text'] .= "投稿人账号：{$user_account}\n";
-                        $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
+                        $sender['text'] .= "投稿人：$user_link\n";
+                        $sender['text'] .= "投稿人昵称：$user_name\n";
+                        $sender['text'] .= "投稿人账号：$user_account\n";
+                        $sender['text'] .= "点击复制ID：<code>$user_id</code>\n";
                         $this->dispatch(new PassPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else if (BL::get($user_id)) {
                         // 将 '黑名单用户{name}的投稿已自动拒绝' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
-                        $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>{$cvid}</code>\n\n";
-                        $sender['text'] .= "投稿人：{$user_link}\n";
+                        $sender['text'] = "黑名单用户{$user_link}的投稿{$data[$cvid]['name']}已自动拒绝\n\n投稿ID:<code>$cvid</code>\n\n";
+                        $sender['text'] .= "投稿人：$user_link\n";
                         $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
-                        $sender['text'] .= "投稿人昵称：{$user_name}\n";
-                        $sender['text'] .= "投稿人账号：{$user_account}\n";
-                        $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
+                        $sender['text'] .= "投稿人昵称：$user_name\n";
+                        $sender['text'] .= "投稿人账号：$user_account\n";
+                        $sender['text'] .= "点击复制ID：<code>$user_id</code>\n";
                         $this->dispatch(new RejectPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else {
@@ -246,19 +246,21 @@ class ContributeKeyword extends ContributeStep
                             $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
                             $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                            $sender['caption'] .= "投稿人：{$user_link}\n";
-                            $sender['caption'] .= "投稿人昵称：{$user_name}\n";
-                            $sender['caption'] .= "投稿人账号：{$user_account}\n";
-                            $sender['caption'] .= "点击复制ID：<code>{$user_id}</code>\n";
+                            $sender['caption'] .= "投稿ID：$cvid\n";
+                            $sender['caption'] .= "投稿人：$user_link\n";
+                            $sender['caption'] .= "投稿人昵称：$user_name\n";
+                            $sender['caption'] .= "投稿人账号：$user_account\n";
+                            $sender['caption'] .= "点击复制ID：<code>$user_id</code>\n";
                         } else {
                             $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
                             $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
                             $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                             $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                            $sender['text'] .= "投稿人：{$user_link}\n";
-                            $sender['text'] .= "投稿人昵称：{$user_name}\n";
-                            $sender['text'] .= "投稿人账号：{$user_account}\n";
-                            $sender['text'] .= "点击复制ID：<code>{$user_id}</code>\n";
+                            $sender['text'] .= "投稿ID：$cvid\n";
+                            $sender['text'] .= "投稿人：$user_link\n";
+                            $sender['text'] .= "投稿人昵称：$user_name\n";
+                            $sender['text'] .= "投稿人账号：$user_account\n";
+                            $sender['text'] .= "点击复制ID：<code>$user_id</code>\n";
                         }
                         // InlineKeyboard
                         $sender['reply_markup'] = new InlineKeyboard([]);
