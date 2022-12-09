@@ -38,12 +38,8 @@ class StartCommand extends BaseCommand
         $data['text'] .= env('LONG_START_AD');
         if (str_starts_with($payload, 'get')) {
             $cvid = substr($payload, 3);
-            $linkData = Conversation::get($cvid, 'link');
-            $link = $linkData['link'] ?? "获取链接失败(错误1)\n请联系管理员";
-            if ($link == "获取链接失败(错误1)\n请联系管理员") {
-                $linkData = Conversation::get('link', 'link');
-                $link = $linkData[$cvid] ?? "获取链接失败(错误2)\n请联系管理员";
-            }
+            $linkData = Conversation::get('link', 'link');
+            $link = $linkData[$cvid] ?? "获取链接失败\n请联系管理员";
             $data['text'] .= "\n👇👇👇您所获取的链接👇👇👇";
             $data['text'] .= "\n$link\n";
         }
