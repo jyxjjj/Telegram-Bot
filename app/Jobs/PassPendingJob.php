@@ -50,7 +50,9 @@ class PassPendingJob extends BaseQueue
         $userData = Conversation::get($user_id, 'contribute');
         $userData[$cvid]['status'] = 'pass';
         Conversation::save($user_id, 'contribute', $userData);
-        Conversation::save('link', 'link', [$cvid => $userData[$cvid]['link']]);
+        $linkData = Conversation::get('link', 'link');
+        $linkData[$cvid] = $userData[$cvid]['link'];
+        Conversation::save('link', 'link', $linkData);
         $message_pic = $userData[$cvid]['pic'];
         $message_name = $userData[$cvid]['name'];
         $message_desc = $userData[$cvid]['desc'];
