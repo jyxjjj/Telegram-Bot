@@ -33,10 +33,10 @@ class StartCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= "Hello, I am here alive.\n";
-        $data['text'] .= "Type /help to get the help.\n";
-        $data['text'] .= "Type /about to get the open source information, privacy policies, usage agreements.\n";
-        $data['text'] .= "This bot is none of any of your groups' business, it is free for all and can be set by third parties to do anything it can do.\n";
-        $data['text'] .= "We do not provide any security promises and data keeps.\n";
+        $data['text'] .= "Type /help to get the command list.\n";
+        $data['text'] .= "Type /about to get the <b>open source information</b>, <b>privacy policies</b>, <b>usage agreements</b>.\n";
+        $data['text'] .= "This bot is <b>none of any of your groups' business</b>, it is <i>free for all</i> and can be set by <b>third parties</b> to do <i>anything it can do</i>.\n";
+        $data['text'] .= "We <b>do not</b> provide any <i>security promises and data keeps</i>.\n";
         $data['text'] .= "Any questions, please contact @jyxjjj .\n";
         $data['text'] .= "<b>Your user_id</b>: <a href='tg://user?id=$startedUser->user_id'>$startedUser->user_id</a>\n";
         $payload && $data['text'] .= "<b>Your payload</b>: <code>$payload</code>\n";
