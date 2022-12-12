@@ -6,8 +6,6 @@ use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Support\Carbon;
-use DOMDocument;
-use DOMXPath;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -26,17 +24,20 @@ class Kernel implements SoftwareInterface
         $get = Http::
         withHeaders($headers)
             ->accept('text/html')
-            ->get('https://www.kernel.org/');
+            ->get('https://www.kernel.org/feeds/kdist.xml');
         $version = '0.0.0';
         if ($get->status() == 200) {
             $data = $get->body();
-            //#latest_link > a
-            $html = new DOMDocument();
-            @$html->loadHTML($data);
-            $xpath = new DOMXPath($html);
-            $nodes = $xpath->query('//*[@id="latest_link"]/a');
-            if ($nodes->length > 0) {
-                $version = $nodes->item(0)->nodeValue;
+            $xml = (array)simplexml_load_string($data);
+            $channel = (array)$xml['channel'];
+            $items = (array)$channel['item'];
+            foreach ($items as $item) {
+                $item = (array)$item;
+                $title = $item['title'];
+                if (str_ends_with($title, 'stable')) {
+                    $version = explode(':', $title)[0];
+                    break;
+                }
             }
         }
         return $version;
