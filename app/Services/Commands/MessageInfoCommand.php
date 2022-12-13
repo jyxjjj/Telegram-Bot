@@ -86,8 +86,11 @@ class MessageInfoCommand extends BaseCommand
         $text = $replyTo->getText();
         $caption = $replyTo->getCaption();
         $photo = $replyTo->getPhoto();
-        $photo && usort($photo, function (PhotoSize $a, PhotoSize $b) {
-            return $a->getFileSize() <=> $b->getFileSize();
+        $photo && usort($photo, function (PhotoSize $left, PhotoSize $right) {
+            return bccomp(
+                bcmul($right->getWidth(), $right->getHeight()),
+                bcmul($left->getWidth(), $left->getHeight())
+            );
         });
         $photo && $photoFileId = $photo[0]->getFileId();
         $photo && $photoFileUniqueId = $photo[0]->getFileUniqueId();
