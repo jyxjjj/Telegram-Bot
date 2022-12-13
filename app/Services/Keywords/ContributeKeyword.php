@@ -10,6 +10,7 @@ use App\Jobs\RejectPendingJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -77,8 +78,11 @@ class ContributeKeyword extends ContributeStep
                     $isCancel = $message->getText() == '不附加图片';
                     if (!$isCancel) {
                         $photos = $message->getPhoto();
-                        $photos && usort($photos, function (PhotoSize $a, PhotoSize $b) {
-                            return $a->getFileSize() <=> $b->getFileSize();
+                        $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
+                            return bccomp(
+                                bcmul($right->getWidth(), $right->getHeight()),
+                                bcmul($left->getWidth(), $left->getHeight())
+                            );
                         });
                         $photos && $photoFileId = $photos[0]->getFileId();
                         if (!isset($photoFileId)) {
@@ -309,8 +313,11 @@ class ContributeKeyword extends ContributeStep
                 $data[$cvid]['link'] = $matches[3];
                 $data[$cvid]['tag'] = $matches[4];
                 $photos = $message->getPhoto();
-                $photos && usort($photos, function (PhotoSize $a, PhotoSize $b) {
-                    return $a->getFileSize() <=> $b->getFileSize();
+                $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
+                    return bccomp(
+                        bcmul($right->getWidth(), $right->getHeight()),
+                        bcmul($left->getWidth(), $left->getHeight())
+                    );
                 });
                 $photos && $photoFileId = $photos[0]->getFileId();
                 if (!isset($photoFileId)) {
