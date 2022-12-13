@@ -6,7 +6,6 @@ use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
-use Longman\TelegramBot\Entities\PhotoSize;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -42,22 +41,9 @@ class AddMyStickerCommand extends BaseCommand
         $stickerName = 'user_' . $userId . '_by_' . $telegram->getBotUsername();
         $sticker = $reply_to_message->getSticker();
         if (!$sticker) {
-            $photo = $reply_to_message->getPhoto();
-            if (!$photo) {
-                $data['text'] .= "<b>Error</b>: Cannot get the sticker from the message you replied to.\n";
-                $this->dispatch(new SendMessageJob($data));
-                return;
-            } else {
-                usort($photo, function (PhotoSize $left, PhotoSize $right) {
-                    return bccomp(
-                        bcmul($right->getWidth(), $right->getHeight()),
-                        bcmul($left->getWidth(), $left->getHeight())
-                    );
-                });
-                $photo = $photo[0];
-                $stickerFileId = $photo->getFileId();
-                $stickerEmoji = hex2bin('F09F8F9E');
-            }
+            $data['text'] .= "<b>Error</b>: Cannot get the sticker from the message you replied to.\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
         } else {
             $stickerFileId = $sticker->getFileId();
             $stickerEmoji = $sticker->getEmoji();
