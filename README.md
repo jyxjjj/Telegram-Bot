@@ -25,7 +25,7 @@ A PHP Laravel Telegram Bot
 
 [![Fedora](https://img.shields.io/badge/Fedora-37-blue.svg?style=flat-square)](https://getfedora.org)
 
-[![PHP](https://img.shields.io/badge/PHP-^8.2-blue.svg?style=flat-square)](https://www.php.net/downloads.php)
+[![PHP](https://img.shields.io/badge/PHP-^8.2-purple.svg?style=flat-square)](https://www.php.net/downloads.php)
 
 [![Mariadb](https://img.shields.io/badge/MariaDB-^10.10-yellow.svg?style=flat-square)](https://mariadb.org/download/)
 
@@ -149,4 +149,4 @@ Or you can let bot call the laravel official command:
 
 # Donate
 
-Alipay <img src="https://github.com/jyxjjj/jyxjjj/blob/main/resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
+Alipay <img src="https://github.com/jyxjjj/jyxjjj/raw/main/resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
