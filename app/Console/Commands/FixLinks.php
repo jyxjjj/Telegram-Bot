@@ -32,7 +32,7 @@ class FixLinks extends Command
             foreach ($userData as $cvid => $cvinfo) {
                 if (str_starts_with($cvid, '16')) {
                     if ($cvinfo['status'] == 'pass') {
-                        $this->info($cvid);
+                        self::info($cvid);
                         $link = $cvinfo['link'];
                         $newLinks = Conversation::get('link', 'link');
                         $newLinks[$cvid] = $link;

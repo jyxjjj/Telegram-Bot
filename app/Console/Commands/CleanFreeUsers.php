@@ -33,7 +33,7 @@ class CleanFreeUsers extends Command
                 continue;
             }
             if ($userData === ['status' => 'free']) {
-                $this->info($filename);
+                self::info($filename);
                 unlink($file->getPathname());
             }
         }
