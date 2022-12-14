@@ -2,7 +2,7 @@ version: '3.9'
 services:
     mariadb:
         container_name: mariadb
-        image: mariadb:latest
+        image: mariadb:10.10.2
         environment:
             - TZ=Etc/GMT-8
             - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
@@ -32,12 +32,12 @@ services:
             - net.ipv4.tcp_synack_retries=2
             - net.ipv4.tcp_fastopen=3
         dns:
-            - 223.5.5.5
-            - 223.6.6.6
-            - 1.1.1.1
-            - 1.0.0.1
             - 8.8.8.8
             - 8.8.4.4
+            - 1.1.1.1
+            - 1.0.0.1
+            - 223.5.5.5
+            - 223.6.6.6
         ports:
             -   target: 3306
                 published: 3306
@@ -54,7 +54,7 @@ services:
             disable: true
     redis:
         container_name: redis
-        image: redis:latest
+        image: redis:7.0.6
         environment:
             - TZ=Etc/GMT-8
         deploy:
@@ -83,12 +83,12 @@ services:
             - net.ipv4.tcp_synack_retries=2
             - net.ipv4.tcp_fastopen=3
         dns:
-            - 223.5.5.5
-            - 223.6.6.6
-            - 1.1.1.1
-            - 1.0.0.1
             - 8.8.8.8
             - 8.8.4.4
+            - 1.1.1.1
+            - 1.0.0.1
+            - 223.5.5.5
+            - 223.6.6.6
         ports:
             -   target: 6379
                 published: 6379
