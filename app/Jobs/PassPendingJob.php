@@ -129,6 +129,7 @@ class PassPendingJob extends BaseQueue
         ];
         $sender['text'] .= "您的资源<code>$message_name</code>已通过审核，已经发布到频道中。\n\n";
         $sender['text'] .= "请点击下方按钮查看频道内消息，如未看到“查看频道消息”按钮，或按钮无法正常跳转，则说明发送到频道时遇到问题，请联系Bot技术支持。\n\n";
+        $sender['text'] .= "PS：遇到这个情况一定要联系，但大概率是消息长度过长。\n\n";
         $sender['reply_markup'] = new InlineKeyboard([]);
         if ($messageId != 0) {
             $chatIdForLink = substr(env('YPP_TARGET_ID'), 4);

@@ -10,7 +10,6 @@ use App\Jobs\RejectPendingJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -32,6 +31,8 @@ class ContributeKeyword extends ContributeStep
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $MAX_NAME_LEN = 128;
+        $MAX_DESC_LEN = 1024;
         $msgType = $message->getType();
         if ($msgType == 'command') {
             return;
@@ -54,7 +55,7 @@ class ContributeKeyword extends ContributeStep
                         return;
                     }
                     $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
-                    if (strlen($data[$cvid]['name']) > 150) {
+                    if (strlen($data[$cvid]['name']) > $MAX_NAME_LEN) {
                         $sender['text'] .= "名称过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
@@ -107,7 +108,7 @@ class ContributeKeyword extends ContributeStep
                         return;
                     }
                     $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $message->getText());
-                    if (strlen($data[$cvid]['desc']) > 1500) {
+                    if (strlen($data[$cvid]['desc']) > $MAX_DESC_LEN) {
                         $sender['text'] .= "描述过长，请重新输入。\n";
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
@@ -310,35 +311,39 @@ class ContributeKeyword extends ContributeStep
                 } catch (Throwable) {
                     $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                 }
-                $data[$cvid]['link'] = $matches[3];
-                $data[$cvid]['tag'] = $matches[4];
-                $photos = $message->getPhoto();
-                $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
-                    return bccomp(
-                        bcmul($right->getWidth(), $right->getHeight()),
-                        bcmul($left->getWidth(), $left->getHeight())
-                    );
-                });
-                $photos && $photoFileId = $photos[0]->getFileId();
-                if (!isset($photoFileId)) {
-                    $sender['text'] = "格式错误，必须包含图片，请重新发送";
+                if (strlen($data[$cvid]['name']) > $MAX_NAME_LEN || strlen($data[$cvid]['desc']) > $MAX_DESC_LEN) {
+                    $sender['text'] = "资源名称或简介过长，请重新发送";
                 } else {
-                    $data[$cvid]['pic'] = $photoFileId;
-                    $data['status'] = 'contribute';
-                    $data[$cvid]['status'] = 'confirm';
-                    Conversation::save($user_id, 'contribute', $data);
-                    $sender['photo'] = $data[$cvid]['pic'];
-                    $sender['text'] = null;
-                    $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
-                    $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                    $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
-                    $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                    $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
-                    $sender['reply_markup'] = new Keyboard([]);
-                    $sender['reply_markup']->setResizeKeyboard(true);
-                    $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
-                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
-                    $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                    $data[$cvid]['link'] = $matches[3];
+                    $data[$cvid]['tag'] = $matches[4];
+                    $photos = $message->getPhoto();
+                    $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
+                        return bccomp(
+                            bcmul($right->getWidth(), $right->getHeight()),
+                            bcmul($left->getWidth(), $left->getHeight())
+                        );
+                    });
+                    $photos && $photoFileId = $photos[0]->getFileId();
+                    if (!isset($photoFileId)) {
+                        $sender['text'] = "格式错误，必须包含图片，请重新发送";
+                    } else {
+                        $data[$cvid]['pic'] = $photoFileId;
+                        $data['status'] = 'contribute';
+                        $data[$cvid]['status'] = 'confirm';
+                        Conversation::save($user_id, 'contribute', $data);
+                        $sender['photo'] = $data[$cvid]['pic'];
+                        $sender['text'] = null;
+                        $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                        $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                        $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
+                        $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                        $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                        $sender['reply_markup'] = new Keyboard([]);
+                        $sender['reply_markup']->setResizeKeyboard(true);
+                        $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                        $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                        $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                    }
                 }
             } else {
                 $sender['text'] = "格式错误，请重新发送";
