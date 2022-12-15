@@ -66,7 +66,7 @@ class UnMuteCommand extends BaseCommand
         $data = [
             'chat_id' => $chatId,
             'message_id' => $messageId,
-            'restrict_user_id' => $restrictUserId,
+            'user_id' => $restrictUserId,
         ];
         $this->dispatch(new RestrictMemberJob($data, 1, true));
     }

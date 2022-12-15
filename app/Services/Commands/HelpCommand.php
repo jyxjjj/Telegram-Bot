@@ -71,9 +71,9 @@ class HelpCommand extends BaseCommand
         } else {
             foreach ($classes as $class) {
                 if ($class->name == $commandName) {
-                    $str = "Command: <code>$class->name<code>\n";
-                    $str .= "Description: <code>$class->description<code>\n";
-                    $str .= "Usage: <code>$class->usage<code>\n\n";
+                    $str = "Command: <code>$class->name</code>\n";
+                    $str .= "Description: <code>$class->description</code>\n";
+                    $str .= "Usage: <code>$class->usage</code>\n\n";
                     $str .= "<b>ParamDesc</b>:\n";
                     $str .= "reply_to: It is not a param, you can/should reply to a message to use the command contains this directive.\n";
                     $str .= "at: You can/should metion a user via @ to use the command contains this directive.\n";
