@@ -68,20 +68,23 @@ class HelpCommand extends BaseCommand
             }
             sort($help);
             return implode("\n", $help);
+        } else if ($commandName == 'ParamDesc') {
+            $str = "<b>ParamDesc</b>:\n";
+            $str .= "reply_to: It is not a param, you can/should reply to a message to use the command contains this directive.\n";
+            $str .= "at: You can/should metion a user via @ to use the command contains this directive.\n";
+            $str .= "text_mention: You can/should metion a user who has no username to use the command contains this directive.\n";
+            $str .= "user_id: You can/should enter a valid user_id to use the command contains this directive.\n";
+            $str .= "unsupported: This directive has not been supported by this command yet.\n";
+            $str .= "Text included by {}: Params Must Be Included, but may have default value.\n";
+            $str .= "Text included by []: Optional Params.\n";
+            return $str;
         } else {
             foreach ($classes as $class) {
                 if ($class->name == $commandName) {
                     $str = "Command: <code>$class->name</code>\n";
                     $str .= "Description: <code>$class->description</code>\n";
                     $str .= "Usage: <code>$class->usage</code>\n\n";
-                    $str .= "<b>ParamDesc</b>:\n";
-                    $str .= "reply_to: It is not a param, you can/should reply to a message to use the command contains this directive.\n";
-                    $str .= "at: You can/should metion a user via @ to use the command contains this directive.\n";
-                    $str .= "text_mention: You can/should metion a user who has no username to use the command contains this directive.\n";
-                    $str .= "user_id: You can/should enter a valid user_id to use the command contains this directive.\n";
-                    $str .= "unsupported: This directive has not been supported by this command yet.\n";
-                    $str .= "Text included by {}: Params Must Be Included, but may have default value.\n";
-                    $str .= "Text included by []: Optional Params.\n";
+                    $str .= "Send <code>/help ParamDesc</code> (Case-Sensitive) to get the param description.\n";
                     return $str;
                 }
             }
