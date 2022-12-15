@@ -50,7 +50,7 @@ class CommandHandleService extends BaseService
             if ($command_class->name != $sendCommand) { // Detect if command matches
                 continue;
             }
-            if ($command_class->admin && $notAdmin) {// Detect if command is admin only
+            if ($command_class->admin && $notAdmin) { // Detect if command is admin only
                 $data = [
                     'chat_id' => $senderId,
                     'reply_to_message_id' => $messageId,
