@@ -159,8 +159,14 @@ class KeywordDetectKeyword extends BaseKeyword
             return;
         }
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-            return;
+        if ($message->getFrom()->getId() == '777000') {
+            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
+        } else {
+            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
         }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
@@ -188,8 +194,14 @@ class KeywordDetectKeyword extends BaseKeyword
     private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
     {
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-            return;
+        if ($message->getFrom()->getId() == '777000') {
+            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
+        } else {
+            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
         }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
@@ -319,8 +331,14 @@ class KeywordDetectKeyword extends BaseKeyword
             return;
         }
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-            return;
+        if ($message->getFrom()->getId() == '777000') {
+            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
+        } else {
+            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+                return;
+            }
         }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
