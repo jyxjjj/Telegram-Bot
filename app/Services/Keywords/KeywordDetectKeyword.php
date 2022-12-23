@@ -7,14 +7,15 @@ use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
 use App\Jobs\RestrictMemberJob;
 use App\Jobs\SendMessageJob;
+use App\Models\TChatAdmins;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
+use App\Models\TChatKeywordsWhiteLists;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -153,6 +154,14 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
+        if (in_array($message->getFrom()->getId(), $admins, true)) {
+            return;
+        }
+        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
+        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+            return;
+        }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
             return;
@@ -178,6 +187,10 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
+        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+            return;
+        }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
             return;
@@ -301,6 +314,14 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
     {
+        $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
+        if (in_array($message->getFrom()->getId(), $admins, true)) {
+            return;
+        }
+        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
+        if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
+            return;
+        }
         $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
         if (Cache::has($cacheKey)) {
             return;
