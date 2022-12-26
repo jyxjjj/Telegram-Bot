@@ -27,8 +27,6 @@ class ReplyToRejectKeyword extends ContributeStep
                 $cvid = $matches[1];
                 $pendingReply = Conversation::get('reply', 'reject');
                 if (isset($pendingReply[$cvid])) {
-                    $from_id = $pendingReply[$cvid]['from_id'];
-                    $from_nickname = $pendingReply[$cvid]['from_nickname'];
                     $user_id = $pendingReply[$cvid]['user_id'];
                     $message_name = $pendingReply[$cvid]['message_name'];
                     unset($pendingReply[$cvid]);
@@ -38,7 +36,8 @@ class ReplyToRejectKeyword extends ContributeStep
                         'text' => '',
                     ];
                     $data['text'] .= "管理员已经回复了\n";
-                    $data['text'] .= "有关您的投稿 <code>{$message_name}</code>\n";
+                    $data['text'] .= "有关您的投稿 <code>$message_name</code>\n";
+                    $data['text'] .= "[投稿ID]:$cvid\n";
                     $data['text'] .= "被拒绝的原因：\n";
                     $data['text'] .= $message->getText();
                     $this->dispatch(new SendMessageJob($data, null, 0));

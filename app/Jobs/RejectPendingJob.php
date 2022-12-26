@@ -93,7 +93,7 @@ class RejectPendingJob extends BaseQueue
                 'text' => '',
             ];
             $reply['text'] .= "请<a href='tg://user?id={$fromId}'>{$fromNickname}</a>回复本条消息，以告知用户拒绝理由。\n\n";
-            $reply['text'] .= "投稿ID:{$cvid}\n\n";
+            $reply['text'] .= "投稿ID:$cvid\n\n";
             SendMessageJob::dispatch($reply, null, 0);
         }
     }

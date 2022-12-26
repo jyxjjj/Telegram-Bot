@@ -23,7 +23,11 @@ class ContributeKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() !== '取消投稿' && $message->getText() !== '阿里云盘分步投稿' && $message->getText() !== '阿里云盘一步投稿';
+        return $message->getChat()->isPrivateChat() &&
+            $message->getText() !== '取消投稿' &&
+            $message->getText() !== '阿里云盘分步投稿' &&
+            $message->getText() !== '阿里云盘一步投稿' &&
+            !$message->getReplyToMessage();
     }
 
     /**
