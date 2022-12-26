@@ -37,7 +37,7 @@ class ReplyToRejectKeyword extends ContributeStep
                         'chat_id' => $user_id,
                         'text' => '',
                     ];
-                    $data['text'] .= "管理员 <a href='tg://user?id={$from_id}'>{$from_nickname}</a> 已经回复了\n";
+                    $data['text'] .= "管理员已经回复了\n";
                     $data['text'] .= "有关您的投稿 <code>{$message_name}</code>\n";
                     $data['text'] .= "被拒绝的原因：\n";
                     $data['text'] .= $message->getText();

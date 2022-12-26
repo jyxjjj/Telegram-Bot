@@ -66,7 +66,7 @@ class RejectPendingJob extends BaseQueue
         ];
         $message_name = $userData[$cvid]['name'];
         $sender['text'] .= "您提交的资源<code>{$message_name}</code>已被拒绝。";
-        $needsReply && $sender['text'] .= "管理员<a href='tg://user?id={$fromId}'>{$fromNickname}</a>选择回复您拒绝理由，请稍候。";
+        $needsReply && $sender['text'] .= "管理员选择回复您拒绝理由，请稍候。";
         $sender['reply_markup'] = new InlineKeyboard([]);
         $button1 = new InlineKeyboardButton([
             'text' => '技术支持',

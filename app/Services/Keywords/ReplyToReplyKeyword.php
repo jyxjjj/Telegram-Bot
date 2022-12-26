@@ -40,7 +40,7 @@ class ReplyToReplyKeyword extends ContributeStep
                     'chat_id' => $userId,
                     'text' => ''
                 ];
-                $data['text'] .= "来自管理员 <a href='tg://user?id={$message->getFrom()->getId()}'>{$message->getFrom()->getFirstName()}</a>(有关您的投稿 <code>{$cvname}</code>): \n";
+                $data['text'] .= "来自管理员有关您的投稿 <code>{$cvname}</code> : \n";
                 $data['text'] .= "\n";
                 $data['text'] .= $message->getText();
                 $data['text'] .= "\n";
