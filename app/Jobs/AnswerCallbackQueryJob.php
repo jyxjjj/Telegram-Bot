@@ -3,12 +3,12 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
-use App\Jobs\Base\TelegramBaseQueue;
+use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class AnswerCallbackQueryJob extends TelegramBaseQueue
+class AnswerCallbackQueryJob extends BaseQueue
 {
     private array $data;
 
