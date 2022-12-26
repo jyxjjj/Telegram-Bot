@@ -47,7 +47,8 @@ class ReplyToReplyKeyword extends ContributeStep
                 $data['text'] .= $message->getText();
                 $data['text'] .= "\n";
                 $data['text'] .= "\n";
-                $data['text'] .= "[投稿ID]:$cvid\n\n";
+                $data['text'] .= "[投稿ID]:$cvid\n";
+                $data['text'] .= "\n提示：引用回复本条消息，与管理对话\n";
                 $this->dispatch(new SendMessageJob($data, null, 0));
                 $sender = [
                     'chat_id' => $message->getChat()->getId(),
