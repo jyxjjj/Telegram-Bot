@@ -43,9 +43,7 @@ class BanCommand extends BaseCommand
 
         $userId = $message->getFrom()->getId();
         if (!in_array($userId, $admins, true)) {
-            $data['text'] .= "<b>Error</b>: You should be an admin of this chat to use this command.\n\n";
-            $data['text'] .= "<b>Warning</b>: This command can be used by people who was an admin before update admin list.\n\n";
-            $data['text'] .= "<b>Notice</b>: Send /updatechatadministrators to update chat admin list.\n\n";
+            $data['text'] .= "<b>Error</b>: You should be an admin of this chat to use this command.\n";
             $this->dispatch(new SendMessageJob($data));
             return;
         }
