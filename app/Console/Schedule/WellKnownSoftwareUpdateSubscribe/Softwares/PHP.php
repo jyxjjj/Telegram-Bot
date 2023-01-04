@@ -44,36 +44,6 @@ class PHP implements SoftwareInterface
     }
 
     /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "$emoji A new version of PHP($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => 'https://www.php.net/downloads.php',
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => 'Download',
-            'url' => "https://www.php.net/distributions/php-$version.tar.gz",
-        ]);
-        $message['reply_markup']->addRow($button1, $button2);
-        return $message;
-    }
-
-    /**
      * @return array|int|false
      */
     private function getJson(): array|int|false
@@ -99,5 +69,40 @@ class PHP implements SoftwareInterface
             return 304;
         }
         return false;
+    }
+
+    /**
+     * @param int $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of PHP($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => 'https://www.php.net/downloads.php',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'Download',
+            'url' => "https://www.php.net/distributions/php-$version.tar.gz",
+        ]);
+        $button3 = new InlineKeyboardButton([
+            'text' => 'What\'s NEW',
+            'url' => "https://github.com/php/php-src/blob/php-$version/NEWS",
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        $message['reply_markup']->addRow($button3);
+        return $message;
     }
 }
