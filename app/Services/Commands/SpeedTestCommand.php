@@ -121,7 +121,7 @@ class SpeedTestCommand extends BaseCommand
         $random = openssl_random_pseudo_bytes(16);
         $random = bin2hex($random);
         $url = "{$server['url']}?r=0.$random";
-        $data = str_repeat('0', 50000);
+        $data = openssl_random_pseudo_bytes(50000);
         $start = Carbon::now()->getTimestampMs();
         for ($i = 0; $i < 20; $i++) {
             try {
