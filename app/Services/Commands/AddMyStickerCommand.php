@@ -61,10 +61,14 @@ class AddMyStickerCommand extends BaseCommand
                 if ($serverResponse->getDescription() == 'Bad Request: STICKERSET_INVALID') {
                     $data['text'] .= "It seems that you don't have a sticker pack yet.\nYou can create one by using /createmysticker command.\n";
                 } else {
-                    $data['text'] .= "<b>Error</b>: Add to your sticker pack failed.\n";
-                    $data['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
-                    $data['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n\n";
-                    $data['text'] .= "If you do not have a sticker pack created from this bot, send /createmysticker to create one.\n";
+                    if ($serverResponse->getDescription() == 'Bad Request: STICKER_PNG_NOPNG') {
+                        $data['text'] .= "<b>Error</b>: The sticker you replied to is not a PNG file.\n";
+                    } else {
+                        $data['text'] .= "<b>Error</b>: Add to your sticker pack failed.\n";
+                        $data['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
+                        $data['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n\n";
+                        $data['text'] .= "If you do not have a sticker pack created from this bot, send /createmysticker to create one.\n";
+                    }
                 }
             }
             $this->dispatch(new SendMessageJob($data));
