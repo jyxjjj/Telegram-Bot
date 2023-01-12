@@ -7,6 +7,7 @@ use App\Jobs\DeleteTempStickerFileJob;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC6986\Hash;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -48,15 +49,24 @@ class AddMyStickerCommand extends BaseCommand
         $stickerName = 'user_' . $userId . '_by_' . $telegram->getBotUsername();
         $sticker = $reply_to_message->getSticker();
         if (!$sticker) {
-            $photo = $reply_to_message->getPhoto();
-            if ($photo) {
-                usort($photo, function (PhotoSize $left, PhotoSize $right) {
+            $photos = $reply_to_message->getPhoto();
+            if ($photos) {
+                usort($photos, function (PhotoSize $left, PhotoSize $right) {
                     return bccomp(
                         bcmul($right->getWidth(), $right->getHeight()),
                         bcmul($left->getWidth(), $left->getHeight())
                     );
                 });
-                $stickerFileId = $photo[0]->getFileId();
+                $photos = array_filter($photos, function (PhotoSize $photo) {
+                    return $photo->getWidth() <= 512 && $photo->getHeight() <= 512 && $photo->getFileSize() / 1024 <= 512;
+                });
+                $photos = array_values($photos);
+                if (count($photos) <= 0) {
+                    $data['text'] .= "<b>Error</b>: The photo is too large.\n";
+                    $this->dispatch(new SendMessageJob($data));
+                    return;
+                }
+                $stickerFileId = $photos[0]->getFileId();
                 $is_png = true;
                 $stickerEmoji = hex2bin('C2A9');
             } else {
@@ -98,7 +108,8 @@ class AddMyStickerCommand extends BaseCommand
         //#endregion $stickerFileUrl
         //#region $stickerFileDownloaded
         try {
-            $stickerFileDownloaded = $this->downloadStickerFile($stickerFileUrl, $is_png, $is_tgs, $is_webm);
+//            $stickerFileDownloaded = $this->downloadStickerFile($stickerFileUrl, $is_png, $is_tgs, $is_webm);
+            $stickerFileDownloaded = $this->downloadStickerFile($stickerFileUrl);
             if (!$stickerFileDownloaded) {
                 $data['text'] .= "<b>Error</b>: Downloading the sticker file failed.\n";
                 $this->dispatch(new SendMessageJob($data));
@@ -116,17 +127,27 @@ class AddMyStickerCommand extends BaseCommand
             [$addStickerToSetSuccess, $serverResponse] =
                 $this->addStickerToSet(
                     $userId, $stickerName, $stickerEmoji,
-                    $is_png, $is_tgs, $is_webm,
+//                    $is_png, $is_tgs, $is_webm,
                     $stickerFileDownloaded
                 );
             if (!$addStickerToSetSuccess) {
-                if ($serverResponse->getDescription() == 'Bad Request: STICKERSET_INVALID') {
-                    $data['text'] .= "It seems that you don't have a sticker pack yet.\nYou can create one by using /createmysticker command.\n";
-                } else {
-                    $data['text'] .= "<b>Error</b>: Add to your sticker pack failed.\n";
-                    $data['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
-                    $data['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n\n";
-                    $data['text'] .= "If you do not have a sticker pack created from this bot, send /createmysticker to create one.\n";
+                switch ($serverResponse->getDescription()) {
+                    case 'Bad Request: STICKERSET_INVALID':
+                        $data['text'] .= "It seems that you don't have a sticker pack yet.\n";
+                        $data['text'] .= "You can create one by using /createmysticker command.\n";
+                        break;
+                    case 'Bad Request: STICKER_PNG_NOPNG':
+                        $data['text'] .= "The sticker file is not a PNG file.\n";
+                        break;
+                    case 'Bad Request: STICKER_PNG_DIMENSIONS':
+                        $data['text'] .= "<b>Error</b>: The sticker is not 512x512.\n";
+                        break;
+                    default:
+                        $data['text'] .= "<b>Error</b>: Add to your sticker pack failed.\n";
+                        $data['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
+                        $data['text'] .= "<b>Error Msg</b>: <code>{$serverResponse->getDescription()}</code>\n\n";
+                        $data['text'] .= "If you do not have a sticker pack created from this bot, send /createmysticker to create one.\n";
+                        break;
                 }
             } else {
                 $data['text'] .= "Sticker added successfully to <a href='https://t.me/addstickers/$stickerName'>this</a> sticker pack.\n";
@@ -192,6 +213,7 @@ class AddMyStickerCommand extends BaseCommand
     /**
      * @param string $stickerFileUrl
      * @return string
+     * @throws Exception
      */
     private function downloadStickerFile(string $stickerFileUrl): string
     {
@@ -206,6 +228,9 @@ class AddMyStickerCommand extends BaseCommand
             $path = "stickers/$stickerFileName";
             Storage::disk('public')->put($path, $stickerFile);
             $stickerFileDownloaded = Storage::disk('public')->path($path);
+            if (!Storage::disk('public')->path($path)) {
+                throw new Exception('Sticker file not found', -1);
+            }
             $this->dispatch(new DeleteTempStickerFileJob($path));
             return $stickerFileDownloaded;
         } else {
