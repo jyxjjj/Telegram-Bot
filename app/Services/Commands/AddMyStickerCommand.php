@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Entities\PhotoSize;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -46,9 +48,22 @@ class AddMyStickerCommand extends BaseCommand
         $stickerName = 'user_' . $userId . '_by_' . $telegram->getBotUsername();
         $sticker = $reply_to_message->getSticker();
         if (!$sticker) {
-            $data['text'] .= "<b>Error</b>: Cannot get the sticker from the message you replied to.\n";
-            $this->dispatch(new SendMessageJob($data));
-            return;
+            $photo = $reply_to_message->getPhoto();
+            if ($photo) {
+                usort($photo, function (PhotoSize $left, PhotoSize $right) {
+                    return bccomp(
+                        bcmul($right->getWidth(), $right->getHeight()),
+                        bcmul($left->getWidth(), $left->getHeight())
+                    );
+                });
+                $stickerFileId = $photo[0]->getFileId();
+                $is_png = true;
+                $stickerEmoji = hex2bin('C2A9');
+            } else {
+                $data['text'] .= "<b>Error</b>: Cannot get the sticker from the message you replied to.\n";
+                $this->dispatch(new SendMessageJob($data));
+                return;
+            }
         } else {
             $stickerEmoji = $sticker->getEmoji();
             $is_tgs = $sticker->getIsAnimated();
@@ -127,6 +142,10 @@ class AddMyStickerCommand extends BaseCommand
         //#endregion addStickerToSet
     }
 
+    /**
+     * @param string $stickerFileId
+     * @return array
+     */
     private function getStickerFileURL(string $stickerFileId): array
     {
         $stickerFile = Request::getFile(['file_id' => $stickerFileId]);
@@ -139,7 +158,42 @@ class AddMyStickerCommand extends BaseCommand
         }
     }
 
-    private function downloadStickerFile(string $stickerFileUrl, bool $is_png, bool $is_tgs, bool $is_webm): string
+//    /**
+//     * @param string $stickerFileUrl
+//     * @param bool $is_png
+//     * @param bool $is_tgs
+//     * @param bool $is_webm
+//     * @return string
+//     */
+//    private function downloadStickerFile(string $stickerFileUrl, bool $is_png, bool $is_tgs, bool $is_webm): string
+//    {
+//        $stickerFileData = Http::withHeaders(Config::CURL_HEADERS)
+//            ->connectTimeout(3)
+//            ->timeout(5)
+//            ->retry(1, 1000)
+//            ->get($stickerFileUrl);
+//        if ($stickerFileData->ok()) {
+//            $stickerFile = $stickerFileData->body();
+//            $stickerFileExtension = 'png';
+//            $is_tgs && $stickerFileExtension = 'tgs';
+//            $is_webm && $stickerFileExtension = 'webm';
+//            $stickerFileName = Hash::sha256($stickerFile) . '.' . $stickerFileExtension;
+//            $path = "stickers/$stickerFileName";
+//            Storage::disk('public')->put($path, $stickerFile);
+//            $stickerFileDownloaded = Storage::disk('public')->path($path);
+//            $this->dispatch(new DeleteTempStickerFileJob($path));
+//            return $stickerFileDownloaded;
+//        } else {
+//            return '';
+//        }
+//
+//    }
+
+    /**
+     * @param string $stickerFileUrl
+     * @return string
+     */
+    private function downloadStickerFile(string $stickerFileUrl): string
     {
         $stickerFileData = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(3)
@@ -148,10 +202,7 @@ class AddMyStickerCommand extends BaseCommand
             ->get($stickerFileUrl);
         if ($stickerFileData->ok()) {
             $stickerFile = $stickerFileData->body();
-            $stickerFileExtension = 'png';
-            $is_tgs && $stickerFileExtension = 'tgs';
-            $is_webm && $stickerFileExtension = 'webm';
-            $stickerFileName = Hash::sha256($stickerFile) . '.' . $stickerFileExtension;
+            $stickerFileName = Hash::sha256($stickerFile) . '.png';
             $path = "stickers/$stickerFileName";
             Storage::disk('public')->put($path, $stickerFile);
             $stickerFileDownloaded = Storage::disk('public')->path($path);
@@ -163,17 +214,45 @@ class AddMyStickerCommand extends BaseCommand
 
     }
 
-    private function addStickerToSet(int $userId, string $stickerName, string $stickerEmoji, bool $is_png, bool $is_tgs, bool $is_webm, string $stickerFileDownloaded): array
+//    /**
+//     * @throws TelegramException
+//     */
+//    private function addStickerToSet(int $userId, string $stickerName, string $stickerEmoji, bool $is_png, bool $is_tgs, bool $is_webm, string $stickerFileDownloaded): array
+//    {
+//        $stickerInputFile = Request::encodeFile($stickerFileDownloaded);
+//        $stickerRequestData = [
+//            'user_id' => $userId,
+//            'name' => $stickerName,
+//            'emojis' => $stickerEmoji,
+//        ];
+//        $is_png && $stickerRequestData['png_sticker'] = $stickerInputFile;
+//        $is_tgs && $stickerRequestData['tgs_sticker'] = $stickerInputFile;
+//        $is_webm && $stickerRequestData['webm_sticker'] = $stickerInputFile;
+//        $serverResponse = Request::addStickerToSet($stickerRequestData);
+//        if ($serverResponse->isOk()) {
+//            return [true, $serverResponse];
+//        } else {
+//            return [false, $serverResponse];
+//        }
+//    }
+
+    /**
+     * @param int $userId
+     * @param string $stickerName
+     * @param string $stickerEmoji
+     * @param string $stickerFileDownloaded
+     * @return array
+     * @throws TelegramException
+     */
+    private function addStickerToSet(int $userId, string $stickerName, string $stickerEmoji, string $stickerFileDownloaded): array
     {
         $stickerInputFile = Request::encodeFile($stickerFileDownloaded);
         $stickerRequestData = [
             'user_id' => $userId,
             'name' => $stickerName,
             'emojis' => $stickerEmoji,
+            'png_sticker' => $stickerInputFile,
         ];
-        $is_png && $stickerRequestData['png_sticker'] = $stickerInputFile;
-        $is_tgs && $stickerRequestData['tgs_sticker'] = $stickerInputFile;
-        $is_webm && $stickerRequestData['webm_sticker'] = $stickerInputFile;
         $serverResponse = Request::addStickerToSet($stickerRequestData);
         if ($serverResponse->isOk()) {
             return [true, $serverResponse];
