@@ -22,7 +22,7 @@ return [
         ],
     ],
     'redis' => [
-        'client' => env('APP_ENV') == 'production' ? 'phpredis' : 'predis',
+        'client' => 'phpredis',
         'options' => [
             'cluster' => 'redis',
             'prefix' => env('APP_NAME', 'app') . '_',
