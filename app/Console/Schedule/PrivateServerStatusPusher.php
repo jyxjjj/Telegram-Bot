@@ -90,7 +90,7 @@ class PrivateServerStatusPusher extends Command
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
             $loss = 0;
-            for ($i = 0; $i < 8; $i++) {
+            for ($i = 0; $i < 16; $i++) {
                 $start = Carbon::now()->getPreciseTimestamp();
                 $checksum = hex2bin('0000');
                 $seq_number = hex2bin(str_pad($i, 4, '0', STR_PAD_LEFT));
@@ -110,7 +110,7 @@ class PrivateServerStatusPusher extends Command
             $this->error($e->getMessage());
             return "$host: Error: {$e->getMessage()}";
         }
-        $rate = number_format($loss / 8 * 100, 2, '.', '');
+        $rate = number_format($loss / 16 * 100, 2, '.', '');
         return $rate >= 75 ? "$host: Packet loss rate: $rate >= 75%" : "";
     }
 
