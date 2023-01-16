@@ -111,7 +111,7 @@ class PrivateServerStatusPusher extends Command
             return "$host: Error: {$e->getMessage()}";
         }
         $rate = number_format($loss / 16 * 100, 2, '.', '');
-        return $rate >= 75 ? "$host: Packet loss rate: $rate >= 75%" : "";
+        return $rate >= 87.5 ? "$host: Packet loss rate: $rate >= 87.5%" : "";
     }
 
     /**
