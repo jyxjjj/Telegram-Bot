@@ -272,18 +272,25 @@ class AddMyStickerCommand extends BaseCommand
                     //#region get an 512x512 transparent image $newImage
                     $newImage = imagecreatetruecolor(512, 512);
                     $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
-                    imagefill($newImage, 0, 0, $transparent);
+                    imagealphablending($newImage, false);
                     imagesavealpha($newImage, true);
+                    imagefill($newImage, 0, 0, $transparent);
                     //#endregion
                     if ($pngWidth > $pngHeight) {
-                        $pngData = imagescale($pngData, 512);
+                        $new_pngData = imagescale($pngData, 512);
+                        imagedestroy($pngData);
+                        $pngData = $new_pngData;
+                        imagedestroy($new_pngData);
                         $pngWidth = imagesx($pngData);
                         $pngHeight = imagesy($pngData);
                         $x = 0;
                         $y = (512 - $pngHeight) / 2;
                     } else {
                         $ratio = $pngWidth / $pngHeight;
-                        $pngData = imagescale($pngData, 512 * $ratio, 512);
+                        $new_pngData = imagescale($pngData, 512 * $ratio, 512);
+                        imagedestroy($pngData);
+                        $pngData = $new_pngData;
+                        imagedestroy($new_pngData);
                         $pngWidth = imagesx($pngData);
                         $pngHeight = imagesy($pngData);
                         $x = (512 - $pngWidth) / 2;
@@ -293,11 +300,15 @@ class AddMyStickerCommand extends BaseCommand
                     $pngData = $newImage;
                     imagedestroy($newImage);
                 }
-                $pngData = imagescale($pngData, 512, 512);
+                $new_pngData = imagescale($pngData, 512, 512);
+                imagedestroy($pngData);
+                $pngData = $new_pngData;
+                imagedestroy($new_pngData);
                 if (!$pngData) {
                     throw new Exception('Sticker file cannot be resized to 512x512', -4);
                 }
             }
+            imagesavealpha($pngData, true);
             imagepng($pngData, $stickerFileDownloaded);
             imagedestroy($pngData);
             if (!Storage::disk('public')->path($path)) {
