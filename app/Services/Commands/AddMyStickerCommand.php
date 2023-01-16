@@ -287,7 +287,7 @@ class AddMyStickerCommand extends BaseCommand
                         $y = (512 - $pngHeight) / 2;
                     } else {
                         $ratio = $pngWidth / $pngHeight;
-                        $new_pngData = imagescale($pngData, 512 * $ratio, 512);
+                        $new_pngData = imagescale($pngData, (int)(512 * $ratio), 512);
                         imagedestroy($pngData);
                         $pngData = $new_pngData;
                         imagedestroy($new_pngData);
@@ -296,7 +296,7 @@ class AddMyStickerCommand extends BaseCommand
                         $x = (512 - $pngWidth) / 2;
                         $y = 0;
                     }
-                    imagecopy($newImage, $pngData, $x, $y, 0, 0, $pngWidth, $pngHeight);
+                    imagecopy($newImage, $pngData, (int)$x, (int)$y, 0, 0, $pngWidth, $pngHeight);
                     $pngData = $newImage;
                     imagedestroy($newImage);
                 }
