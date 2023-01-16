@@ -57,18 +57,25 @@ class AddMyStickerCommand extends BaseCommand
                         bcmul($left->getWidth(), $left->getHeight())
                     );
                 });
-                $photos = array_filter($photos, function (PhotoSize $photo) {
-                    return $photo->getWidth() <= 512 && $photo->getHeight() <= 512 && $photo->getFileSize() / 1024 <= 512;
-                });
-                $photos = array_values($photos);
+//                $photos = array_filter($photos, function (PhotoSize $photo) {
+//                    return $photo->getWidth() <= 512 && $photo->getHeight() <= 512 && $photo->getFileSize() / 1024 <= 512;
+//                });
+//                $photos = array_values($photos);
                 if (count($photos) <= 0) {
-                    $data['text'] .= "<b>Error</b>: The photo is too large.\n";
+                    $data['text'] .= "<b>Error</b>: Cannot get photo from the message you replied to.\n";
                     $this->dispatch(new SendMessageJob($data));
                     return;
                 }
                 $stickerFileId = $photos[0]->getFileId();
                 $is_png = true;
-                $stickerEmoji = hex2bin('C2A9');
+                $param = $message->getText(true);
+                // regex of emoji
+                $regex = '/^[\x{1F600}-\x{1F64F}\x{1F680}-\x{1F6FF}\x{24C2}-\x{1F251}\x{1F900}-\x{1F9FF}\x{1F300}-\x{1F5FF}\x{1FA70}-\x{1FAF6}]$/u';
+                if (preg_match($regex, $param)) {
+                    $stickerEmoji = $param;
+                } else {
+                    $stickerEmoji = hex2bin('C2A9');
+                }
             } else {
                 $data['text'] .= "<b>Error</b>: Cannot get the sticker from the message you replied to.\n";
                 $this->dispatch(new SendMessageJob($data));
@@ -116,9 +123,22 @@ class AddMyStickerCommand extends BaseCommand
                 return;
             }
         } catch (Throwable $e) {
-            $data['text'] .= "An error occurred while downloading the sticker file.\n";
-            Log::error($e->getMessage(), $e->getTrace());
-            $this->dispatch(new SendMessageJob($data));
+            switch ($e->getCode()) {
+                case -1:
+                case -2:
+                case -3:
+                case -4:
+                case -5:
+                case -6:
+                    $data['text'] .= "<b>Error</b>: {$e->getMessage()}.\n";
+                    $this->dispatch(new SendMessageJob($data));
+                    break;
+                default:
+                    $data['text'] .= "An error occurred while downloading the sticker file.\n";
+                    Log::error($e->getMessage(), $e->getTrace());
+                    $this->dispatch(new SendMessageJob($data));
+                    break;
+            }
             return;
         }
         //#endregion $stickerFileDownloaded
@@ -229,7 +249,62 @@ class AddMyStickerCommand extends BaseCommand
             Storage::disk('public')->put($path, $stickerFile);
             $stickerFileDownloaded = Storage::disk('public')->path($path);
             if (!Storage::disk('public')->path($path)) {
-                throw new Exception('Sticker file not found', -1);
+                throw new Exception('Sticker file downloaded but not found', -1);
+            }
+            if (exif_imagetype($stickerFileDownloaded) !== IMAGETYPE_PNG) {
+                // convert to png
+                $image = imagecreatefromstring($stickerFile);
+                if ($image) {
+                    imagepng($image, $stickerFileDownloaded);
+                    imagedestroy($image);
+                } else {
+                    throw new Exception('Sticker file downloaded but not a PNG file', -2);
+                }
+            }
+            $pngData = imagecreatefrompng($stickerFileDownloaded);
+            if (!$pngData) {
+                throw new Exception('Sticker file is not a PNG file', -3);
+            }
+            $pngWidth = imagesx($pngData);
+            $pngHeight = imagesy($pngData);
+            if ($pngWidth !== 512 || $pngHeight !== 512) {
+                if ($pngWidth !== $pngHeight) {
+                    //#region get an 512x512 transparent image $newImage
+                    $newImage = imagecreatetruecolor(512, 512);
+                    $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
+                    imagefill($newImage, 0, 0, $transparent);
+                    imagesavealpha($newImage, true);
+                    //#endregion
+                    if ($pngWidth > $pngHeight) {
+                        $pngData = imagescale($pngData, 512);
+                        $pngWidth = imagesx($pngData);
+                        $pngHeight = imagesy($pngData);
+                        $x = 0;
+                        $y = (512 - $pngHeight) / 2;
+                    } else {
+                        $ratio = $pngWidth / $pngHeight;
+                        $pngData = imagescale($pngData, 512 * $ratio, 512);
+                        $pngWidth = imagesx($pngData);
+                        $pngHeight = imagesy($pngData);
+                        $x = (512 - $pngWidth) / 2;
+                        $y = 0;
+                    }
+                    imagecopy($newImage, $pngData, $x, $y, 0, 0, $pngWidth, $pngHeight);
+                    $pngData = $newImage;
+                    imagedestroy($newImage);
+                }
+                $pngData = imagescale($pngData, 512, 512);
+                if (!$pngData) {
+                    throw new Exception('Sticker file cannot be resized to 512x512', -4);
+                }
+            }
+            imagepng($pngData, $stickerFileDownloaded);
+            imagedestroy($pngData);
+            if (!Storage::disk('public')->path($path)) {
+                throw new Exception('Sticker file downloaded but not found', -5);
+            }
+            if (Storage::disk('public')->size($path) > 512000) {
+                throw new Exception('Sticker file resized to 512x512 but size is still more than 512KB', -6);
             }
             $this->dispatch(new DeleteTempStickerFileJob($path));
             return $stickerFileDownloaded;

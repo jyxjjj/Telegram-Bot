@@ -12,6 +12,8 @@
         "php": "^8.2",
         "ext-bcmath": "*",
         "ext-curl": "*",
+        "ext-exif": "*",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-dom": "*",
         "ext-openssl": "*",
