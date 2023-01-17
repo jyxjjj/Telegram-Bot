@@ -155,7 +155,7 @@ class AddMyStickerCommand extends BaseCommand
             } else {
                 $data['text'] .= "Sticker added successfully to <a href='https://t.me/addstickers/$stickerName'>this</a> sticker pack.\n";
             }
-            $this->dispatch(new SendMessageJob($data));
+            $this->dispatch(new SendMessageJob($data, null, 0));
             return;
         } catch (Throwable $e) {
             $data['text'] .= "An error occurred while add the sticker to your pack.\n";
