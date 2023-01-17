@@ -8,6 +8,7 @@ use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC6986\Hash;
 use Exception;
+use GdImage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -51,16 +52,7 @@ class AddMyStickerCommand extends BaseCommand
         if (!$sticker) {
             $photos = $reply_to_message->getPhoto();
             if ($photos) {
-                usort($photos, function (PhotoSize $left, PhotoSize $right) {
-                    return bccomp(
-                        bcmul($right->getWidth(), $right->getHeight()),
-                        bcmul($left->getWidth(), $left->getHeight())
-                    );
-                });
-//                $photos = array_filter($photos, function (PhotoSize $photo) {
-//                    return $photo->getWidth() <= 512 && $photo->getHeight() <= 512 && $photo->getFileSize() / 1024 <= 512;
-//                });
-//                $photos = array_values($photos);
+                $this->getPhotos($photos);
                 if (count($photos) <= 0) {
                     $data['text'] .= "<b>Error</b>: Cannot get photo from the message you replied to.\n";
                     $this->dispatch(new SendMessageJob($data));
@@ -123,22 +115,13 @@ class AddMyStickerCommand extends BaseCommand
                 return;
             }
         } catch (Throwable $e) {
-            switch ($e->getCode()) {
-                case -1:
-                case -2:
-                case -3:
-                case -4:
-                case -5:
-                case -6:
-                    $data['text'] .= "<b>Error</b>: {$e->getMessage()}.\n";
-                    $this->dispatch(new SendMessageJob($data));
-                    break;
-                default:
-                    $data['text'] .= "An error occurred while downloading the sticker file.\n";
-                    Log::error($e->getMessage(), $e->getTrace());
-                    $this->dispatch(new SendMessageJob($data));
-                    break;
+            if ($e->getCode() == -1) {
+                $data['text'] .= "<b>Error</b>: {$e->getMessage()}.\n";
+            } else {
+                $data['text'] .= "An error occurred while downloading the sticker file.\n";
+                Log::error($e->getMessage(), $e->getTrace());
             }
+            $this->dispatch(new SendMessageJob($data));
             return;
         }
         //#endregion $stickerFileDownloaded
@@ -184,19 +167,21 @@ class AddMyStickerCommand extends BaseCommand
     }
 
     /**
-     * @param string $stickerFileId
-     * @return array
+     * @param array $photos
+     * @return void
      */
-    private function getStickerFileURL(string $stickerFileId): array
+    protected function getPhotos(array &$photos): void
     {
-        $stickerFile = Request::getFile(['file_id' => $stickerFileId]);
-        if ($stickerFile->isOk()) {
-            $stickerFile = $stickerFile->getResult();
-            $stickerFilePath = $stickerFile->getFilePath();
-            return [env('TELEGRAM_API_BASE_URI') . '/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $stickerFilePath, $stickerFile];
-        } else {
-            return ['', $stickerFile];
-        }
+        usort($photos, function (PhotoSize $left, PhotoSize $right) {
+            return bccomp(
+                bcmul($right->getWidth(), $right->getHeight()),
+                bcmul($left->getWidth(), $left->getHeight())
+            );
+        });
+//                $photos = array_filter($photos, function (PhotoSize $photo) {
+//                    return $photo->getWidth() <= 512 && $photo->getHeight() <= 512 && $photo->getFileSize() / 1024 <= 512;
+//                });
+//                $photos = array_values($photos);
     }
 
 //    /**
@@ -231,98 +216,19 @@ class AddMyStickerCommand extends BaseCommand
 //    }
 
     /**
-     * @param string $stickerFileUrl
-     * @return string
-     * @throws Exception
+     * @param string $stickerFileId
+     * @return array
      */
-    private function downloadStickerFile(string $stickerFileUrl): string
+    private function getStickerFileURL(string $stickerFileId): array
     {
-        $stickerFileData = Http::withHeaders(Config::CURL_HEADERS)
-            ->connectTimeout(3)
-            ->timeout(5)
-            ->retry(1, 1000)
-            ->get($stickerFileUrl);
-        if ($stickerFileData->ok()) {
-            $stickerFile = $stickerFileData->body();
-            $stickerFileName = Hash::sha256($stickerFile) . '.png';
-            $path = "stickers/$stickerFileName";
-            Storage::disk('public')->put($path, $stickerFile);
-            $stickerFileDownloaded = Storage::disk('public')->path($path);
-            if (!Storage::disk('public')->path($path)) {
-                throw new Exception('Sticker file downloaded but not found', -1);
-            }
-            if (exif_imagetype($stickerFileDownloaded) !== IMAGETYPE_PNG) {
-                // convert to png
-                $image = imagecreatefromstring($stickerFile);
-                if ($image) {
-                    imagepng($image, $stickerFileDownloaded);
-                    imagedestroy($image);
-                } else {
-                    throw new Exception('Sticker file downloaded but not a PNG file', -2);
-                }
-            }
-            $pngData = imagecreatefrompng($stickerFileDownloaded);
-            if (!$pngData) {
-                throw new Exception('Sticker file is not a PNG file', -3);
-            }
-            $pngWidth = imagesx($pngData);
-            $pngHeight = imagesy($pngData);
-            if ($pngWidth !== 512 || $pngHeight !== 512) {
-                if ($pngWidth !== $pngHeight) {
-                    //#region get an 512x512 transparent image $newImage
-                    $newImage = imagecreatetruecolor(512, 512);
-                    $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
-                    imagealphablending($newImage, false);
-                    imagesavealpha($newImage, true);
-                    imagefill($newImage, 0, 0, $transparent);
-                    //#endregion
-                    if ($pngWidth > $pngHeight) {
-                        $new_pngData = imagescale($pngData, 512);
-                        imagedestroy($pngData);
-                        $pngData = $new_pngData;
-                        imagedestroy($new_pngData);
-                        $pngWidth = imagesx($pngData);
-                        $pngHeight = imagesy($pngData);
-                        $x = 0;
-                        $y = (512 - $pngHeight) / 2;
-                    } else {
-                        $ratio = $pngWidth / $pngHeight;
-                        $new_pngData = imagescale($pngData, (int)(512 * $ratio), 512);
-                        imagedestroy($pngData);
-                        $pngData = $new_pngData;
-                        imagedestroy($new_pngData);
-                        $pngWidth = imagesx($pngData);
-                        $pngHeight = imagesy($pngData);
-                        $x = (512 - $pngWidth) / 2;
-                        $y = 0;
-                    }
-                    imagecopy($newImage, $pngData, (int)$x, (int)$y, 0, 0, $pngWidth, $pngHeight);
-                    $pngData = $newImage;
-                    imagedestroy($newImage);
-                }
-                $new_pngData = imagescale($pngData, 512, 512);
-                imagedestroy($pngData);
-                $pngData = $new_pngData;
-                imagedestroy($new_pngData);
-                if (!$pngData) {
-                    throw new Exception('Sticker file cannot be resized to 512x512', -4);
-                }
-            }
-            imagesavealpha($pngData, true);
-            imagepng($pngData, $stickerFileDownloaded);
-            imagedestroy($pngData);
-            if (!Storage::disk('public')->path($path)) {
-                throw new Exception('Sticker file downloaded but not found', -5);
-            }
-            if (Storage::disk('public')->size($path) > 512000) {
-                throw new Exception('Sticker file resized to 512x512 but size is still more than 512KB', -6);
-            }
-            $this->dispatch(new DeleteTempStickerFileJob($path));
-            return $stickerFileDownloaded;
+        $stickerFile = Request::getFile(['file_id' => $stickerFileId]);
+        if ($stickerFile->isOk()) {
+            $stickerFile = $stickerFile->getResult();
+            $stickerFilePath = $stickerFile->getFilePath();
+            return [env('TELEGRAM_API_BASE_URI') . '/file/bot' . env('TELEGRAM_BOT_TOKEN') . '/' . $stickerFilePath, $stickerFile];
         } else {
-            return '';
+            return ['', $stickerFile];
         }
-
     }
 
 //    /**
@@ -346,6 +252,107 @@ class AddMyStickerCommand extends BaseCommand
 //            return [false, $serverResponse];
 //        }
 //    }
+
+    /**
+     * @param string $stickerFileUrl
+     * @return string
+     * @throws Exception
+     */
+    private function downloadStickerFile(string $stickerFileUrl): string
+    {
+        $stickerFileData = Http::withHeaders(Config::CURL_HEADERS)
+            ->connectTimeout(3)
+            ->timeout(5)
+            ->retry(1, 1000)
+            ->get($stickerFileUrl);
+        if ($stickerFileData->ok()) {
+            $stickerFile = $stickerFileData->body();
+            $stickerFileName = Hash::sha256($stickerFile) . '.png';
+            $path = "stickers/$stickerFileName";
+            $fullPath = Storage::disk('public')->path($path);
+            $this->resizeImage($fullPath, $stickerFile);
+            if (!Storage::disk('public')->exists($path)) {
+                throw new Exception('Sticker file downloaded but not found', -1);
+            }
+            if (Storage::disk('public')->size($path) > 512000) {
+                throw new Exception('Sticker file resized to 512x512 but size is still more than 512KB', -1);
+            }
+            $this->dispatch(new DeleteTempStickerFileJob($path));
+            return $fullPath;
+        } else {
+            return '';
+        }
+
+    }
+
+    /**
+     * @param string $path
+     * @param string $imageData
+     * @return void
+     * @throws Exception
+     */
+    private function resizeImage(string $path, string $imageData): void
+    {
+        $imageData = imagecreatefromstring($imageData);
+        $imageWidth = imagesx($imageData);
+        $imageHeight = imagesy($imageData);
+        if ($imageWidth !== 512 || $imageHeight !== 512) {
+            if ($imageWidth !== $imageHeight) {
+                //#region get an 512x512 transparent image $newImage
+                $newImage = $this->createTransparentImage(512, 512);
+                //#endregion
+                if ($imageWidth > $imageHeight) {
+                    $newImageData = imagescale($imageData, 512);
+                    imagedestroy($imageData);
+                    $imageData = $newImageData;
+                    imagedestroy($newImageData);
+                    $imageWidth = imagesx($imageData);
+                    $imageHeight = imagesy($imageData);
+                    $x = 0;
+                    $y = (512 - $imageHeight) / 2;
+                } else {
+                    $ratio = $imageWidth / $imageHeight;
+                    $newImageData = imagescale($imageData, (int)(512 * $ratio), 512);
+                    imagedestroy($imageData);
+                    $imageData = $newImageData;
+                    imagedestroy($newImageData);
+                    $imageWidth = imagesx($imageData);
+                    $imageHeight = imagesy($imageData);
+                    $x = (512 - $imageWidth) / 2;
+                    $y = 0;
+                }
+                imagecopy($newImage, $imageData, (int)$x, (int)$y, 0, 0, $imageWidth, $imageHeight);
+                $imageData = $newImage;
+                imagedestroy($newImage);
+            }
+            $newImageData = imagescale($imageData, 512, 512);
+            imagedestroy($imageData);
+            $imageData = $newImageData;
+            imagedestroy($newImageData);
+            if (!$imageData) {
+                throw new Exception('Sticker file cannot be resized to 512x512', -1);
+            }
+        }
+        imagesavealpha($imageData, true);
+        imagepng($imageData, $path);
+        imagedestroy($imageData);
+    }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @return GdImage
+     * @noinspection PhpSameParameterValueInspection
+     */
+    private function createTransparentImage(int $width, int $height): GdImage
+    {
+        $newImage = imagecreatetruecolor($width, $height);
+        $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
+        imagealphablending($newImage, false);
+        imagesavealpha($newImage, true);
+        imagefill($newImage, 0, 0, $transparent);
+        return $newImage;
+    }
 
     /**
      * @param int $userId
