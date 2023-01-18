@@ -15,6 +15,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
 {
     public string $name = 'AMap tracker remover';
     public string $description = 'Remove AMap tracker from surl link';
+    public string $version = '1.0.2';
     protected string $pattern = '/(surl\.amap\.com)/';
 
     public function preExecute(Message $message): bool
@@ -81,9 +82,12 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
     private function getLocation(string $link): string
     {
         $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= "; Telegram-AMap-Link-Tracker-Remover/0.1.0";
+        $headers['User-Agent'] .= "; Telegram-AMap-Link-Tracker-Remover/" . $this->version;
         return Http::
-        withHeaders($headers)
+        connectTimeout(10)
+            ->timeout(10)
+            ->retry(3, 1000)
+            ->withHeaders($headers)
             ->withoutRedirecting()
             ->get($link)
             ->header('Location');
