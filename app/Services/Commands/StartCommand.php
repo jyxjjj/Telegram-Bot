@@ -32,10 +32,6 @@ class StartCommand extends BaseCommand
         }
         $chatId = $message->getChat()->getId();
         $username = $message->getChat()->getUsername();
-        $rest = $this->rateLimit($chatId, $username);
-        if ($rest == -1) {
-            return;
-        }
         $payload = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
@@ -43,6 +39,10 @@ class StartCommand extends BaseCommand
         ];
         $data['text'] .= env('LONG_START_AD');
         if (str_starts_with($payload, 'get')) {
+            $rest = $this->rateLimit($chatId, $username);
+            if ($rest == -1) {
+                return;
+            }
             $data['text'] .= "\n👇👇👇您所获取的链接👇👇👇";
             $cvid = substr($payload, 3);
             $linkData = Conversation::get('link', 'link');
@@ -68,7 +68,7 @@ class StartCommand extends BaseCommand
      * @param string $username
      * @return int
      */
-    private function rateLimit(int $chatId, string $username): int
+    private function rateLimit(int $chatId, ?string $username): int
     {
         if ($this->getBlackList($chatId)) {
             $data = [
@@ -88,10 +88,11 @@ class StartCommand extends BaseCommand
             return -1;
         }
         $this->addGettedTimes($chatId, $times);
+        is_null($username) && $username = '无用户名';
         if (Cache::get($chatId . '_start') >= 20) {
             $data = [
                 'chat_id' => env('YPP_SOURCE_ID'),
-                'text' => "$chatId $username 获取链接次数达到 $times 次",
+                'text' => "<a href='tg://user?id=$chatId'>$chatId</a> $username 获取链接次数达到 $times 次",
             ];
             $this->dispatch(new SendMessageJob($data, null, 0));
         }
