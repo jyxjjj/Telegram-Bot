@@ -48,20 +48,26 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     {
         $text = $message->getText() ?? $message->getCaption();
         $entities = $message->getEntities() ?? $message->getCaptionEntities() ?? [];
-        foreach ($entities as &$entity) {
+        $urls = [];
+        foreach ($entities as $entity) {
             if ($entity->getType() === 'url') {
                 $offset = $entity->getOffset();
                 $length = $entity->getLength();
-                $entity = substr($text, $offset, $length);
-            } else if ($entity->getType() === 'text_link') {
-                $offset = $entity->getOffset();
-                $length = $entity->getLength();
-                $entity = substr($text, $offset, $length);
-            } else {
-                $entity = null;
+                $url = mb_substr($text, $offset, $length);
+                if (!str_starts_with($url, 'http')) {
+                    $url = 'https://' . $url;
+                }
+                $urls[] = $url;
+            }
+            if ($entity->getType() === 'text_link') {
+                $url = $entity->getUrl();
+                if (!str_starts_with($url, 'http')) {
+                    $url = 'https://' . $url;
+                }
+                $urls[] = 'https://' . $url;
             }
         }
-        return array_filter($entities);
+        return array_filter($urls);
     }
 
     /**
@@ -76,6 +82,9 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         }
         foreach ($entities as $entity) {
             $url = parse_url($entity);
+            if (!$url) {
+                return;
+            }
             if ($url['scheme'] == 'http') {
                 $entity = str_replace('http://', 'https://', $entity);
             }
@@ -164,7 +173,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         $query = implode('&', $query);
         $url['query'] = $query;
         $length = strlen($query);
-        return $count && $length ? "{$url['scheme']}://{$url['host']}{$url['path']}?{$url['query']}" : "{$url['scheme']}://{$url['host']}{$url['path']}";
+        return $count && $length ? "https://{$url['host']}{$url['path']}?{$url['query']}" : "{$url['scheme']}://{$url['host']}{$url['path']}";
     }
 
     /**
