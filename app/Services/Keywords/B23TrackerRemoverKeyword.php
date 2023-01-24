@@ -15,7 +15,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
 {
     public string $name = 'b23 tracker remover';
     public string $description = 'Remove b23 tracker from b23 link';
-    public string $version = '2.0.0';
+    public string $version = '2.0.1';
     protected string $pattern = '/(b23\.tv|bilibili\.com)/';
 
     public function preExecute(Message $message): bool
@@ -33,7 +33,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             'reply_to_message_id' => $messageId,
             'text' => '',
         ];
-        $data['text'] .= 'Bilibili Tracker Remover v2.0.0 [Beta]' . PHP_EOL;
+        $data['text'] .= 'Bilibili Tracker Remover v2.0.1 [Beta]' . PHP_EOL;
         $data['text'] .= 'If error occurred, please contact @jyxjjj' . PHP_EOL;
         $entities = $this->getUrls($message);
         $this->handle($entities, $data);
