@@ -128,6 +128,16 @@ class StartCommand extends BaseCommand
      */
     protected function getBlackList(int $chatId): bool
     {
-        return in_array($chatId, [366181048, 697867344, 983182500, 1897707227, 2108116536]);
+        return in_array(
+            $chatId,
+            [
+                1897707227,
+                2108116536,
+                366181048,
+                5151499530,
+                697867344,
+                983182500,
+            ]
+        );
     }
 }
