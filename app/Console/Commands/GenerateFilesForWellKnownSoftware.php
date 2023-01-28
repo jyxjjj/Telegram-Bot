@@ -23,8 +23,8 @@ class GenerateFilesForWellKnownSoftware extends Command
     public function handle(): int
     {
         try {
-            $templateFile = file_get_contents(__DIR__ . '/../Schedule/WellKnownSoftwareUpdateSubscribe/Softwares/Software.stub');
             foreach (Software::cases() as $software) {
+                $templateFile = file_get_contents(__DIR__ . '/../Schedule/WellKnownSoftwareUpdateSubscribe/Softwares/Software.stub');
                 if (!is_file($software->file())) {
                     $templateFile = str_replace("{{CLASS}}", $software->name, $templateFile);
                     file_put_contents($software->file(), $templateFile);
