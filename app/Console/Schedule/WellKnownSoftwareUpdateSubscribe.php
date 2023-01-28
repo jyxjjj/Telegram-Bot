@@ -26,16 +26,6 @@ class WellKnownSoftwareUpdateSubscribe extends Command
     public function handle(): int
     {
         try {
-//                $lastSend = $this->getLastSend($chat_id);
-//                if (!$lastSend) {
-//                    $this->dispatch(new SendMessageJob($message, null, 0));
-//                    $this->setLastSend($chat_id, $version);
-//                } else {
-//                    if ($lastSend != $version) {
-//                        $this->dispatch(new SendMessageJob($message, null, 0));
-//                        $this->setLastSend($chat_id, $version);
-//                    }
-//                }
             foreach (Software::cases() as $software) {
                 self::info("Checking $software->name...");
                 if (!in_array($software->name, [
@@ -48,6 +38,8 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Software::NodeJS->name,
                     Software::Kernel->name,
                     Software::OpenSSL->name,
+                    Software::Laravel->name,
+                    Software::VSCode->name,
                 ])) {
                     continue;
                 }
