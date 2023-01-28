@@ -5,6 +5,7 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Go;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Kernel;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\KernelFeodra;
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Laravel;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\MariaDB;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\MariaDBDocker;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Nginx;
@@ -13,6 +14,7 @@ use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\OpenSSL;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\PHP;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Redis;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\RedisDocker;
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\VSCode;
 
 enum Software: string
 {
@@ -27,6 +29,8 @@ enum Software: string
     case NodeJS = 'NODEJS';
     case Kernel = 'KERNEL';
     case KernelFeodra = 'KERNEL_FEDORA';
+    case VSCode = 'VSCODE';
+    case Laravel = 'LARAVEL';
 
     public function file(): string
     {
@@ -42,6 +46,8 @@ enum Software: string
             self::NodeJS => __DIR__ . '/Softwares/NodeJS.php',
             self::Kernel => __DIR__ . '/Softwares/Kernel.php',
             self::KernelFeodra => __DIR__ . '/Softwares/KernelFeodra.php',
+            self::VSCode => __DIR__ . '/Softwares/VSCode.php',
+            self::Laravel => __DIR__ . '/Softwares/Laravel.php',
         };
     }
 
@@ -67,6 +73,8 @@ enum Software: string
             self::NodeJS => NodeJS::class,
             self::Kernel => Kernel::class,
             self::KernelFeodra => KernelFeodra::class,
+            self::VSCode => VSCode::class,
+            self::Laravel => Laravel::class,
         };
     }
 }
