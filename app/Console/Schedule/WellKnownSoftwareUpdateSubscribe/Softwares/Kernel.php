@@ -35,8 +35,10 @@ class Kernel implements SoftwareInterface
                 $item = (array)$item;
                 $title = $item['title'];
                 if (str_ends_with($title, 'stable')) {
-                    $version = explode(':', $title)[0];
-                    break;
+                    $versionstring = explode(':', $title)[0];
+                    if ($version == '0.0.0' || version_compare($versionstring, $version, '>')) {
+                        $version = $versionstring;
+                    }
                 }
             }
         }
