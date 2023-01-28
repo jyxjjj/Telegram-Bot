@@ -2,6 +2,7 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 
