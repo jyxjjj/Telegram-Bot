@@ -33,8 +33,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             'reply_to_message_id' => $messageId,
             'text' => '',
         ];
-        $data['text'] .= 'Bilibili Tracker Remover v2.0.1 [Beta]' . PHP_EOL;
-        $data['text'] .= 'If error occurred, please contact @jyxjjj' . PHP_EOL;
+        $data['text'] .= 'Bilibili Tracker Remover v2.0.1 [Stable]' . PHP_EOL;
         $entities = $this->getUrls($message);
         $this->handle($entities, $data);
         isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
