@@ -25,18 +25,18 @@ class PrivateServerStatusPusher extends Command
     public function handle(): int
     {
         try {
-            $this->info('Start to run the server status monitor');
+            self::info('Start to run the server status monitor');
             $icmpServerLists = env('MONITORING_SERVER_LISTS_ICMP', '');
             $icmpServerLists = explode(',', $icmpServerLists);
             $errs = $this->detect($icmpServerLists);
             if (count($errs) > 0) {
                 $this->pushToOwner($errs);
             }
-            $this->info('Finish to run the server status monitor');
+            self::info('Finish to run the server status monitor');
             return self::SUCCESS;
         } catch (Throwable $e) {
             Handler::logError($e);
-            $this->error("Error when running the server status monitor: {$e->getMessage()}");
+            self::info("Error when running the server status monitor: {$e->getMessage()}");
             return self::FAILURE;
         }
     }
@@ -48,7 +48,7 @@ class PrivateServerStatusPusher extends Command
     private function detect(array $icmpServerLists): array
     {
         $errs = [];
-        $this->info('Start ICMP detection');
+        self::info('Start ICMP detection');
         foreach ($icmpServerLists as $icmpServer) {
             if (filter_var($icmpServer, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_RES_RANGE)) {
                 $ip = $icmpServer;
@@ -103,11 +103,11 @@ class PrivateServerStatusPusher extends Command
                 $end = Carbon::now()->getPreciseTimestamp();
                 $time = $end - $start;
                 $time < 1000000 && usleep(1000000 - $time);
-                $len && $this->info(sprintf("%s %s %s %s ms", $host, bin2hex($package), bin2hex($buffer), number_format($time / 1000, 3, '.', '')));
+                $len && self::info(sprintf("%s %s %s %s ms", $host, bin2hex($package), bin2hex($buffer), number_format($time / 1000, 3, '.', '')));
             }
             socket_close($socket);
         } catch (Throwable $e) {
-            $this->error($e->getMessage());
+            self::error($e->getMessage());
             return "$host: Error: {$e->getMessage()}";
         }
         $rate = number_format($loss / 16 * 100, 2, '.', '');
@@ -138,14 +138,14 @@ class PrivateServerStatusPusher extends Command
         $to = explode(',', $to);
         foreach ($to as $user) {
             if (filter_var($user, FILTER_VALIDATE_INT)) {
-                $this->info("Pushing to $user");
+                self::info("Pushing to $user");
                 $message = [
                     'chat_id' => $user,
                     'text' => $text,
                 ];
                 $this->dispatch(new SendMessageJob($message, null, 300));
                 if ($user != end($to)) {
-                    $this->info('Sleep for 5 seconds');
+                    self::info('Sleep for 5 seconds');
                     sleep(5);
                 }
             }
