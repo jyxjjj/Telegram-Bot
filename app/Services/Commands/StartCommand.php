@@ -131,7 +131,7 @@ class StartCommand extends BaseCommand
         return in_array(
             $chatId,
             [
-                1553366382,
+                1553366382, // 此人贩子，不予解封
                 1897707227,
                 2108116536,
                 366181048,
