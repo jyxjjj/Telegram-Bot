@@ -47,6 +47,35 @@ class MariaDB implements SoftwareInterface
     }
 
     /**
+     * @return array
+     */
+    private function getMajor(): array
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
+        return Http::
+        withHeaders($headers)
+            ->get('https://downloads.mariadb.org/rest-api/mariadb/')
+            ->json();
+    }
+
+    /**
+     * @param string $release_id
+     * @return array
+     */
+    private function getLatest(string $release_id): array
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
+        return Http::
+        withHeaders($headers)
+            ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")
+            ->json();
+    }
+
+    /**
      * @param int $chat_id
      * @param string $version
      * @return array
@@ -74,34 +103,5 @@ class MariaDB implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;
-    }
-
-    /**
-     * @return array
-     */
-    private function getMajor(): array
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
-            ->get('https://downloads.mariadb.org/rest-api/mariadb/')
-            ->json();
-    }
-
-    /**
-     * @param string $release_id
-     * @return array
-     */
-    private function getLatest(string $release_id): array
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
-            ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")
-            ->json();
     }
 }

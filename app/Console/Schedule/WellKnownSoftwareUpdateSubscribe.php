@@ -37,6 +37,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Software::RedisDocker->name,
                     Software::NodeJS->name,
                     Software::Kernel->name,
+                    Software::KernelFeodra->name,
                     Software::OpenSSL->name,
                     Software::Laravel->name,
                     Software::VSCode->name,

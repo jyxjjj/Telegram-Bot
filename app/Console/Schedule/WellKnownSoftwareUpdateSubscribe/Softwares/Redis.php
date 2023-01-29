@@ -44,6 +44,34 @@ class Redis implements SoftwareInterface
     }
 
     /**
+     * @return array|int|false
+     */
+    private function getJson(): array|int|false
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= "; Telegram-Redis-Subscriber-Runner/$ts";
+        $last_modified = Common::getLastModified(Software::Redis);
+        if ($last_modified) {
+            $headers['If-Modified-Since'] = $last_modified;
+        }
+        $get = Http::
+        withHeaders($headers)
+            ->accept('application/vnd.github+json')
+            ->withToken(env('GITHUB_TOKEN'))
+            ->get('https://api.github.com/repos/redis/redis/tags?per_page=50');
+        $last_modified = $get->header('last-modified');
+        Common::cacheLastModified(Software::Redis, $last_modified);
+        if ($get->status() == 200) {
+            return $get->json();
+        }
+        if ($get->status() == 304) {
+            return 304;
+        }
+        return false;
+    }
+
+    /**
      * @param int $chat_id
      * @param string $version
      * @return array
@@ -71,33 +99,5 @@ class Redis implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;
-    }
-
-    /**
-     * @return array|int|false
-     */
-    private function getJson(): array|int|false
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-Redis-Subscriber-Runner/$ts";
-        $last_modified = Common::getLastModified(Software::Redis);
-        if ($last_modified) {
-            $headers['If-Modified-Since'] = $last_modified;
-        }
-        $get = Http::
-        withHeaders($headers)
-            ->accept('application/vnd.github+json')
-            ->withToken(env('GITHUB_TOKEN'))
-            ->get('https://api.github.com/repos/redis/redis/tags?per_page=50');
-        $last_modified = $get->header('last-modified');
-        Common::cacheLastModified(Software::Redis, $last_modified);
-        if ($get->status() == 200) {
-            return $get->json();
-        }
-        if ($get->status() == 304) {
-            return 304;
-        }
-        return false;
     }
 }

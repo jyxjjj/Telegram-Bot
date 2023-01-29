@@ -35,6 +35,20 @@ class RedisDocker implements SoftwareInterface
     }
 
     /**
+     * @return array
+     */
+    private function getLatest(): array
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= "; Telegram-RedisDocker-Subscriber-Runner/$ts";
+        return Http::
+        withHeaders($headers)
+            ->get('https://registry.hub.docker.com/v2/repositories/library/redis/tags/latest/images')
+            ->json();
+    }
+
+    /**
      * @param int $chat_id
      * @param string $version
      * @return array
@@ -58,19 +72,5 @@ class RedisDocker implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button1);
         return $message;
-    }
-
-    /**
-     * @return array
-     */
-    private function getLatest(): array
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-RedisDocker-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
-            ->get('https://registry.hub.docker.com/v2/repositories/library/redis/tags/latest/images')
-            ->json();
     }
 }
