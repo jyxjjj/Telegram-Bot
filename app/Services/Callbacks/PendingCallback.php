@@ -40,9 +40,8 @@ class PendingCallback extends BaseCallback
         $callbackData = $message->getData();
         $chatId = $message->getMessage()->getChat()->getId();
         $messageId = $message->getMessage()->getMessageId();
-        $fromId = $message->getFrom()->getId();
         $fromNickname = ($message->getFrom()->getFirstName() ?? '') . ($message->getFrom()->getLastName() ?? '');
-        if (preg_match('/(pendingpass|pendingreject|pendingreply|pendingignore)(.{16})/', $callbackData, $matches)) {
+        if (preg_match('/(pendingpass|pendingreject|pendingignore)(.{16})/', $callbackData, $matches)) {
             $replyMarkupKeyboard = new InlineKeyboard([]);
             $cvid = $matches[2];
             switch ($matches[1]) {
@@ -65,23 +64,6 @@ class PendingCallback extends BaseCallback
                         ]),
                     );
                     $this->dispatch(new RejectPendingJob($cvid));
-                    break;
-                case 'pendingreply':
-                    $data['text'] = '已回复，投稿ID:' . $cvid;
-                    $replyMarkupKeyboard->addRow(
-                        new InlineKeyboardButton([
-                            'text' => "🔙 已拒绝 by {$fromNickname}",
-                            'callback_data' => "endedhandle{$cvid}",
-                        ]),
-                    );
-                    $jobData = [
-                        'chat_id' => $chatId,
-                        'message_id' => $messageId,
-                        'from_id' => $fromId,
-                        'from_nickname' => $fromNickname,
-                        'cvid' => $cvid,
-                    ];
-                    $this->dispatch(new RejectPendingJob($jobData, true));
                     break;
                 case 'pendingignore':
                     $data['text'] = '已忽略，投稿ID:' . $cvid;

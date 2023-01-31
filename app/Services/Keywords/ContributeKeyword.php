@@ -285,12 +285,6 @@ class ContributeKeyword extends ContributeStep
                         );
                         $sender['reply_markup']->addRow(
                             new InlineKeyboardButton([
-                                'text' => '拒绝并留言',
-                                'callback_data' => "pendingreply$cvid",
-                            ])
-                        );
-                        $sender['reply_markup']->addRow(
-                            new InlineKeyboardButton([
                                 'text' => '忽略',
                                 'callback_data' => "pendingignore$cvid",
                             ])
