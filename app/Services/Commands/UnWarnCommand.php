@@ -98,6 +98,7 @@ class UnWarnCommand extends BaseCommand
             return;
         }
         TChatWarns::revokeUserWarn($chatId, $userId);
+        $warns--;
         $data['text'] .= "Remove once warning of user <a href='tg://user?id=$userId'>$userId</a>.\n";
         $data['text'] .= "<b>Current warn times</b>: $warns.\n";
         $data['text'] .= "Since you are unwarning it,\n";
