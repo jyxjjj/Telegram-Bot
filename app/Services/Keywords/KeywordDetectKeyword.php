@@ -160,9 +160,7 @@ class KeywordDetectKeyword extends BaseKeyword
         }
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
         if ($message->getFrom()->getId() == '777000') {
-            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
+            return;
         } else {
             if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
                 return;
@@ -195,9 +193,7 @@ class KeywordDetectKeyword extends BaseKeyword
     {
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
         if ($message->getFrom()->getId() == '777000') {
-            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
+            return;
         } else {
             if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
                 return;
@@ -332,9 +328,7 @@ class KeywordDetectKeyword extends BaseKeyword
         }
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
         if ($message->getFrom()->getId() == '777000') {
-            if (in_array($message->getForwardFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
+            return;
         } else {
             if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
                 return;
