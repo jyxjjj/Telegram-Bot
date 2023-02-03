@@ -25,7 +25,7 @@ class Laravel implements SoftwareInterface
         }
         $version = '0.0.0';
         foreach ($data as $branch) {
-            $versionstring = str_replace('v', '', $branch['tag_name']);
+            $versionstring = str_replace('v', '', $branch['name']);
             if (version_compare($versionstring, $version, '>')) {
                 $version = $versionstring;
             }
@@ -41,13 +41,20 @@ class Laravel implements SoftwareInterface
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
         $headers['User-Agent'] .= "; Telegram-Laravel-Subscriber-Runner/$ts";
+        $last_modified = Common::getLastModified(Software::Laravel);
+        if ($last_modified) {
+            $headers['If-Modified-Since'] = $last_modified;
+        }
         $get = Http::
         withHeaders($headers)
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
-            ->get('https://api.github.com/repos/laravel/framework/releases?per_page=5');
+            ->get('https://api.github.com/repos/laravel/framework/tags?per_page=5');
         if ($get->status() == 200) {
             return $get->json();
+        }
+        if ($get->status() == 304) {
+            return 304;
         }
         return false;
     }
