@@ -2,9 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Schedule\ChromeUpdateSubscribe;
 use App\Console\Schedule\LogClean;
-use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Queue\Console\PruneFailedJobsCommand;

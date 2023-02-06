@@ -49,8 +49,8 @@ class PendingCallback extends BaseCallback
                     $data['text'] = '已通过，投稿ID:' . $cvid;
                     $replyMarkupKeyboard->addRow(
                         new InlineKeyboardButton([
-                            'text' => "✅ 已通过 by {$fromNickname}",
-                            'callback_data' => "endedhandle{$cvid}",
+                            'text' => "✅ 已通过 by $fromNickname",
+                            'callback_data' => "endedhandle$cvid",
                         ]),
                     );
                     $this->dispatch(new PassPendingJob($cvid));
@@ -59,8 +59,8 @@ class PendingCallback extends BaseCallback
                     $data['text'] = '已拒绝，投稿ID:' . $cvid;
                     $replyMarkupKeyboard->addRow(
                         new InlineKeyboardButton([
-                            'text' => "❌ 已拒绝 by {$fromNickname}",
-                            'callback_data' => "endedhandle{$cvid}",
+                            'text' => "❌ 已拒绝 by $fromNickname",
+                            'callback_data' => "endedhandle$cvid",
                         ]),
                     );
                     $this->dispatch(new RejectPendingJob($cvid));
@@ -69,8 +69,8 @@ class PendingCallback extends BaseCallback
                     $data['text'] = '已忽略，投稿ID:' . $cvid;
                     $replyMarkupKeyboard->addRow(
                         new InlineKeyboardButton([
-                            'text' => "🗑 已忽略 by {$fromNickname}",
-                            'callback_data' => "endedhandle{$cvid}",
+                            'text' => "🗑 已忽略 by $fromNickname",
+                            'callback_data' => "endedhandle$cvid",
                         ]),
                     );
                     $this->dispatch(new IgnorePendingJob($cvid));

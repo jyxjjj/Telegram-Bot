@@ -65,7 +65,7 @@ class StartCommand extends BaseCommand
 
     /**
      * @param int $chatId
-     * @param string $username
+     * @param string|null $username
      * @return int
      */
     private function rateLimit(int $chatId, ?string $username): int

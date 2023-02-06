@@ -34,7 +34,7 @@ class RejectPendingJob extends BaseQueue
     {
         BotCommon::getTelegram();
         $data = $this->data;
-            $cvid = $data;
+        $cvid = $data;
         $pendingData = Conversation::get('pending', 'pending');
         if (!isset($pendingData[$cvid])) {
             return;
@@ -51,7 +51,7 @@ class RejectPendingJob extends BaseQueue
             'text' => '',
         ];
         $message_name = $userData[$cvid]['name'];
-        $sender['text'] .= "您提交的资源<code>{$message_name}</code>已被拒绝。";
+        $sender['text'] .= "您提交的资源<code>$message_name</code>已被拒绝。";
         $sender['reply_markup'] = new InlineKeyboard([]);
         $button1 = new InlineKeyboardButton([
             'text' => '技术支持',

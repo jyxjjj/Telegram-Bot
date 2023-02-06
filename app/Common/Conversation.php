@@ -9,8 +9,8 @@ class Conversation
     public static function get(int|string $filename, string $type): array
     {
         $fs = Storage::disk('telegram');
-        $path = "conversation/{$type}";
-        $file = "{$path}/{$filename}.json";
+        $path = "conversation/$type";
+        $file = "$path/$filename.json";
         if ($fs->exists($file)) {
             return json_decode($fs->get($file), true);
         }
@@ -20,8 +20,8 @@ class Conversation
     public static function save(int|string $filename, string $type, array $value): bool
     {
         $fs = Storage::disk('telegram');
-        $path = "conversation/{$type}";
-        $file = "{$path}/{$filename}.json";
+        $path = "conversation/$type";
+        $file = "$path/$filename.json";
         if (!$fs->exists($path)) {
             $fs->makeDirectory($path);
         }

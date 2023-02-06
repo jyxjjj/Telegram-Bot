@@ -29,13 +29,12 @@ class HelpCommand extends BaseCommand
     {
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
-        $param = $message->getText(true);
         $data = [
             'chat_id' => $chatId,
 //            'text' => $this->getHelp($param),
             'text' => '',
         ];
-        $data['text'] .= "你的用户ID： {$userId}";
+        $data['text'] .= "你的用户ID： $userId";
         $data['reply_markup'] = new InlineKeyboard([]);
         $button1 = new InlineKeyboardButton([
             'text' => 'DMCA Request',
