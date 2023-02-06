@@ -229,6 +229,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['text'] .= "投稿人昵称：$user_name\n";
                         $sender['text'] .= "投稿人账号：$user_account\n";
                         $sender['text'] .= "点击复制ID：<code>$user_id</code>\n";
+                        $sender['text'] .= "投稿ID：$cvid\n";
                         $this->dispatch(new PassPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else if (BL::get($user_id)) {
@@ -240,6 +241,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['text'] .= "投稿人昵称：$user_name\n";
                         $sender['text'] .= "投稿人账号：$user_account\n";
                         $sender['text'] .= "点击复制ID：<code>$user_id</code>\n";
+                        $sender['text'] .= "投稿ID：$cvid\n";
                         $this->dispatch(new RejectPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else {
