@@ -54,11 +54,11 @@ class AboutCommand extends BaseCommand
         ]);
         $website = new InlineKeyboardButton([
             'text' => '官方网站',
-            'url' => 'https://www.zaihuamall.com',
+            'url' => 'https://www.zaihua.net',
         ]);
         $data['reply_markup']->addRow($github, $website);
         $channel = new InlineKeyboardButton([
-            'text' => '官方频道',
+            'text' => '阿里云盘盘',
             'url' => 'https://t.me/ZaiHuaYun',
         ]);
         $group = new InlineKeyboardButton([
