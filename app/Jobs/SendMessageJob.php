@@ -54,8 +54,8 @@ class SendMessageJob extends TelegramBaseQueue
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
             if (
-                $errorDescription != 'Forbidden: bot was blocked by the user' ||
-                $errorDescription != 'Forbidden: bot can\'t initiate conversation with a user' ||
+                $errorDescription != 'Forbidden: bot was blocked by the user' &&
+                $errorDescription != 'Forbidden: bot can\'t initiate conversation with a user' &&
                 $errorDescription != 'Forbidden: bot was kicked from the supergroup chat'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
