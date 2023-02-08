@@ -6,7 +6,6 @@ use App\Common\AllowedChats;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatHistoryOfBindChannel;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -30,7 +29,6 @@ class SearchCommand extends BaseCommand
         if (!in_array($chatId, $groups)) {
             return;
         }
-        Log::debug('SearchCommand: in groups');
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
