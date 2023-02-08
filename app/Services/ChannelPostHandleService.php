@@ -9,7 +9,7 @@ use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
-class MessageHandleService extends BaseService
+class ChannelPostHandleService extends BaseService
 {
     /**
      * @var array
@@ -26,11 +26,11 @@ class MessageHandleService extends BaseService
      */
     public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
-        $message = $update->getMessage();
+        $message = $update->getChannelPost();
         $messageType = $message->getType();
         $this->handlers[] = [
-            'type' => 'command',
-            'class' => CommandHandleService::class,
+            'type' => 'ANY',
+            'class' => KeywordHandleService::class,
         ];
         $this->runHandler($messageType, $message, $telegram, $updateId);
     }
