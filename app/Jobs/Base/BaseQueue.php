@@ -18,12 +18,4 @@ class BaseQueue implements ShouldQueue
     public function __construct()
     {
     }
-
-    /**
-     * @return int[]
-     */
-    public function backoff(): array
-    {
-        return [1, 5, 10];
-    }
 }

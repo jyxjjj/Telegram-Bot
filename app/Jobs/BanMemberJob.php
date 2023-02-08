@@ -3,12 +3,12 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
-use App\Jobs\Base\TelegramBaseQueue;
+use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Carbon;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class BanMemberJob extends TelegramBaseQueue
+class BanMemberJob extends BaseQueue
 {
     private array $data;
 

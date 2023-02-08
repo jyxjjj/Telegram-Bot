@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
-use App\Jobs\Base\TelegramBaseQueue;
+use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Carbon;
 use Longman\TelegramBot\Entities\ChatPermissions;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class RestrictMemberJob extends TelegramBaseQueue
+class RestrictMemberJob extends BaseQueue
 {
     private array $data;
     private int $time;

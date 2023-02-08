@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
-use App\Jobs\Base\TelegramBaseQueue;
+use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +11,7 @@ use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class SendMessageWithKeyJob extends TelegramBaseQueue
+class SendMessageWithKeyJob extends BaseQueue
 {
     private array $data;
     private string $key;
