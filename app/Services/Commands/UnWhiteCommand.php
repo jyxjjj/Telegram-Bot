@@ -33,7 +33,7 @@ class UnWhiteCommand extends BaseCommand
             'text' => '',
         ];
         $userId = $param;
-        if (!is_numeric($userId)) {
+        if (!is_int($userId)) {
             $data['text'] .= '用户ID输入错误';
             $this->dispatch(new SendMessageJob($data, null, 0));
             return;

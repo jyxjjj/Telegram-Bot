@@ -12,7 +12,7 @@ class Conversation
         $path = "conversation/$type";
         $file = "$path/$filename.json";
         if ($fs->exists($file)) {
-            return json_decode($fs->get($file), true);
+            return json_decode($fs->get($file), true) ?? [];
         }
         return [];
     }
