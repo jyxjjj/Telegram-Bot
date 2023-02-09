@@ -224,7 +224,8 @@ class ContributeKeyword extends ContributeStep
                         // 将 '白名单用户{name}的投稿已自动通过审核' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         $sender['text'] = "白名单：\n";
-                        $sender['text'] .= "<a href='{$data[$cvid]['link']}'>{$data[$cvid]['name']}</a>\n\n";
+                        $sender['text'] .= "名称：{$data[$cvid]['name']}\n\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
                         $sender['text'] .= "投稿人：$user_link\n";
                         $sender['text'] .= "投稿人昵称：$user_name\n";
                         $sender['text'] .= "投稿人账号：$user_account\n";
