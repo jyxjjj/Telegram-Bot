@@ -22,8 +22,7 @@ class TTLRedis extends Command
     {
         $connection = self::argument('connection') ?? 'default';
         $key = self::argument('key') ?? '*';
-        $prefix = config('database.redis.options.prefix');
-        self::info('Listing ttl of key: ' . $prefix . $key);
+        self::info('Listing ttl of key: ' . $key);
         $ttl = Redis::connection($connection)->command('TTL', [$key]);
         self::info('TTL: ' . $ttl);
         return self::SUCCESS;
