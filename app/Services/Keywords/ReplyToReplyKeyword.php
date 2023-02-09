@@ -30,6 +30,9 @@ class ReplyToReplyKeyword extends ContributeStep
             if (preg_match('/点击复制ID：(\d*)/', $text, $useridmatches)) {
                 $userId = $useridmatches[1];
             }
+            if (preg_match('/获取人ID: (\d*)/', $text, $useridmatches)) {
+                $warnChatId = $useridmatches[1];
+            }
         } else {
             return;
         }
@@ -44,7 +47,7 @@ class ReplyToReplyKeyword extends ContributeStep
                 ];
                 $data['text'] .= "来自管理员有关您的投稿 <code>$cvname</code> : \n";
                 $data['text'] .= "\n";
-                $data['text'] .= $message->getText();
+                $data['text'] .= $message->getText() ?? $message->getCaption() ?? '';
                 $data['text'] .= "\n";
                 $data['text'] .= "\n";
                 $data['text'] .= "[投稿ID]:$cvid\n";
@@ -56,6 +59,21 @@ class ReplyToReplyKeyword extends ContributeStep
                     'text' => '已请求回复',
                 ];
             }
+        }
+        if (isset($warnChatId)) {
+            $data = [
+                'chat_id' => $warnChatId,
+                'text' => '',
+            ];
+            $data['text'] .= "来自管理员：\n";
+            $data['text'] .= $message->getText() ?? $message->getCaption() ?? '';
+            $data['text'] .= "\n(单向消息，不可回复)\n";
+            $this->dispatch(new SendMessageJob($data, null, 0));
+            $sender = [
+                'chat_id' => $message->getChat()->getId(),
+                'reply_to_message_id' => $message->getMessageId(),
+                'text' => '已请求回复',
+            ];
         }
         if (!isset($sender)) {
             $sender = [

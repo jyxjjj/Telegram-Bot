@@ -70,32 +70,38 @@ class StartCommand extends BaseCommand
      */
     private function rateLimit(int $chatId, ?string $username): int
     {
+        $data = [
+            'chat_id' => $chatId,
+            'text' => '',
+        ];
         if ($this->getBlackList($chatId)) {
-            $data = [
-                'chat_id' => $chatId,
-                'text' => '您已被拉黑，请联系技术支持 @jyxjjj 或客服 @zaihua_bot',
-            ];
+            $data['text'] .= '您已被拉黑，请联系技术支持 @jyxjjj 或客服 @zaihua_bot';
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
         $times = $this->getGettedTimes($chatId);
         if ($times >= 30) {
+            $data['text'] = '您今日获取链接次数已达上限';
+            $this->dispatch(new SendMessageJob($data, null, 0));
+            return -1;
+        }
+        if ($this->getFreq($chatId, 5, 180)) {
+            $data['text'] = '您的请求过快，请稍后再试';
+            $this->dispatch(new SendMessageJob($data, null, 0));
             $data = [
-                'chat_id' => $chatId,
-                'text' => '您今日已达到上限',
+                'chat_id' => env('YPP_SOURCE_ID'),
+                'text' => '',
             ];
+            $data['text'] .= "监控告警: 3分钟超过5次\n";
+            $data['text'] .= "获取人ID: $chatId\n";
+            is_null($username) && $username = '无用户名';
+            $data['text'] .= "用户名: $username\n";
+            $data['text'] .= "<a href='tg://user?id=$chatId'>尝试点此联系</a>\n";
+            $data['text'] .= "此前次数: $times\n";
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
         $this->addGettedTimes($chatId, $times);
-        is_null($username) && $username = '无用户名';
-        if (Cache::get($chatId . '_start') >= 20) {
-            $data = [
-                'chat_id' => env('YPP_SOURCE_ID'),
-                'text' => "<a href='tg://user?id=$chatId'>$chatId</a> $username 获取链接次数达到 $times 次",
-            ];
-            $this->dispatch(new SendMessageJob($data, null, 0));
-        }
         return 30 - $times;
     }
 
@@ -126,7 +132,7 @@ class StartCommand extends BaseCommand
      * @param int $chatId
      * @return bool
      */
-    protected function getBlackList(int $chatId): bool
+    private function getBlackList(int $chatId): bool
     {
         return in_array(
             $chatId,
@@ -141,5 +147,22 @@ class StartCommand extends BaseCommand
                 983182500,
             ]
         );
+    }
+
+    /**
+     * @param int $chatId
+     * @param int $timeMax
+     * @param int $ttl
+     * @return bool
+     */
+    private function getFreq(int $chatId, int $timeMax = 2, int $ttl = 60): bool
+    {
+        $times = Cache::get("{$chatId}_start_per_$ttl", 0);
+        if ($times >= $timeMax) {
+            return true;
+        }
+        $times++;
+        Cache::put("{$chatId}_start_per_$ttl", $times, $ttl);
+        return false;
     }
 }
