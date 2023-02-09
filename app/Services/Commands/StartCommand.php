@@ -7,6 +7,7 @@ use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -86,7 +87,11 @@ class StartCommand extends BaseCommand
             return -1;
         }
         if ($this->getFreq($chatId, 5, 180)) {
-            $data['text'] = '您的请求过快，请稍后再试';
+            $data['text'] = "您的请求过快，请稍后再试\n";
+            $ttl = Redis::connection('cache')->command('TTL', ["cache:{$chatId}_start_per_180"]);
+            if ($ttl > 0) {
+                $data['text'] .= "剩余时间: $ttl 秒";
+            }
             $this->dispatch(new SendMessageJob($data, null, 0));
             $data = [
                 'chat_id' => env('YPP_SOURCE_ID'),
@@ -98,6 +103,9 @@ class StartCommand extends BaseCommand
             $data['text'] .= "用户名: $username\n";
             $data['text'] .= "<a href='tg://user?id=$chatId'>尝试点此联系</a>\n";
             $data['text'] .= "此前次数: $times\n";
+            if ($ttl > 0) {
+                $data['text'] .= "剩余时间: $ttl 秒";
+            }
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
