@@ -7,7 +7,7 @@ use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -86,28 +86,19 @@ class StartCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
-        if ($this->getFreq($chatId, 5, 180)) {
-            $data['text'] = "您的请求过快，请稍后再试\n";
-            $ttl = Redis::connection('cache')->command('TTL', ["cache:{$chatId}_start_per_180"]);
-            if ($ttl > 0) {
-                $data['text'] .= "剩余时间: $ttl 秒";
+        if ($times > 20) {
+            Log::alert("用户 $username ($chatId) 获取链接次数 $times 次");
+            if (rand(0, 100) > 87) {
+                $data = [
+                    'chat_id' => env('YPP_SOURCE_ID'),
+                    'text' => '',
+                ];
+                $data['text'] .= "监控告警: \n";
+                $data['text'] .= "获取人ID: <code>$chatId</code>\n";
+                $data['text'] .= "<a href='tg://user?id=$chatId'>尝试点此联系</a>\n";
+                $data['text'] .= "次数: $times\n";
+                $this->dispatch(new SendMessageJob($data, null, 0));
             }
-            $this->dispatch(new SendMessageJob($data, null, 0));
-            $data = [
-                'chat_id' => env('YPP_SOURCE_ID'),
-                'text' => '',
-            ];
-            $data['text'] .= "监控告警: 3分钟超过5次\n";
-            $data['text'] .= "获取人ID: $chatId\n";
-            is_null($username) && $username = '无用户名';
-            $data['text'] .= "用户名: $username\n";
-            $data['text'] .= "<a href='tg://user?id=$chatId'>尝试点此联系</a>\n";
-            $data['text'] .= "此前次数: $times\n";
-            if ($ttl > 0) {
-                $data['text'] .= "剩余时间: $ttl 秒";
-            }
-            $this->dispatch(new SendMessageJob($data, null, 0));
-            return -1;
         }
         $this->addGettedTimes($chatId, $times);
         return 30 - $times;
@@ -155,22 +146,5 @@ class StartCommand extends BaseCommand
                 983182500,
             ]
         );
-    }
-
-    /**
-     * @param int $chatId
-     * @param int $timeMax
-     * @param int $ttl
-     * @return bool
-     */
-    private function getFreq(int $chatId, int $timeMax = 2, int $ttl = 60): bool
-    {
-        $times = Cache::get("{$chatId}_start_per_$ttl", 0);
-        if ($times >= $timeMax) {
-            return true;
-        }
-        $times++;
-        Cache::put("{$chatId}_start_per_$ttl", $times, $ttl);
-        return false;
     }
 }
