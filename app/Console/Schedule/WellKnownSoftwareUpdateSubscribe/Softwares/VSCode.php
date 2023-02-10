@@ -40,7 +40,7 @@ class VSCode implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-VSCode-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-VSCode-Subscriber-Runner/$ts";
         $get = Http::
         withHeaders($headers)
             ->accept('application/vnd.github+json')

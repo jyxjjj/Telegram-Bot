@@ -27,7 +27,7 @@ class KernelFeodra implements SoftwareInterface
         $baseurl = 'https://eu.edge.kernel.org/fedora/updates/37/Everything/x86_64/Packages/k/';
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-Kernel-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-Kernel-Subscriber-Runner/$ts";
         $get = Http::
         withHeaders($headers)
             ->accept('text/html')

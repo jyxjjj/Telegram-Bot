@@ -41,7 +41,7 @@ class RedisDocker implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-RedisDocker-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-RedisDocker-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
             ->get('https://registry.hub.docker.com/v2/repositories/library/redis/tags/latest/images')

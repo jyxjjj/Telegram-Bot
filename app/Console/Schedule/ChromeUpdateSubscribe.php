@@ -6,10 +6,10 @@ use App\Common\Config;
 use App\Exceptions\Handler;
 use App\Jobs\SendMessageJob;
 use App\Models\TUpdateSubscribes;
-use Illuminate\Support\Carbon;
 use DESMG\RFC6986\Hash;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -111,7 +111,7 @@ class ChromeUpdateSubscribe extends Command
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-ChromeUpdate-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-ChromeUpdate-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
             ->get('https://chromiumdash.appspot.com/fetch_releases?channel=Stable,Canary&platform=Windows,Mac,iOS,Android,Linux&num=1&offset=0')

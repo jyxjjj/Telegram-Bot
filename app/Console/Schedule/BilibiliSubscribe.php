@@ -6,9 +6,9 @@ use App\Common\Config;
 use App\Exceptions\Handler;
 use App\Jobs\SendPhotoJob;
 use App\Models\TBilibiliSubscribes;
-use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -119,7 +119,7 @@ class BilibiliSubscribe extends Command
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-B23-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-B23-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
             ->get($link)

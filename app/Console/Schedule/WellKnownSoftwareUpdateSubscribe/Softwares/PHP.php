@@ -50,7 +50,7 @@ class PHP implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-PHP-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-PHP-Subscriber-Runner/$ts";
         $last_modified = Common::getLastModified(Software::PHP);
         if ($last_modified) {
             $headers['If-Modified-Since'] = $last_modified;

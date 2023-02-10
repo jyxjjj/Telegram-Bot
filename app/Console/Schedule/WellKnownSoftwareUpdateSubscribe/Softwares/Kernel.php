@@ -20,7 +20,7 @@ class Kernel implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-Kernel-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-Kernel-Subscriber-Runner/$ts";
         $get = Http::
         withHeaders($headers)
             ->accept('text/html')

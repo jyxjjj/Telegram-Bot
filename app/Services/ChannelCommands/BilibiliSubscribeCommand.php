@@ -112,7 +112,7 @@ class BilibiliSubscribeCommand extends BaseCommand
     private function getJson(string $link): ?array
     {
         $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= "; Telegram-B23-Subscriber/$this->version";
+        $headers['User-Agent'] .= " Telegram-B23-Subscriber/$this->version";
         return Http::
         withHeaders($headers)
             ->get($link)

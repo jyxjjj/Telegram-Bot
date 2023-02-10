@@ -40,7 +40,7 @@ class Laravel implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-Laravel-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-Laravel-Subscriber-Runner/$ts";
         $last_modified = Common::getLastModified(Software::Laravel);
         if ($last_modified) {
             $headers['If-Modified-Since'] = $last_modified;

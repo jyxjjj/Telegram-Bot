@@ -50,7 +50,7 @@ class Redis implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-Redis-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-Redis-Subscriber-Runner/$ts";
         $last_modified = Common::getLastModified(Software::Redis);
         if ($last_modified) {
             $headers['If-Modified-Since'] = $last_modified;

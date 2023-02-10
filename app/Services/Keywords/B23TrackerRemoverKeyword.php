@@ -134,7 +134,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     private function getLocation(string $link): string
     {
         $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= "; Telegram-B23-Link-Tracker-Remover/$this->version";
+        $headers['User-Agent'] .= " Telegram-B23-Link-Tracker-Remover/$this->version";
         $location = Http::
         withHeaders($headers)
             ->withoutRedirecting()

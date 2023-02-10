@@ -53,7 +53,7 @@ class MariaDB implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-MariaDB-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
             ->get('https://downloads.mariadb.org/rest-api/mariadb/')
@@ -68,7 +68,7 @@ class MariaDB implements SoftwareInterface
     {
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-MariaDB-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-MariaDB-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
             ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")

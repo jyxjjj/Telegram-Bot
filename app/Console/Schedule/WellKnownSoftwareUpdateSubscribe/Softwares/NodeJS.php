@@ -18,7 +18,7 @@ class NodeJS implements SoftwareInterface
         $version = '0.0.0';
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= "; Telegram-NodeJS-Subscriber-Runner/$ts";
+        $headers['User-Agent'] .= " Telegram-NodeJS-Subscriber-Runner/$ts";
         $get = Http::
         withHeaders($headers)
             ->accept('text/plain')

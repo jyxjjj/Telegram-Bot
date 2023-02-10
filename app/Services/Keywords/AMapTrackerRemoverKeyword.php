@@ -82,7 +82,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
     private function getLocation(string $link): string
     {
         $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= "; Telegram-AMap-Link-Tracker-Remover/" . $this->version;
+        $headers['User-Agent'] .= " Telegram-AMap-Link-Tracker-Remover/$this->version";
         return Http::
         connectTimeout(10)
             ->timeout(10)
