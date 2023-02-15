@@ -23,6 +23,9 @@ class DataBaseLogger extends AbstractProcessingHandler
             'context' => json_encode($record->context),
             'extra' => json_encode($record->extra),
         ];
+        if (str_starts_with($data['message'], 'Creation of dynamic property Longman')) {
+            return;
+        }
         DB::table('logs')->insert($data);
     }
 }
