@@ -25,7 +25,7 @@ class B23UIDToLinkKeyword extends BaseKeyword
     {
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
-        $text = $message->getText();
+        $text = $message->getText(true) ?? $message->getCaption();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
