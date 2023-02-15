@@ -35,6 +35,6 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
         ],
     ];
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
     ];
 }
