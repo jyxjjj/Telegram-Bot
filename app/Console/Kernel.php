@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(PruneFailedJobsCommand::class, ['--hours=72'])->dailyAt('00:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command(LogClean::class, ['3'])->hourly()->runInBackground()->withoutOverlapping(120);
-        $schedule->command(ChromeUpdateSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
+        $schedule->command(ChromeUpdateSubscribe::class)->dailyAt('06:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command(WellKnownSoftwareUpdateSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
         $schedule->command(PixivDownloader::class)->twiceDaily()->runInBackground()->withoutOverlapping(120);
         $schedule->command(PrivateServerStatusPusher::class)->everyMinute()->runInBackground()->withoutOverlapping(5);
