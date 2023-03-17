@@ -23,6 +23,10 @@ class ReplyToReplyKeyword extends ContributeStep
     {
         $text = $message->getReplyToMessage()->getText() ?? $message->getReplyToMessage()->getCaption() ?? '';
 
+        if (str_starts_with($message->getText() ?? $message->getCaption() ?? '', '/noreply')) {
+            return;
+        }
+
         if ($message->getReplyToMessage()->getFrom()->getId() == $telegram->getBotId() && $text != '') {
             if (preg_match('/投稿ID：([A-Z0-9]{16})/', $text, $cvidmatches)) {
                 $cvid = $cvidmatches[1];
@@ -56,7 +60,7 @@ class ReplyToReplyKeyword extends ContributeStep
                 $sender = [
                     'chat_id' => $message->getChat()->getId(),
                     'reply_to_message_id' => $message->getMessageId(),
-                    'text' => '已请求回复',
+                    'text' => '允许引用回复消息已推送至发送队列',
                 ];
             }
         }
@@ -72,7 +76,7 @@ class ReplyToReplyKeyword extends ContributeStep
             $sender = [
                 'chat_id' => $message->getChat()->getId(),
                 'reply_to_message_id' => $message->getMessageId(),
-                'text' => '已请求回复',
+                'text' => '单向回复消息已推送至发送队列',
             ];
         }
         if (!isset($sender)) {
