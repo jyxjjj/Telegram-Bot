@@ -88,17 +88,6 @@ class StartCommand extends BaseCommand
         }
         if ($times > 20) {
             Log::alert("用户 $username ($chatId) 获取链接次数 $times 次");
-            if (rand(0, 100) > 87) {
-                $data = [
-                    'chat_id' => env('YPP_SOURCE_ID'),
-                    'text' => '',
-                ];
-                $data['text'] .= "监控告警: \n";
-                $data['text'] .= "获取人ID: <code>$chatId</code>\n";
-                $data['text'] .= "<a href='tg://user?id=$chatId'>尝试点此联系</a>\n";
-                $data['text'] .= "次数: $times\n";
-                $this->dispatch(new SendMessageJob($data, null, 0));
-            }
         }
         $this->addGettedTimes($chatId, $times);
         return 30 - $times;
