@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Common\BotCommon;
+use App\Common\Conversation;
 use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
@@ -13,6 +14,7 @@ class SendPhotoJob extends BaseQueue
 {
     private array $data;
     private int $delete;
+    private string|bool $needSave;
 
     /**
      * @param array $data
@@ -21,6 +23,12 @@ class SendPhotoJob extends BaseQueue
     public function __construct(array $data, int $delete = 60)
     {
         parent::__construct();
+        if (isset($data['need_save'])) {
+            $this->needSave = $data['need_save'];
+            unset($data['need_save']);
+        } else {
+            $this->needSave = false;
+        }
         $this->data = array_merge($data, [
             'parse_mode' => 'HTML',
             'disable_web_page_preview' => true,
@@ -41,6 +49,11 @@ class SendPhotoJob extends BaseQueue
                 /** @var Message $sendResult */
                 $sendResult = $serverResponse->getResult();
                 $messageId = $sendResult->getMessageId();
+                if ($this->needSave) {
+                    $pendingData = Conversation::get('messagelink', 'pending');
+                    $pendingData[$this->needSave] = $messageId;
+                    Conversation::save('messagelink', 'pending', $pendingData);
+                }
                 $data = [
                     'chat_id' => $this->data['chat_id'],
                     'message_id' => $messageId,

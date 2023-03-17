@@ -32,10 +32,15 @@ class ListCommand extends BaseCommand
             'text' => "待审核投稿:\n",
         ];
         $pendingData = Conversation::get('pending', 'pending');
+        $pendingMessageLink = Conversation::get('messagelink', 'pending');
+        $chatIdLink = str_replace('-100', '', $chatId);
         foreach ($pendingData as $cvid => $user_id) {
-            $data['text'] .= "<code>$cvid</code>\n";
+            $messageId = $pendingMessageLink[$cvid];
+            $data['text'] .= "<a href=\"https://t.me/c/$chatIdLink/$messageId\">$cvid</a>\n";
         }
-        $data['text'] .= '请根据信息搜索聊天记录';
+        if (strlen($data['text']) < 8) {
+            $data['text'] .= "暂无待审核投稿\n";
+        }
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }

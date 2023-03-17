@@ -291,6 +291,7 @@ class ContributeKeyword extends ContributeStep
                                 'callback_data' => "pendingignore$cvid",
                             ])
                         );
+                        $sender['need_save'] = $cvid;
                         // 发送消息
                         $hasPic && $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
                         !$hasPic && $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
