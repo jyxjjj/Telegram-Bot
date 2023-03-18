@@ -19,5 +19,6 @@ Route::group(
     ],
     function () {
         Route::post("/webhook", [IndexController::class, 'webhook']);
+        Route::post("/sendMessage", [IndexController::class, 'sendMessage']);
     }
 );
