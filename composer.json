@@ -22,7 +22,7 @@
         "ext-sockets": "*",
         "desmg/php-common": "^2.1.0",
         "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^10.2.0",
+        "laravel/framework": "^10.4.0",
         "longman/telegram-bot": "^0.80.0",
         "nunomaduro/collision": "^6.4.0",
         "spatie/laravel-ignition": "^2.0.0"
