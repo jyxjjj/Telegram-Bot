@@ -45,7 +45,6 @@ class SendPhotoJob extends BaseQueue
         BotCommon::getTelegram();
         $serverResponse = Request::sendPhoto($this->data);
         if ($serverResponse->isOk()) {
-            if ($this->delete !== 0) {
                 /** @var Message $sendResult */
                 $sendResult = $serverResponse->getResult();
                 $messageId = $sendResult->getMessageId();
@@ -58,6 +57,7 @@ class SendPhotoJob extends BaseQueue
                     'chat_id' => $this->data['chat_id'],
                     'message_id' => $messageId,
                 ];
+            if ($this->delete !== 0) {
                 DeleteMessageJob::dispatch($data, $this->delete);
             }
         } else {
