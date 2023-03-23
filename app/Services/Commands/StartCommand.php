@@ -53,6 +53,7 @@ class StartCommand extends BaseCommand
         }
         $data['text'] .= "\nDMCA及版权反馈、技术支持\n";
         $data['text'] .= "请向本机器人发送 /help 命令\n";
+        $data['text'] .= "发送 /donate 获取捐赠信息\n";
         //#region reply_markup
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
