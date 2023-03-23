@@ -53,7 +53,7 @@ class StartCommand extends BaseCommand
         }
         $data['text'] .= "\nDMCA及版权反馈、技术支持\n";
         $data['text'] .= "请向本机器人发送 /help 命令\n";
-        $data['text'] .= "发送 /donate 获取捐赠信息\n";
+        $data['text'] .= "发送 /donate 获取💰捐💰赠💰信息\n";
         //#region reply_markup
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
@@ -82,16 +82,17 @@ class StartCommand extends BaseCommand
             return -1;
         }
         $times = $this->getGettedTimes($chatId);
-        if ($times >= 30) {
-            $data['text'] = '您今日获取链接次数已达上限';
+        if ($times >= 50) {
+            $data['text'] = "您今日获取链接次数已达上限\n";
+            $data['text'] .= "发送 /donate 获取💰捐💰赠💰信息";
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
-        if ($times > 20) {
+        if ($times > 40) {
             Log::alert("用户 $username ($chatId) 获取链接次数 $times 次");
         }
         $this->addGettedTimes($chatId, $times);
-        return 30 - $times;
+        return 50 - $times;
     }
 
     /**
