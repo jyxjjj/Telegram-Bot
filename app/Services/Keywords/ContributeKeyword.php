@@ -27,6 +27,8 @@ class ContributeKeyword extends ContributeStep
             $message->getText() !== '取消投稿' &&
             $message->getText() !== '分步投稿' &&
             $message->getText() !== '一步投稿' &&
+            $message->getText() !== '帮助与反馈' &&
+            $message->getText() !== '捐赠信息' &&
             !$message->getReplyToMessage();
     }
 
@@ -210,6 +212,7 @@ class ContributeKeyword extends ContributeStep
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
                     $sender['reply_markup']->addRow(new KeyboardButton('分步投稿'), new KeyboardButton('一步投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
 
                     $data_pending = Conversation::get('pending', 'pending');

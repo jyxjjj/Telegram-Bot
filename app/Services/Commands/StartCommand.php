@@ -57,9 +57,8 @@ class StartCommand extends BaseCommand
         //#region reply_markup
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
-        $button1 = new KeyboardButton('一步投稿');
-        $button2 = new KeyboardButton('分步投稿');
-        $data['reply_markup']->addRow($button1, $button2);
+        $data['reply_markup']->addRow(new KeyboardButton('一步投稿'), new KeyboardButton('分步投稿'));
+        $data['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
         //#endregion reply_markup
         $this->dispatch(new SendMessageJob($data, null, 0));
     }

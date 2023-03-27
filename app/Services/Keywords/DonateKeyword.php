@@ -1,25 +1,18 @@
 <?php
 
-namespace App\Services\Commands;
+namespace App\Services\Keywords;
 
 use App\Jobs\SendMessageJob;
-use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
-class DonateCommand extends BaseCommand
+class DonateKeyword extends ContributeStep
 {
-    public string $name = 'donate';
-    public string $description = 'Donate command';
-    public string $usage = '/donate';
-    public bool $private = true;
+    public function preExecute(Message $message): bool
+    {
+        return $message->getChat()->isPrivateChat() && $message->getText() === '捐赠信息';
+    }
 
-    /**
-     * @param Message $message
-     * @param Telegram $telegram
-     * @param int $updateId
-     * @return void
-     */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();

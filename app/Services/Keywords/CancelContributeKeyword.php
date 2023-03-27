@@ -24,7 +24,7 @@ class CancelContributeKeyword extends ContributeStep
         ];
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
         if (count($data) > 0 && $data['status'] != 'contribute' && $data['status'] != 'contribute2') {
-            $sender['text'] .= "请先开始投稿。\n";
+            $sender['text'] .= "您未进入投稿状态，无需或无法取消，请先开始投稿。\n";
         } else {
             $data['status'] = 'free';
             $cvid = $data['cvid'];
@@ -35,6 +35,7 @@ class CancelContributeKeyword extends ContributeStep
         $sender['reply_markup'] = new Keyboard([]);
         $sender['reply_markup']->setResizeKeyboard(true);
         $sender['reply_markup']->addRow(new KeyboardButton('分步投稿'), new KeyboardButton('一步投稿'));
+        $sender['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
         $this->dispatch((new SendMessageJob($sender, null, 0)));
     }
 }
