@@ -34,8 +34,7 @@ class CancelContributeKeyword extends ContributeStep
         }
         $sender['reply_markup'] = new Keyboard([]);
         $sender['reply_markup']->setResizeKeyboard(true);
-        $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘分步投稿'));
-        $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘一步投稿'));
+        $sender['reply_markup']->addRow(new KeyboardButton('分步投稿'), new KeyboardButton('一步投稿'));
         $this->dispatch((new SendMessageJob($sender, null, 0)));
     }
 }

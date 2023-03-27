@@ -25,8 +25,8 @@ class ContributeKeyword extends ContributeStep
     {
         return $message->getChat()->isPrivateChat() &&
             $message->getText() !== '取消投稿' &&
-            $message->getText() !== '阿里云盘分步投稿' &&
-            $message->getText() !== '阿里云盘一步投稿' &&
+            $message->getText() !== '分步投稿' &&
+            $message->getText() !== '一步投稿' &&
             !$message->getReplyToMessage();
     }
 
@@ -209,8 +209,7 @@ class ContributeKeyword extends ContributeStep
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
-                    $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘分步投稿'));
-                    $sender['reply_markup']->addRow(new KeyboardButton('阿里云盘一步投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('分步投稿'), new KeyboardButton('一步投稿'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
 
                     $data_pending = Conversation::get('pending', 'pending');
@@ -247,7 +246,7 @@ class ContributeKeyword extends ContributeStep
                     } else {
                         //#region 发送投稿到审核群
                         // 判断是否含图片
-                        $hasPic = (bool)$data[$cvid]['pic'];
+                        $hasPic = !empty($data[$cvid]['pic']);
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         // 生成消息
                         if ($hasPic) {
@@ -301,7 +300,8 @@ class ContributeKeyword extends ContributeStep
             }
         } else if (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
-            if ($message->getCaption() && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $message->getCaption(), $matches)) {
+            $messageText = $message->getCaption() ?? $message->getText();
+            if ($messageText && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $messageText, $matches)) {
                 $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
                 $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                 // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
@@ -317,7 +317,7 @@ class ContributeKeyword extends ContributeStep
                 } else {
                     $data[$cvid]['link'] = $matches[3];
                     $data[$cvid]['tag'] = $matches[4];
-                    $photos = $message->getPhoto();
+                    $photos = $message->getPhoto() ?? false;
                     $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
                         return bccomp(
                             bcmul($right->getWidth(), $right->getHeight()),
@@ -326,7 +326,15 @@ class ContributeKeyword extends ContributeStep
                     });
                     $photos && $photoFileId = $photos[0]->getFileId();
                     if (!isset($photoFileId)) {
-                        $sender['text'] = "格式错误，必须包含图片，请重新发送";
+                        $data[$cvid]['pic'] = null;
+                        $data['status'] = 'contribute';
+                        $data[$cvid]['status'] = 'confirm';
+                        Conversation::save($user_id, 'contribute', $data);
+                        $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                        $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
+                        $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                     } else {
                         $data[$cvid]['pic'] = $photoFileId;
                         $data['status'] = 'contribute';
@@ -339,12 +347,12 @@ class ContributeKeyword extends ContributeStep
                         $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
                         $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
                         $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
-                        $sender['reply_markup'] = new Keyboard([]);
-                        $sender['reply_markup']->setResizeKeyboard(true);
-                        $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
-                        $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
-                        $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
                     }
+                    $sender['reply_markup'] = new Keyboard([]);
+                    $sender['reply_markup']->setResizeKeyboard(true);
+                    $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                    $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
                 }
             } else {
                 $sender['text'] = "格式错误，请重新发送";
