@@ -304,7 +304,7 @@ class ContributeKeyword extends ContributeStep
         } else if (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
             $messageText = $message->getCaption() ?? $message->getText();
-            if ($messageText && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n\n.+(?:关键词|标签)：(.+)/s', $messageText, $matches)) {
+            if ($messageText && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)) {
                 $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
                 $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                 // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']

@@ -17,7 +17,7 @@ class AliYunPanKeyword extends ContributeStep
 {
     public function preExecute(Message $message): bool
     {
-        return $message->getChat()->isPrivateChat() && $message->getText() === '阿里云盘分步投稿';
+        return $message->getChat()->isPrivateChat() && $message->getText() === '分步投稿';
     }
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
