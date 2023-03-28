@@ -211,7 +211,7 @@ class ContributeKeyword extends ContributeStep
                     $sender['text'] .= "审核可能需要一定时间，如果您长时间未收到结果，可联系群内管理员。您现在可以开始下一个投稿。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
-                    $sender['reply_markup']->addRow(new KeyboardButton('分步投稿'), new KeyboardButton('一步投稿'));
+                    $sender['reply_markup']->addRow(new KeyboardButton('一步投稿'), new KeyboardButton('分步投稿'));
                     $sender['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
                     $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
 
