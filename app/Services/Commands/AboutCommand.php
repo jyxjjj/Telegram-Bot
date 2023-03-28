@@ -59,7 +59,7 @@ class AboutCommand extends BaseCommand
         $data['reply_markup']->addRow($github, $website);
         $channel = new InlineKeyboardButton([
             'text' => '阿里云盘盘',
-            'url' => 'https://t.me/ZaiHuaYun',
+            'url' => 'https://t.me/ZaiHuaPan',
         ]);
         $group = new InlineKeyboardButton([
             'text' => '官方群',

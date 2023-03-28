@@ -8,7 +8,7 @@ return [
     'secure' => true,
     'domain' => null,
     'path' => '/',
-    'cookie' => 'TGSESSID',
+    'cookie' => 'ZAIHUABOTSESSID',
     'http_only' => true,
     'same_site' => 'lax',
     'encrypt' => false,
