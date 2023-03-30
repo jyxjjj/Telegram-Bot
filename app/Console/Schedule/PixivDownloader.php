@@ -48,7 +48,7 @@ class PixivDownloader extends Command
             $response = Http::withHeaders($headers)
                 ->connectTimeout(10)
                 ->timeout(10)
-                ->retry(3, 1000)
+                ->retry(3, 1000, throw: false)
                 ->get($url);
             $json = $response->json();
             $code = $response->status();

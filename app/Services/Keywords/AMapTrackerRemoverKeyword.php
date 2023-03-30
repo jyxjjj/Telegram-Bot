@@ -86,7 +86,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
         return Http::
         connectTimeout(10)
             ->timeout(10)
-            ->retry(3, 1000)
+            ->retry(3, 1000, throw: false)
             ->withHeaders($headers)
             ->withoutRedirecting()
             ->get($link)

@@ -263,7 +263,7 @@ class AddMyStickerCommand extends BaseCommand
         $stickerFileData = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(3)
             ->timeout(5)
-            ->retry(1, 1000)
+            ->retry(1, 1000, throw: false)
             ->get($stickerFileUrl);
         if ($stickerFileData->ok()) {
             $stickerFile = $stickerFileData->body();

@@ -125,9 +125,9 @@ class PixivCommand extends BaseCommand
         $response = Http::withHeaders($headers)
             ->connectTimeout(10)
             ->timeout(10)
-            ->retry(3, 1000)
+            ->retry(3, 1000, throw: false)
             ->get($url);
-        if ($response->successful()) {
+        if ($response->ok()) {
             $body = $response->body();
             $name = Hash::sha256($body);
             $path = "pixiv/$name.jpg";
