@@ -2,10 +2,8 @@
 
 namespace App\Services\Commands;
 
+use App\Common\RequestService;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -56,8 +54,10 @@ class StartCommand extends BaseCommand
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
         $data['reply_markup']->addRow(new KeyboardButton('一步投稿'), new KeyboardButton('分步投稿'));
-        $data['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
+        $data['reply_markup']->addRow(new KeyboardButton('DMCA Request'), new KeyboardButton('版权反馈'));
+        $data['reply_markup']->addRow(new KeyboardButton('客服帮助'), new KeyboardButton('技术支持'));
+        $data['reply_markup']->addRow(new KeyboardButton('意见建议'), new KeyboardButton('捐赠信息'));
         //#endregion reply_markup
-        $this->dispatch(new SendMessageJob($data, null, 0));
+        RequestService::getInstance()->sendMessage($data);
     }
 }

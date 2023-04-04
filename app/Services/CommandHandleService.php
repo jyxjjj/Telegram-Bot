@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Common\BotCommon;
+use App\Common\RequestService;
 use App\Services\Base\BaseService;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -53,7 +54,7 @@ class CommandHandleService extends BaseService
                     'text' => '',
                 ];
                 $data['text'] .= "This command is admin only.\n";
-                $this->dispatch(new SendMessageJob($data));
+                RequestService::getInstance()->sendMessage($data);
                 return true;
             }
             if ($command_class->private && $notPrivate) {// Detect if command is private only
@@ -63,7 +64,7 @@ class CommandHandleService extends BaseService
                     'text' => '',
                 ];
                 $data['text'] .= "This command needs to be sent in a private chat.\n";
-                $this->dispatch(new SendMessageJob($data));
+                RequestService::getInstance()->sendMessage($data);
                 return true;
             }
             $command_class->execute($message, $telegram, $updateId); // Execute command

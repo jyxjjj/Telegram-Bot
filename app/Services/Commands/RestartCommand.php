@@ -2,6 +2,7 @@
 
 namespace App\Services\Commands;
 
+use App\Common\RequestService;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Facades\Artisan;
 use Longman\TelegramBot\Entities\Message;
@@ -40,6 +41,6 @@ class RestartCommand extends BaseCommand
         $data['text'] .= "Sent restart signal.\n";
         $data['text'] .= "<b>Returned Code</b>: <code>$code</code>\n";
         $data['text'] .= "<b>Returned Msg</b>: <code>$msg</code>\n";
-        $this->dispatch(new SendMessageJob($data, null, 0));
+        RequestService::getInstance()->sendMessage($data);
     }
 }

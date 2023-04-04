@@ -2,9 +2,10 @@
 
 namespace App\Services\Commands;
 
+use App\Common\RequestService;
 use App\Services\Base\BaseCommand;
-use Longman\TelegramBot\Entities\InlineKeyboard;
-use Longman\TelegramBot\Entities\InlineKeyboardButton;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -29,26 +30,13 @@ class HelpCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= "你的用户ID： $userId";
-        $data['reply_markup'] = new InlineKeyboard([]);
-        $button1 = new InlineKeyboardButton([
-            'text' => 'DMCA Request',
-            'url' => 'https://t.me/zaihua_bot',
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => '版权反馈',
-            'url' => 'https://t.me/zaihua_bot',
-        ]);
-        $button3 = new InlineKeyboardButton([
-            'text' => '意见建议',
-            'url' => 'https://t.me/zaihua_bot',
-        ]);
-        $button4 = new InlineKeyboardButton([
-            'text' => '技术支持',
-            'url' => 'https://t.me/jyxjjj',
-        ]);
-        $data['reply_markup']->addRow($button1, $button2);
-        $data['reply_markup']->addRow($button3, $button4);
-        $data['text'] && $this->dispatch(new SendMessageJob($data, null, 0));
+        $data['reply_markup'] = new Keyboard([]);
+        $data['reply_markup']->setResizeKeyboard(true);
+        $data['reply_markup']->addRow(new KeyboardButton('一步投稿'), new KeyboardButton('分步投稿'));
+        $data['reply_markup']->addRow(new KeyboardButton('DMCA Request'), new KeyboardButton('版权反馈'));
+        $data['reply_markup']->addRow(new KeyboardButton('客服帮助'), new KeyboardButton('技术支持'));
+        $data['reply_markup']->addRow(new KeyboardButton('意见建议'), new KeyboardButton('捐赠信息'));
+        $data['text'] && RequestService::getInstance()->sendMessage($data);
     }
 
 }

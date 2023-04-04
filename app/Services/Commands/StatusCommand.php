@@ -2,6 +2,7 @@
 
 namespace App\Services\Commands;
 
+use App\Common\RequestService;
 use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
@@ -56,7 +57,7 @@ class StatusCommand extends BaseCommand
         $data['text'] .= "<b>Memory Usage</b>: <code>$memUsage%</code>\n";
         $uptime = $this->getUptime();
         $data['text'] .= "<b>Uptime</b>: <code>$uptime</code>\n";
-        $this->dispatch(new SendMessageJob($data));
+        RequestService::getInstance()->sendMessage($data);
     }
 
     /**

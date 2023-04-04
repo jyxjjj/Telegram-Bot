@@ -2,8 +2,8 @@
 
 namespace App\Services\Commands;
 
+use App\Common\RequestService;
 use App\Services\Base\BaseCommand;
-use DESMG\RFC4122\UUID;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
@@ -23,13 +23,13 @@ class PingCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $key = UUID::generateUniqueID();
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
             'text' => 'Calculating...',
         ];
-        $this->dispatch(new SendMessageWithKeyJob($data, $key, null));
+        $sentMessageId = RequestService::getInstance()->sendMessage($data);
+        $data['message_id'] = $sentMessageId;
         $data['text'] = '';
         $sendTime = $message->getDate();
         $sendTime = Carbon::createFromTimestamp($sendTime)->getTimestampMs();
@@ -57,7 +57,7 @@ class PingCommand extends BaseCommand
             $ping = $this->ping($IP);
             $data['text'] .= "<b>DC$i($IP) Latency</b>: <code>$ping ms</code>\n";
         }
-        $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
+        RequestService::getInstance()->editMessageText($data);
     }
 
     /**
