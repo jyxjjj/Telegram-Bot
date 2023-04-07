@@ -66,7 +66,8 @@ class PingCommand extends BaseCommand
      */
     private function ping($host): float
     {
-        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
+        !defined('SOL_ICMP') && define('SOL_ICMP', getprotobyname('icmp'));
+        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_ICMP);
         $start = Carbon::now()->getPreciseTimestamp();
         socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
         socket_recv($socket, $recv, 255, 0);
