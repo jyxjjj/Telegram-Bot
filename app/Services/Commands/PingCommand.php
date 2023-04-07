@@ -5,8 +5,8 @@ namespace App\Services\Commands;
 use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Carbon;
 use DESMG\RFC4122\UUID;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
@@ -68,7 +68,8 @@ class PingCommand extends BaseCommand
      */
     private function ping($host): float
     {
-        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
+        !defined('SOL_ICMP') && define('SOL_ICMP', getprotobyname('icmp'));
+        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_ICMP);
         socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
         $start = Carbon::now()->getPreciseTimestamp();

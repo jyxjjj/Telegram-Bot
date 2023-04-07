@@ -86,7 +86,8 @@ class PrivateServerStatusPusher extends Command
         }
 
         try {
-            $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_SOCKET);
+            !defined('SOL_ICMP') && define('SOL_ICMP', getprotobyname('icmp'));
+            $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_ICMP);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
             $loss = 0;
