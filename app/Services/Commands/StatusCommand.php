@@ -22,6 +22,12 @@ class StatusCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
+        $messageId = $message->getMessageId();
+        $delete = [
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+        ];
+        RequestService::getInstance()->deleteMessage($delete);
         $data = [
             'chat_id' => $chatId,
             'text' => '',

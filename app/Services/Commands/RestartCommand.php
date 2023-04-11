@@ -24,7 +24,13 @@ class RestartCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
+        $delete = [
+            'chat_id' => $chatId,
+            'message_id' => $messageId,
+        ];
+        RequestService::getInstance()->deleteMessage($delete);
         try {
             $code = Artisan::call('queue:restart');
             $msg = 'Queue worker restarted';
@@ -32,10 +38,8 @@ class RestartCommand extends BaseCommand
             $code = $e->getCode();
             $msg = $e->getMessage();
         }
-        $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
-            'reply_to_message_id' => $messageId,
             'text' => '',
         ];
         $data['text'] .= "Sent restart signal.\n";

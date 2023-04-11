@@ -36,7 +36,7 @@ class HelpCommand extends BaseCommand
         $data['reply_markup']->addRow(new KeyboardButton('DMCA Request'), new KeyboardButton('版权反馈'));
         $data['reply_markup']->addRow(new KeyboardButton('客服帮助'), new KeyboardButton('技术支持'));
         $data['reply_markup']->addRow(new KeyboardButton('意见建议'), new KeyboardButton('捐赠信息'));
-        $data['text'] && RequestService::getInstance()->sendMessage($data);
+        $data['text'] && RequestService::getInstance()->sendMessage($data, 0);
     }
 
 }

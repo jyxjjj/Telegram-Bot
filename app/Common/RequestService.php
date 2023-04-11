@@ -100,10 +100,6 @@ class RequestService
                     'message_id' => $messageId,
                 ];
                 $this->dispatch(new DeleteMessageJob($deleter, $delete));
-                if (isset($data['reply_to_message_id'])) {
-                    $deleter['message_id'] = $data['reply_to_message_id'];
-                    $this->dispatch(new DeleteMessageJob($deleter, $delete));
-                }
             }
             return $messageId;
         } else {
@@ -112,7 +108,8 @@ class RequestService
             if (
                 $errorDescription != 'Forbidden: bot was blocked by the user' &&
                 $errorDescription != 'Forbidden: bot can\'t initiate conversation with a user' &&
-                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat'
+                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat' &&
+                $errorDescription != 'Forbidden: bot was kicked from the group chat'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $data]);
                 return -1;
@@ -124,22 +121,17 @@ class RequestService
     /**
      * @param array $data
      * @return bool
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
-    private function deleteMessage(array $data): bool
+    public function deleteMessage(array $data): bool
     {
-        $data = array_merge($data, [
-            'parse_mode' => 'HTML',
-            'disable_web_page_preview' => true,
-            'allow_sending_without_reply' => true,
-        ]);
         $serverResponse = Request::deleteMessage($data);
         if (!$serverResponse->isOk()) {
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
             if (
                 $errorDescription != 'Bad Request: message to delete not found' &&
-                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat'
+                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat' &&
+                $errorDescription != 'Bad Request: message can\'t be deleted'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $data]);
                 return false;
@@ -163,10 +155,39 @@ class RequestService
         if (!$serverResponse->isOk()) {
             $errorCode = $serverResponse->getErrorCode();
             $errorDescription = $serverResponse->getDescription();
-            Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $data]);
-            return false;
-        } else {
-            return true;
+            if (
+                $errorDescription != 'Bad Request: message to edit not found'
+            ) {
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $data]);
+                return false;
+            }
         }
+        return true;
+    }
+
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    public function editMessageCaption(array $data): bool
+    {
+        $data = array_merge($data, [
+            'parse_mode' => 'HTML',
+            'disable_web_page_preview' => true,
+            'allow_sending_without_reply' => true,
+        ]);
+        $serverResponse = Request::editMessageCaption($data);
+        if (!$serverResponse->isOk()) {
+            $errorCode = $serverResponse->getErrorCode();
+            $errorDescription = $serverResponse->getDescription();
+            if (
+                $errorDescription != 'Bad Request: message to edit not found'
+            ) {
+                Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $data]);
+                return false;
+            }
+        }
+        return true;
     }
 }
