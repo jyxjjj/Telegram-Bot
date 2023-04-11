@@ -40,8 +40,6 @@ class DonateCommand extends BaseCommand
         $data['text'] .= "\n✥  <a href='https://www.desmg.com/api/qr?data=https%3a%2f%2fi.qianbao.qq.com%2fwallet%2fsqrcode.htm%3fm%3dtenpay%26a%3d1%26u%3d773933146%26ac%3d9F6FDA71D576A2D06BDC989DF3BED696727BA4758E68901461F656DA769F2203%26n%3d%e9%be%99%e7%bc%98%e7%a7%91%e6%8a%80%26f%3dwallet'>QQ钱包</a>";
         $data['text'] .= "\n✥  <a href='https://www.desmg.com/api/qr?data=https%3a%2f%2fqr.alipay.com%2fFKX006260GRX9PQEAL5C85'>支付宝</a>";
         $data['text'] .= "\n✥  <a href='https://www.desmg.com/api/qr?data=wxp%3a%2f%2ff2f0PL8c5TC6WxzfirXw5ESmJkE8Mi4I3oaN'>微信支付</a>";
-        $data['text'] .= "\n✥  <b>Paxful USDT TRC20:</b>";
-        $data['text'] .= "\n✥  <code>TFCPUfsiwz3Rf9h1NLKAuYi7rV4HcWA6gk</code>";
         $data['text'] .= "\n✥  <b>Telegram Wallet USDT TRC20:</b>";
         $data['text'] .= "\n✥  <code>TLie3XqtwQroiAxmCHT4bWocaUEmAeqEjE</code>";
         $data['text'] .= "\n✥  <b>Telegram Wallet TON:</b>";
