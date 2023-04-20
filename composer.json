@@ -20,12 +20,12 @@
         "ext-pdo": "*",
         "ext-simplexml": "*",
         "ext-sockets": "*",
-        "desmg/php-common": "^2.1.0",
-        "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^10.5.1",
+        "desmg/php-common": "^2.2.1",
+        "guzzlehttp/guzzle": "^7.5.1",
+        "laravel/framework": "^10.8.0",
         "longman/telegram-bot": "^0.80.0",
         "nunomaduro/collision": "^6.4.0",
-        "spatie/laravel-ignition": "^2.0.0"
+        "spatie/laravel-ignition": "^2.1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.21.0"
