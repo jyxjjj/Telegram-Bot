@@ -56,7 +56,8 @@ class SendMessageJob extends BaseQueue
             if (
                 $errorDescription != 'Forbidden: bot was blocked by the user' &&
                 $errorDescription != 'Forbidden: bot can\'t initiate conversation with a user' &&
-                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat'
+                $errorDescription != 'Forbidden: bot was kicked from the supergroup chat' &&
+                $errorDescription != 'Forbidden: bot was kicked from the group chat'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
                 $this->release(1);
