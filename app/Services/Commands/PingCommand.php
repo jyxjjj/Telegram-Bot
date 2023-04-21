@@ -6,6 +6,8 @@ use App\Jobs\EditMessageTextWithKeyJob;
 use App\Jobs\SendMessageWithKeyJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC4122\UUID;
+use DESMG\RFC792\Ping;
+use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\Message;
@@ -22,6 +24,7 @@ class PingCommand extends BaseCommand
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws Exception
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
@@ -54,35 +57,15 @@ class PingCommand extends BaseCommand
             '149.154.167.91',
             '91.108.56.130',
         ];
+        $ping = new Ping();
         for ($i = 1; $i <= count($IPs); $i++) {
             $IP = $IPs[$i - 1];
-            $ping = $this->ping($IP);
-            $data['text'] .= "<b>DC$i($IP) Latency</b>: <code>$ping ms</code>\n";
+            $ping->setHost($IP);
+            $ping->run();
+            $latency = $ping->getLatency();
+            $data['text'] .= "<b>DC$i($IP) Latency</b>: <code>$latency ms</code>\n";
         }
+        unset($ping);
         $this->dispatch(new EditMessageTextWithKeyJob($data, $key));
-    }
-
-    /**
-     * @param $host
-     * @return float
-     */
-    private function ping($host): float
-    {
-        !defined('SOL_ICMP') && define('SOL_ICMP', getprotobyname('icmp'));
-        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_ICMP);
-        socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 1, 'usec' => 0]);
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 1, 'usec' => 0]);
-        $start = Carbon::now()->getPreciseTimestamp();
-        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
-        socket_recv($socket, $recv, 255, 0);
-        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
-        socket_recv($socket, $recv, 255, 0);
-        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
-        socket_recv($socket, $recv, 255, 0);
-        socket_sendto($socket, "\x08\x00\x19\x2f\x00\x00\x00\x00PingHost", 16, 0, $host, 0);
-        socket_recv($socket, $recv, 255, 0);
-        $end = Carbon::now()->getPreciseTimestamp();
-        socket_close($socket);
-        return ($end - $start) / 1000 / 4;
     }
 }
