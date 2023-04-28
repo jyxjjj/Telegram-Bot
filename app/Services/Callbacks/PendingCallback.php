@@ -3,6 +3,7 @@
 namespace App\Services\Callbacks;
 
 use App\Jobs\AnswerCallbackQueryJob;
+use App\Jobs\DeleteMessageJob;
 use App\Jobs\EditMessageReplyMarkupJob;
 use App\Jobs\IgnorePendingJob;
 use App\Jobs\PassPendingJob;
@@ -83,6 +84,8 @@ class PendingCallback extends BaseCallback
                 'reply_markup' => $replyMarkupKeyboard,
             ];
             $this->dispatch(new EditMessageReplyMarkupJob($replyMarkupKeyboardMessage));
+            unset($replyMarkupKeyboardMessage['reply_markup']);
+            $this->dispatch(new DeleteMessageJob($replyMarkupKeyboardMessage, 5));
         }
         $data['text'] = '你想干嘛？你什么目的？';
         $this->dispatch(new AnswerCallbackQueryJob($data));
