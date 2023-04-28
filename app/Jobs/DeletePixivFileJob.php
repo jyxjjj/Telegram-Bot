@@ -17,7 +17,7 @@ class DeletePixivFileJob extends BaseQueue
         $this->delay(180);
     }
 
-    public function handle()
+    public function handle(): void
     {
         try {
             Storage::disk('public')->delete($this->path);

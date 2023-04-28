@@ -53,7 +53,7 @@ class ChromeUpdateSubscribe extends Command
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e);
+            Handler::logError($e, __FILE__, __LINE__);
             return self::FAILURE;
         }
     }

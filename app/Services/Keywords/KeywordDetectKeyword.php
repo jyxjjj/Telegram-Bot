@@ -42,7 +42,7 @@ class KeywordDetectKeyword extends BaseKeyword
             try {
                 $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
             } catch (Throwable $e) {
-                Handler::logError($e);
+                Handler::logError($e, __FILE__, __LINE__);
             }
             if ($this->stop) {
                 break;
@@ -56,7 +56,7 @@ class KeywordDetectKeyword extends BaseKeyword
         TChatKeywordsOperationEnum $operation,
         array                      $data,
         Message                    $message, Telegram $telegram, int $updateId
-    )
+    ): void
     {
         switch ($target) {
             case TChatKeywordsTargetEnum::TARGET_CHATID:
@@ -121,7 +121,7 @@ class KeywordDetectKeyword extends BaseKeyword
         TChatKeywordsOperationEnum $operation,
         array                      $data,
         Message                    $message, Telegram $telegram, int $updateId
-    )
+    ): void
     {
         switch ($operation) {
             case TChatKeywordsOperationEnum::OPERATION_BAN:
@@ -152,7 +152,7 @@ class KeywordDetectKeyword extends BaseKeyword
         }
     }
 
-    private function ban(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function ban(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
         if (in_array($message->getFrom()->getId(), $admins, true)) {
@@ -189,7 +189,7 @@ class KeywordDetectKeyword extends BaseKeyword
         $this->dispatch(new BanMemberJob($banner));
     }
 
-    private function delete(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function delete(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
         if ($message->getFrom()->getId() == '777000') {
@@ -216,7 +216,7 @@ class KeywordDetectKeyword extends BaseKeyword
         count($sender) > 1 && $this->dispatch(new SendMessageJob($sender));
     }
 
-    private function forward(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function forward(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
         $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
@@ -232,7 +232,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     }
 
-    private function repeat(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function repeat(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
         $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
@@ -248,7 +248,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     }
 
-    private function reply(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function reply(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
         $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
@@ -320,7 +320,7 @@ class KeywordDetectKeyword extends BaseKeyword
         }
     }
 
-    private function restrict(array $data, Message $message, Telegram $telegram, int $updateId)
+    private function restrict(array $data, Message $message, Telegram $telegram, int $updateId): void
     {
         $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
         if (in_array($message->getFrom()->getId(), $admins, true)) {

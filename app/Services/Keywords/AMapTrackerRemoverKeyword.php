@@ -39,7 +39,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
-    private function handle(string $text, array &$data)
+    private function handle(string $text, array &$data): void
     {
         $pattern = '/(http(s)?:\/\/)?(surl\.amap\.com)\/?[a-zA-Z\d]+/';
         if (preg_match_all($pattern, $text, $matches)) {
@@ -69,7 +69,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
         }
     }
 
-    private function normalizeLink(string &$link)
+    private function normalizeLink(string &$link): void
     {
         if (str_starts_with($link, 'http://')) {
             str_replace('http://', 'https://', $link);

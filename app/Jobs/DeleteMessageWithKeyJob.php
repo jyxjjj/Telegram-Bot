@@ -30,7 +30,7 @@ class DeleteMessageWithKeyJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public function handle()
+    public function handle(): void
     {
         BotCommon::getTelegram();
         $messageId = Cache::get($this->key);

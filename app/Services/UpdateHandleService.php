@@ -62,7 +62,7 @@ class UpdateHandleService extends BaseService
      * @param string $needType
      * @param string $class
      */
-    private function addHandler(string $needType, string $class)
+    private function addHandler(string $needType, string $class): void
     {
         $this->handlers[] = [
             'type' => $needType,

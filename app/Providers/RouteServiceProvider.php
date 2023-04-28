@@ -9,7 +9,7 @@ class RouteServiceProvider extends ServiceProvider
 {
     protected $namespace = 'App\\Http\\Controllers';
 
-    public function boot()
+    public function boot(): void
     {
         $this->routes(
             function () {

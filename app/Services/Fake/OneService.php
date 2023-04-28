@@ -10,18 +10,18 @@ class OneService
     }
 
     // asd
-    public function get()
+    public function get(): string
     {
         return 'asd';
     }
 
     // asd
-    public function get2()
+    public function get2(): string
     {
         return 'asd';
     }
 
-    public function get3()
+    public function get3(): string
     {
         return 'asd';
     }

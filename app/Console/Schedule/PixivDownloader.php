@@ -30,7 +30,7 @@ class PixivDownloader extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error("Error({$e->getCode()}):{$e->getMessage()}@{$e->getFile()}:{$e->getLine()}");
-            Handler::logError($e);
+            Handler::logError($e, __FILE__, __LINE__);
             return self::FAILURE;
         }
     }
@@ -88,7 +88,7 @@ class PixivDownloader extends Command
         return $result;
     }
 
-    private function saveData(Carbon $date, array $data)
+    private function saveData(Carbon $date, array $data): void
     {
         $storage = Storage::disk('public');
         $path = "pixiv/{$date->format('Y-m-d')}.json";

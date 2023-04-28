@@ -73,7 +73,7 @@ class ChannelPostHandleService extends BaseService
      * @param string $class
      * @noinspection PhpSameParameterValueInspection
      */
-    private function addHandler(string $needType, string $class)
+    private function addHandler(string $needType, string $class): void
     {
         $this->handlers[] = [
             'type' => $needType,

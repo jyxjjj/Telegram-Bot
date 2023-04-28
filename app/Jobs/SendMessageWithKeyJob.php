@@ -37,7 +37,7 @@ class SendMessageWithKeyJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public function handle()
+    public function handle(): void
     {
         BotCommon::getTelegram();
         $serverResponse = Request::sendMessage($this->data, $this->extras);

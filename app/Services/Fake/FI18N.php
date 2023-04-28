@@ -16,37 +16,37 @@ class FI18N extends BaseService
         return $key;
     }
 
-    function getLang()
+    function getLang(): string
     {
         return 'en';
     }
 
-    function getLangs()
+    function getLangs(): array
     {
         return ['en'];
     }
 
-    function getLangsAll()
+    function getLangsAll(): array
     {
         return ['en'];
     }
 
-    function getLangsAllWithNames()
+    function getLangsAllWithNames(): array
     {
         return ['en' => 'English'];
     }
 
-    function getLangsWithNames()
+    function getLangsWithNames(): array
     {
         return ['en' => 'English'];
     }
 
-    function getLangsWithNamesAll()
+    function getLangsWithNamesAll(): array
     {
         return ['en' => 'English'];
     }
 
-    function getLangsWithNamesAllWithDefault()
+    function getLangsWithNamesAllWithDefault(): array
     {
         return ['en' => 'English'];
     }

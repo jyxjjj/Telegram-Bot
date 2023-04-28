@@ -232,7 +232,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     /**
      * @deprecated 2.0.0
      */
-    private function old()
+    private function old(): void
     {
         $pattern = '/(https?:\/\/)?(b23\.tv|(www\.|live\.|space\.)?bilibili\.com)\/(video\/|read\/|mobile\/)?[a-zA-Z0-9]+(\?p=([0-9]{1,3}))?/';
         $pattern_av = '/https:\/\/www\.bilibili\.com\/(video\/)?(av|AV)\d+/';

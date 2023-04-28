@@ -24,7 +24,7 @@ class BanMemberJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public function handle()
+    public function handle(): void
     {
         BotCommon::getTelegram();
         $origin = $this->data;

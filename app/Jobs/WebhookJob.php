@@ -29,7 +29,7 @@ class WebhookJob extends BaseQueue
         $this->updateId = $updateId;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $update = $this->update;
         $telegram = $this->telegram;
@@ -37,7 +37,7 @@ class WebhookJob extends BaseQueue
         try {
             app()->make(UpdateHandleService::class)->handle($update, $telegram, $updateId);
         } catch (TelegramException|BindingResolutionException $e) {
-            Handler::logError($e);
+            Handler::logError($e, __FILE__, __LINE__);
         }
     }
 }

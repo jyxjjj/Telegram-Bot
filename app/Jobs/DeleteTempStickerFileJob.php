@@ -17,7 +17,7 @@ class DeleteTempStickerFileJob extends BaseQueue
         $this->delay(30);
     }
 
-    public function handle()
+    public function handle(): void
     {
         try {
             Storage::disk('public')->delete($this->path);

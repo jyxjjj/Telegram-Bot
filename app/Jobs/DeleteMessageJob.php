@@ -26,7 +26,7 @@ class DeleteMessageJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public function handle()
+    public function handle(): void
     {
         BotCommon::getTelegram();
         $serverResponse = Request::deleteMessage($this->data);

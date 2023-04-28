@@ -32,7 +32,7 @@ class SendPhotoJob extends BaseQueue
     /**
      * @throws TelegramException
      */
-    public function handle()
+    public function handle(): void
     {
         BotCommon::getTelegram();
         if (isset($this->data['is_file']) && $this->data['is_file']) {

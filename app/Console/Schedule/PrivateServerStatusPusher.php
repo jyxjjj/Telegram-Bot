@@ -35,7 +35,7 @@ class PrivateServerStatusPusher extends Command
             self::info('Finish to run the server status monitor');
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e);
+            Handler::logError($e, __FILE__, __LINE__);
             self::info("Error when running the server status monitor: {$e->getMessage()}");
             return self::FAILURE;
         }
