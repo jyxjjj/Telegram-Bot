@@ -2,6 +2,8 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\CURL;
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\FFmpeg;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Go;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Kernel;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\KernelFeodra;
@@ -31,6 +33,8 @@ enum Software: string
     case KernelFeodra = 'KERNEL_FEDORA';
     case VSCode = 'VSCODE';
     case Laravel = 'LARAVEL';
+    case CURL = 'CURL';
+    case FFmpeg = 'FFmpeg';
 
     public function file(): string
     {
@@ -48,6 +52,8 @@ enum Software: string
             self::KernelFeodra => __DIR__ . '/Softwares/KernelFeodra.php',
             self::VSCode => __DIR__ . '/Softwares/VSCode.php',
             self::Laravel => __DIR__ . '/Softwares/Laravel.php',
+            self::CURL => __DIR__ . '/Softwares/CURL.php',
+            self::FFmpeg => __DIR__ . '/Softwares/FFmpeg.php',
         };
     }
 
@@ -75,6 +81,8 @@ enum Software: string
             self::KernelFeodra => KernelFeodra::class,
             self::VSCode => VSCode::class,
             self::Laravel => Laravel::class,
+            self::CURL => CURL::class,
+            self::FFmpeg => FFmpeg::class,
         };
     }
 }

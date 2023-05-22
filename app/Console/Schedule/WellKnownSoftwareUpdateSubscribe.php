@@ -41,6 +41,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                     Software::OpenSSL->name,
                     Software::Laravel->name,
                     Software::VSCode->name,
+                    Software::CURL->name,
                 ])) {
                     self::warn("Skip $software->name");
                     continue;
