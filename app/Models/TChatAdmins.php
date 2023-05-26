@@ -31,7 +31,7 @@ class TChatAdmins extends BaseModel
             ->where('chat_id', $chat_id)
             ->pluck('admin_id')
             ->toArray();
-        $data = array_merge($data, ['886776929']);
+        $data = array_merge($data, [env('TELEGRAM_ADMIN_USER_ID')]);
         Cache::put("DB::TChatAdmins::chat_admins::$chat_id", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
