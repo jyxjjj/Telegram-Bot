@@ -22,7 +22,7 @@ use Throwable;
 class AddMyStickerCommand extends BaseCommand
 {
     public string $name = 'addmysticker';
-    public string $description = 'add sticker to pack';
+    public string $description = 'Add sticker to pack';
     public string $usage = '/addmysticker';
 
     /**
