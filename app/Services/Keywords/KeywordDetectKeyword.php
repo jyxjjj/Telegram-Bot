@@ -213,7 +213,7 @@ class KeywordDetectKeyword extends BaseKeyword
             'chat_id' => $message->getChat()->getId(),
         ];
         isset($data['text']) && $sender['text'] = $data['text'];
-        count($sender) > 1 && $this->dispatch(new SendMessageJob($sender));
+        count($sender) == 2 && $this->dispatch(new SendMessageJob($sender));
     }
 
     private function forward(array $data, Message $message, Telegram $telegram, int $updateId): void
@@ -229,7 +229,32 @@ class KeywordDetectKeyword extends BaseKeyword
         if (Cache::has($cacheKey)) {
             return;
         }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
 
+        $forwarder = [];
+
+        isset($data['chat_id']) && $forwarder['chat_id'] = $data['chat_id'];
+
+        if (isset($data['text'])) {
+            $data['text'] = "Forwarded Message:\n\n" . $data['text'] . "\n\n";
+        } else {
+            $data['text'] = "Forwarded Message:\n\n";
+        }
+        $forwarder['text'] = $data['text'];
+
+        $originalText = $message->getText() ?? $message->getCaption();
+        if (strlen($originalText) > 64) {
+            $forwarder['text'] .= substr($originalText, 0, 64) . '...' . "\n\n";
+        } else {
+            $forwarder['text'] .= $originalText . "\n\n";
+        }
+
+        $forwarder['text'] .= "Message ID: <code>{$message->getMessageId()}</code>\n";
+        $forwarder['text'] .= "From Chat: <code>{$message->getChat()->getId()}</code>\n";
+        $forwarder['text'] .= "From User: <a href='tg://user?id={$message->getFrom()->getId()}'>{$message->getFrom()->getId()}</a>\n";
+        $cid = str_replace('-100', '', $message->getChat()->getId());
+        $forwarder['text'] .= "Message Link: https://t.me/c/$cid/{$message->getMessageId()}";
+        count($forwarder) == 2 && $this->dispatch(new SendMessageJob($forwarder, null, 0));
     }
 
     private function repeat(array $data, Message $message, Telegram $telegram, int $updateId): void
