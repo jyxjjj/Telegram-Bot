@@ -42,7 +42,7 @@ class IATACommand extends BaseCommand
         $json = json_decode($file, true);
         unset($file);
         foreach ($json as $id => $airport) {
-            if (str_contains(strtolower($airport['iata']), strtolower($name))) {
+            if (str_contains(strtolower($airport['iata'] ?? ''), strtolower($name))) {
                 return <<<EOF
 Name: {$airport['name']}
 IATA: {$airport['iata']}
