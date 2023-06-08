@@ -33,7 +33,8 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             'reply_to_message_id' => $messageId,
             'text' => '',
         ];
-        $data['text'] .= 'Bilibili Tracker Remover v2.0.1 [Stable]' . PHP_EOL;
+        $data['text'] .= 'Bilibili Tracker Remover' . PHP_EOL;
+        $data['text'] .= 'v2.0.1 [Stable]' . PHP_EOL;
         $entities = $this->getUrls($message);
         $this->handle($entities, $data);
         isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
@@ -117,7 +118,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             if (str_starts_with($link, 'https://space.bilibili.com/')) {
                 $id = $this->getUID($link);
             }
-            $data['text'] .= "<code>$link</code>" . PHP_EOL;
+            $data['text'] .= "Click to copy: <code>$link</code>" . PHP_EOL;
             $button = new InlineKeyboardButton([
                 'text' => $id ?? $link,
                 'url' => $link,
