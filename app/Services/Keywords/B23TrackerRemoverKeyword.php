@@ -166,7 +166,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         $query = $url['query'] ?? '';
         $query = explode('&', $query);
         $query = array_filter($query, function ($item) {
-            return preg_match('/^p=([0-9]{1,3})$/', $item);
+            return $item !== '' && preg_match('/^p=([0-9]{1,3})$/', $item);
         });
         $count = count($query);
         $query = implode('&', $query);
