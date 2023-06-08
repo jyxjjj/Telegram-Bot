@@ -117,7 +117,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             if (str_starts_with($link, 'https://space.bilibili.com/')) {
                 $id = $this->getUID($link);
             }
-            $data['text'] .= $link . PHP_EOL;
+            $data['text'] .= "<code>$link</code>" . PHP_EOL;
             $button = new InlineKeyboardButton([
                 'text' => $id ?? $link,
                 'url' => $link,
