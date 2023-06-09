@@ -243,7 +243,7 @@ class KeywordDetectKeyword extends BaseKeyword
         $forwarder['text'] = $data['text'];
 
         $originalText = $message->getText() ?? $message->getCaption();
-        if (strlen($originalText) > 64) {
+        if (mb_strlen($originalText) > 32) {
             $forwarder['text'] .= mb_substr($originalText, 0, 64, 'UTF-8') . '...' . "\n\n";
         } else {
             $forwarder['text'] .= $originalText . "\n\n";
