@@ -70,9 +70,11 @@ class RestrictMemberJob extends BaseQueue
         ];
         $serverResponse = Request::restrictChatMember($restricter);
         if ($serverResponse->isOk()) {
-            $sender['text'] .= "<b>User restricted for $this->time seconds.</b>\n";
-            $sender['text'] .= "<b>Until</b>: {$restricter['until_date']}\n";
-            $sender['text'] .= "<b>User ID</b>: <a href='tg://user?id={$origin['user_id']}'>{$origin['user_id']}</a>\n";
+            $this->revoke && $sender['text'] .= "<b>User unrestricted.</b>\n";
+            $this->revoke && $sender['text'] .= "<b>User ID</b>: <a href='tg://user?id={$origin['user_id']}'>{$origin['user_id']}</a>\n";
+            !$this->revoke && $sender['text'] .= "<b>User restricted for $this->time seconds.</b>\n";
+            !$this->revoke && $sender['text'] .= "<b>Until</b>: {$restricter['until_date']}\n";
+            !$this->revoke && $sender['text'] .= "<b>User ID</b>: <a href='tg://user?id={$origin['user_id']}'>{$origin['user_id']}</a>\n";
         } else {
             $sender['text'] .= "<b>Error restricting user.</b>\n";
             $sender['text'] .= "<b>Error Code</b>: <code>{$serverResponse->getErrorCode()}</code>\n";
