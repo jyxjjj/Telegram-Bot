@@ -50,11 +50,7 @@ class TStarted extends BaseModel
             return true;
         }
         $data = self::query()
-            ->where(
-                [
-                    'user_id' => $user_id,
-                ]
-            )
+            ->where('user_id', $user_id)
             ->first();
         if ($data) {
             Cache::put("DB::TStarted::user::$user_id", $data, Carbon::now()->addMinutes(5));
