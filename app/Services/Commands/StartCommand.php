@@ -49,11 +49,13 @@ class StartCommand extends BaseCommand
             $linkData = Conversation::get('link', 'link');
             $link = $linkData[$cvid] ?? "获取链接失败\n请联系管理员";
             $data['text'] .= "\n$link\n";
+            Log::alert('获取链接', ['username' => $username, 'chatId' => $chatId, 'cvid' => $cvid, 'link' => $link]);
             $data['text'] .= "您今日剩余获取链接次数：$rest\n";
         }
         $data['text'] .= "\nDMCA及版权反馈、技术支持\n";
         $data['text'] .= "请向本机器人发送 /help 命令\n";
         $data['text'] .= "发送 /donate 获取💰捐💰赠💰信息\n";
+        $data['text'] .= env('LONG_END_AD');
         //#region reply_markup
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);

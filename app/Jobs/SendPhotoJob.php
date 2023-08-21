@@ -67,6 +67,12 @@ class SendPhotoJob extends BaseQueue
                 $errorDescription != 'Forbidden: bot was blocked by the user'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
+                $data = [
+                    'chat_id' => env('YPP_SOURCE_ID'),
+                    'text' => '',
+                ];
+                $data['text'] .= "A Message with a photo sent failed, please check the log.\n";
+                SendMessageJob::dispatch($data);
                 $this->release(1);
             }
         }

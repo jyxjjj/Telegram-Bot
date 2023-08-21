@@ -44,7 +44,7 @@ class RejectPendingJob extends BaseQueue
         Conversation::save('pending', 'pending', $pendingData);
         unset($pendingData);
         $userData = Conversation::get($user_id, 'contribute');
-        $userData[$cvid]['status'] = 'reject';
+        unset($userData[$cvid]);
         Conversation::save($user_id, 'contribute', $userData);
         $sender = [
             'chat_id' => $user_id,

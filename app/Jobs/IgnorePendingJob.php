@@ -24,7 +24,7 @@ class IgnorePendingJob extends BaseQueue
         Conversation::save('pending', 'pending', $pendingData);
         unset($pendingData);
         $userData = Conversation::get($user_id, 'contribute');
-        $userData[$cvid]['status'] = 'ignore';
+        unset($userData[$cvid]);
         Conversation::save($user_id, 'contribute', $userData);
     }
 }
