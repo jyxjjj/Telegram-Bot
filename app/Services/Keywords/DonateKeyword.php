@@ -2,6 +2,7 @@
 
 namespace App\Services\Keywords;
 
+use App\Common\Conversation;
 use App\Jobs\SendMessageJob;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
@@ -20,7 +21,7 @@ class DonateKeyword extends ContributeStep
             'chat_id' => $chatId,
             'text' => '',
         ];
-        $data['text'] .= env('LONG_START_AD');
+        $data['text'] .= Conversation::get('ad', 'ad')[2] ?? '';
         $data['text'] .= "\n👇👇👇捐赠信息👇👇👇";
         $data['text'] .= "\n✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥";
         $data['text'] .= "\n✥  如果您愿意用资金支持本项目";

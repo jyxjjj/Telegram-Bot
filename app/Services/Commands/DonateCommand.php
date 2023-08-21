@@ -2,6 +2,7 @@
 
 namespace App\Services\Commands;
 
+use App\Common\Conversation;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
@@ -27,7 +28,7 @@ class DonateCommand extends BaseCommand
             'chat_id' => $chatId,
             'text' => '',
         ];
-        $data['text'] .= env('LONG_START_AD');
+        $data['text'] .= Conversation::get('ad', 'ad')[2] ?? '';
         $data['text'] .= "\n👇👇👇捐赠信息👇👇👇";
         $data['text'] .= "\n✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥";
         $data['text'] .= "\n✥  如果您愿意用资金支持本项目";

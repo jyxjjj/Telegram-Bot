@@ -38,7 +38,7 @@ class StartCommand extends BaseCommand
             'chat_id' => $chatId,
             'text' => '',
         ];
-        $data['text'] .= env('LONG_START_AD');
+        $data['text'] .= Conversation::get('ad', 'ad')[2] ?? '';
         if (str_starts_with($payload, 'get')) {
             $rest = $this->rateLimit($chatId, $username);
             if ($rest == -1) {
@@ -55,7 +55,7 @@ class StartCommand extends BaseCommand
         $data['text'] .= "\nDMCA及版权反馈、技术支持\n";
         $data['text'] .= "请向本机器人发送 /help 命令\n";
         $data['text'] .= "发送 /donate 获取💰捐💰赠💰信息\n";
-        $data['text'] .= env('LONG_END_AD');
+        $data['text'] .= Conversation::get('ad', 'ad')[3] ?? '';
         //#region reply_markup
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);

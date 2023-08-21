@@ -60,7 +60,7 @@ class PassPendingJob extends BaseQueue
         $message_link = "<a href='https://t.me/$bot_name?start=get$cvid'>点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
-        $adText = env('AD_TEXT');
+        $adText = Conversation::get('ad', 'ad')[1] ?? '';
         if ($hasPic) {
             unset($sender['text']);
             unset($sender3['text']);
