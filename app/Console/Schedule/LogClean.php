@@ -51,7 +51,7 @@ class LogClean extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error($e->getMessage());
-            Handler::logError($e, __FILE__, __LINE__);
+            Handler::logError($e);
             return self::FAILURE;
         }
     }

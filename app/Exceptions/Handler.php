@@ -18,7 +18,7 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(
             function (Throwable $e) {
-                self::logError($e, __FILE__, __LINE__);
+                self::logError($e);
                 return false;
             }
         );
@@ -28,13 +28,25 @@ class Handler extends ExceptionHandler
         );
     }
 
-    final public static function logError(Throwable $e, string $file, string $line): void
+    final public static function logError(Throwable $e, array $context = []): void
     {
-        Log::error(self::getErrAsString($e), [get_class($e), $file, $line, $e->getTrace()]);
-    }
+        function getTraceAsString(array $oneTrace): string
+        {
+            $class = $oneTrace['class'] ?? 'UnknownClass';
+            $type = $oneTrace['type'] ?? '::';
+            $function = $oneTrace['function'] ?? 'UnknownFunction';
+            $file = $oneTrace['file'] ?? 'UnknownFile';
+            $line = $oneTrace['line'] ?? 0;
+            return sprintf("%s%s%s@%s:%d", $class, $type, $function, $file, $line);
+        }
 
-    final public static function getErrAsString(Throwable $e): string
-    {
-        return "[{$e->getCode()}:{$e->getMessage()}]@[{$e->getFile()}:{$e->getLine()}]";
+        try {
+            $context[] = getTraceAsString(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]);
+            foreach ($e->getTrace() as $caller) {
+                $context[] = getTraceAsString($caller);
+            }
+        } catch (Throwable $e) {
+        }
+        Log::error(sprintf("[%s(%d):%s]@[%s:%s]", $e::class, $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()), $context);
     }
 }

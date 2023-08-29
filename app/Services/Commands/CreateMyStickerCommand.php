@@ -2,9 +2,9 @@
 
 namespace App\Services\Commands;
 
+use App\Exceptions\Handler;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -85,7 +85,7 @@ class CreateMyStickerCommand extends BaseCommand
         } catch (Throwable $e) {
             $data['text'] .= "<b>Error</b>: Sticker pack <b>$param</b> created failed.\n";
             $data['text'] .= "An error occurred while creating the sticker pack.\n";
-            Log::error($e->getMessage(), $e->getTrace());
+            Handler::logError($e);
             $this->dispatch(new SendMessageJob($data));
         }
     }

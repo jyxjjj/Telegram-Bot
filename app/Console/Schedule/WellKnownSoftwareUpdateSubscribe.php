@@ -61,14 +61,14 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                         }
                     }
                 } catch (Throwable $e) {
-                    Handler::logError($e, __FILE__, __LINE__);
+                    Handler::logError($e);
                     continue;
                 }
                 sleep(1);
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e, __FILE__, __LINE__);
+            Handler::logError($e);
             return self::FAILURE;
         }
     }

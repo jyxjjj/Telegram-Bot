@@ -42,7 +42,7 @@ class KeywordDetectKeyword extends BaseKeyword
             try {
                 $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
             } catch (Throwable $e) {
-                Handler::logError($e, __FILE__, __LINE__);
+                Handler::logError($e);
             }
             if ($this->stop) {
                 break;

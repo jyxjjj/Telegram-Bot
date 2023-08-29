@@ -30,7 +30,7 @@ class PixivDownloader extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error("Error({$e->getCode()}):{$e->getMessage()}@{$e->getFile()}:{$e->getLine()}");
-            Handler::logError($e, __FILE__, __LINE__);
+            Handler::logError($e);
             return self::FAILURE;
         }
     }

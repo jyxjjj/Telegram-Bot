@@ -52,7 +52,7 @@ class KernelFeodra implements SoftwareInterface
                 }
             }
         } catch (Throwable $e) {
-            Handler::logError($e, __FILE__, __LINE__);
+            Handler::logError($e);
         }
         return $version;
     }

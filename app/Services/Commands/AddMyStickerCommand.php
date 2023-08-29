@@ -3,6 +3,7 @@
 namespace App\Services\Commands;
 
 use App\Common\Config;
+use App\Exceptions\Handler;
 use App\Jobs\DeleteTempStickerFileJob;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
@@ -10,7 +11,6 @@ use DESMG\RFC6986\Hash;
 use Exception;
 use GdImage;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\PhotoSize;
@@ -100,7 +100,7 @@ class AddMyStickerCommand extends BaseCommand
             }
         } catch (Throwable $e) {
             $data['text'] .= "An error occurred while getting sticker file path.\n";
-            Log::error($e->getMessage(), $e->getTrace());
+            Handler::logError($e);
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -119,7 +119,7 @@ class AddMyStickerCommand extends BaseCommand
                 $data['text'] .= "<b>Error</b>: {$e->getMessage()}.\n";
             } else {
                 $data['text'] .= "An error occurred while downloading the sticker file.\n";
-                Log::error($e->getMessage(), $e->getTrace());
+                Handler::logError($e);
             }
             $this->dispatch(new SendMessageJob($data));
             return;
@@ -159,7 +159,7 @@ class AddMyStickerCommand extends BaseCommand
             return;
         } catch (Throwable $e) {
             $data['text'] .= "An error occurred while add the sticker to your pack.\n";
-            Log::error($e->getMessage(), $e->getTrace());
+            Handler::logError($e);
             $this->dispatch(new SendMessageJob($data));
             return;
         }
