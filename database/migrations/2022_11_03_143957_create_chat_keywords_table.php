@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -14,7 +13,7 @@ return new class extends Migration {
             $table->string('keyword', 128)->default('')->comment('关键字');
             $table->string('target', 16)->default('TEXT')->comment('检测目标');
             $table->string('operation', 16)->default('REPLY')->comment('执行操作');
-            $table->json('data')->default(DB::raw('JSON_OBJECT()'))->comment('操作数据');
+            $table->longText('data')->default('{}')->comment('操作数据');
             $table->boolean('enable')->default(1)->comment('启用');
             $table->timestamp('created_at')->useCurrent()->comment('创建时间');
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate()->comment('更新时间');
