@@ -7,6 +7,9 @@ use App\Services\Base\BaseService;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 use Throwable;
 
 class ChannelCommandHandleService extends BaseService
@@ -23,7 +26,13 @@ class ChannelCommandHandleService extends BaseService
         $messageId = $message->getMessageId();
         $chatId = $message->getChat()->getId();
         $sendCommand = $message->getCommand();
-        $files = glob(app_path('Services/ChannelCommands/*Command.php'));
+        $path = app_path('Services/ChannelCommands');
+        $files = new RegexIterator(
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($path)
+            ),
+            '/^.+Command.php$/'
+        );
         foreach ($files as $file) {
             $fileName = $file->getFileName();
             $command = str_replace('.php', '', $fileName);
