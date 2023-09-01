@@ -30,23 +30,27 @@ class Handler extends ExceptionHandler
 
     final public static function logError(Throwable $e, array $context = []): void
     {
-        function getTraceAsString(array $oneTrace): string
-        {
-            $class = $oneTrace['class'] ?? 'UnknownClass';
-            $type = $oneTrace['type'] ?? '::';
-            $function = $oneTrace['function'] ?? 'UnknownFunction';
-            $file = $oneTrace['file'] ?? 'UnknownFile';
-            $line = $oneTrace['line'] ?? 0;
-            return sprintf("%s%s%s@%s:%d", $class, $type, $function, $file, $line);
-        }
-
         try {
-            $context[] = getTraceAsString(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]);
+            $context[] = self::getTraceAsString(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]);
             foreach ($e->getTrace() as $caller) {
-                $context[] = getTraceAsString($caller);
+                $context[] = self::getTraceAsString($caller);
             }
         } catch (Throwable $e) {
         }
-        Log::error(sprintf("[%s(%d):%s]@[%s:%s]", $e::class, $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()), $context);
+        Log::error(
+            self::getErrorAsString($e),
+            $context
+        );
+    }
+
+    final public static function getTraceAsString(array $oneTrace): string
+    {
+        [$class, $type, $function, $file, $line] = [$oneTrace['class'] ?? 'UnknownClass', $oneTrace['type'] ?? '::', $oneTrace['function'] ?? 'UnknownFunction', $oneTrace['file'] ?? 'UnknownFile', $oneTrace['line'] ?? 0];
+        return sprintf("%s%s%s@%s:%d", $class, $type, $function, $file, $line);
+    }
+
+    final public static function getErrorAsString(Throwable $e): string
+    {
+        return sprintf("[%s(%d):%s]@[%s:%s]", $e::class, $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
     }
 }
