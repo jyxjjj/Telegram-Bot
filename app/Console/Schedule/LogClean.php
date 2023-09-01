@@ -6,9 +6,6 @@ use App\Exceptions\Handler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
 use Throwable;
 
 class LogClean extends Command
@@ -29,13 +26,7 @@ class LogClean extends Command
                 self::error('Days to preserve must be greater than 3');
                 return self::INVALID;
             }
-            $path = storage_path('logs');
-            $files = new RegexIterator(
-                new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($path)
-                ),
-                '/^.+\.log$/i'
-            );
+            $files = glob(storage_path('logs/*.log'));
             $whitelist = $this->generateWhiteLists($preserve);
             self::info("Using RegExp: $whitelist");
             foreach ($files as $file) {

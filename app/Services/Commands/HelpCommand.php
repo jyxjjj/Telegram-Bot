@@ -6,9 +6,6 @@ use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
 use Throwable;
 
 class HelpCommand extends BaseCommand
@@ -40,15 +37,9 @@ class HelpCommand extends BaseCommand
      */
     private function getHelp($commandName): string
     {
-        $path = app_path('Services/Commands');
-        $files = new RegexIterator(
-            new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($path)
-            ),
-            '/^.+Command.php$/'
-        );
         $classes = [];
         $help = [];
+        $files = glob(app_path('Services/Commands/*Command.php'));
         foreach ($files as $file) {
             $fileName = $file->getFileName();
             $command = str_replace('.php', '', $fileName);
