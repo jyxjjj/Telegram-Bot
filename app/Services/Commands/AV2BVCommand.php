@@ -4,6 +4,8 @@ namespace App\Services\Commands;
 
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -27,11 +29,18 @@ class AV2BVCommand extends BaseCommand
     {
         $chatId = $message->getChat()->getId();
         $param = $message->getText(true);
+        $bvid = $this->av2bv($param);
+        $link = "https://b23.tv/$bvid";
         $data = [
             'chat_id' => $chatId,
-            'text' => $this->av2bv($param),
+            'text' => '',
+            'reply_markup' => new InlineKeyboard([]),
         ];
-        $data['text'] && $this->dispatch(new SendMessageJob($data, null, 0));
+        $data['text'] .= "BVID: <code>$bvid</code>" . PHP_EOL;
+        $data['text'] .= "Link: <code>$link</code>" . PHP_EOL;
+        $button = new InlineKeyboardButton(['text' => $bvid, 'url' => $link]);
+        $data['reply_markup']->addRow($button);
+        $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     private function av2bv(string $av): string
