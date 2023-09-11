@@ -35,6 +35,7 @@ class DeleteMessageJob extends BaseQueue
             $errorDescription = $serverResponse->getDescription();
             if (
                 $errorDescription != 'Bad Request: message to delete not found' &&
+                $errorDescription != 'Bad Request: message can\'t be deleted' &&
                 $errorDescription != 'Forbidden: bot was kicked from the supergroup chat'
             ) {
                 Log::error("Telegram Returned Error($errorCode): $errorDescription", [__FILE__, __LINE__, $this->data]);
