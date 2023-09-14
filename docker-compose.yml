@@ -2,7 +2,7 @@ version: '3.9'
 services:
     mariadb:
         container_name: mariadb
-        image: mariadb:10.10.2
+        image: mariadb:11.0.2
         environment:
             - TZ=Etc/GMT-8
             - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
@@ -54,7 +54,7 @@ services:
             disable: true
     redis:
         container_name: redis
-        image: redis:7.0.6
+        image: redis:7.0.12
         environment:
             - TZ=Etc/GMT-8
         deploy:
