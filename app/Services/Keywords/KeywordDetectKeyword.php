@@ -3,15 +3,10 @@
 namespace App\Services\Keywords;
 
 use App\Exceptions\Handler;
-use App\Jobs\BanMemberJob;
-use App\Jobs\DeleteMessageJob;
-use App\Jobs\RestrictMemberJob;
 use App\Jobs\SendMessageJob;
-use App\Models\TChatAdmins;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
-use App\Models\TChatKeywordsWhiteLists;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -124,96 +119,15 @@ class KeywordDetectKeyword extends BaseKeyword
     ): void
     {
         switch ($operation) {
-            case TChatKeywordsOperationEnum::OPERATION_BAN:
-                $this->ban($data, $message, $telegram, $updateId);
-                $this->stop = true;
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_DELETE:
-                $this->delete($data, $message, $telegram, $updateId);
-                $this->stop = true;
-                break;
             case TChatKeywordsOperationEnum::OPERATION_FORWARD:
                 $this->forward($data, $message, $telegram, $updateId);
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_REPEAT:
-                $this->repeat($data, $message, $telegram, $updateId);
                 break;
             case TChatKeywordsOperationEnum::OPERATION_REPLY:
                 $this->reply($data, $message, $telegram, $updateId);
                 break;
-            case TChatKeywordsOperationEnum::OPERATION_RESTRICT:
-                $this->restrict($data, $message, $telegram, $updateId);
-                $this->stop = true;
-                break;
-            case TChatKeywordsOperationEnum::OPERATION_WARN:
-                $this->warn($data, $message, $telegram, $updateId);
-                $this->stop = true;
+            default:
                 break;
         }
-    }
-
-    private function ban(array $data, Message $message, Telegram $telegram, int $updateId): void
-    {
-        $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
-        if (in_array($message->getFrom()->getId(), $admins, true)) {
-            return;
-        }
-        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if ($message->getFrom()->getId() == '777000') {
-            return;
-        } else {
-            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
-        }
-        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $deleter = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-        ];
-        $this->dispatch(new DeleteMessageJob($deleter, 0));
-        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $banner = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-            'user_id' => $message->getFrom()->getId(),
-        ];
-        $this->dispatch(new BanMemberJob($banner));
-    }
-
-    private function delete(array $data, Message $message, Telegram $telegram, int $updateId): void
-    {
-        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if ($message->getFrom()->getId() == '777000') {
-            return;
-        } else {
-            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
-        }
-        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $deleter = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-        ];
-        $this->dispatch(new DeleteMessageJob($deleter, 0));
-        $sender = [
-            'chat_id' => $message->getChat()->getId(),
-        ];
-        isset($data['text']) && $sender['text'] = $data['text'];
-        count($sender) == 2 && $this->dispatch(new SendMessageJob($sender));
     }
 
     private function forward(array $data, Message $message, Telegram $telegram, int $updateId): void
@@ -255,22 +169,6 @@ class KeywordDetectKeyword extends BaseKeyword
         $cid = str_replace('-100', '', $message->getChat()->getId());
         $forwarder['text'] .= "Message Link: https://t.me/c/$cid/{$message->getMessageId()}";
         count($forwarder) == 2 && $this->dispatch(new SendMessageJob($forwarder, null, 0));
-    }
-
-    private function repeat(array $data, Message $message, Telegram $telegram, int $updateId): void
-    {
-        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
-            return;
-        }
-        $cacheKey = "Keyword::REPEAT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-
     }
 
     private function reply(array $data, Message $message, Telegram $telegram, int $updateId): void
@@ -343,47 +241,5 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
         }
-    }
-
-    private function restrict(array $data, Message $message, Telegram $telegram, int $updateId): void
-    {
-        $admins = TChatAdmins::getChatAdmins($message->getChat()->getId());
-        if (in_array($message->getFrom()->getId(), $admins, true)) {
-            return;
-        }
-        $whiteLists = TChatKeywordsWhiteLists::getChatWhiteLists($message->getChat()->getId());
-        if ($message->getFrom()->getId() == '777000') {
-            return;
-        } else {
-            if (in_array($message->getFrom()->getId(), $whiteLists, true)) {
-                return;
-            }
-        }
-        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $deleter = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-        ];
-        $this->dispatch(new DeleteMessageJob($deleter, 0));
-        $cacheKey = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        if (Cache::has($cacheKey)) {
-            return;
-        }
-        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        $restrictor = [
-            'chat_id' => $message->getChat()->getId(),
-            'message_id' => $message->getMessageId(),
-            'user_id' => $message->getFrom()->getId(),
-        ];
-        $this->dispatch(new RestrictMemberJob($restrictor, $data['time'] ?? 86400));
-    }
-
-    private function warn(array $data, Message $message, Telegram $telegram, int $updateId)
-    {
-
     }
 }
