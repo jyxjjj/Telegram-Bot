@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\GroupJoinVerifyController;
 use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +8,6 @@ Route::group(
     ],
     function () {
         Route::get('/', [IndexController::class, 'index']);
-        Route::get('/group_join_verify', [GroupJoinVerifyController::class, 'groupJoinVerify']);
     }
 );
 

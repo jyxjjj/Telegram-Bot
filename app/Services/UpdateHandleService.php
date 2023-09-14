@@ -30,7 +30,7 @@ class UpdateHandleService extends BaseService
 //                 机器人已知并已编辑的消息的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_MESSAGE, EditedMessageHandleService::class);
 //                 任何类型的新传入频道帖子--文字、照片、贴纸等。
-        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
+//        $this->addHandler(Update::TYPE_CHANNEL_POST, ChannelPostHandleService::class);
 //                 机器人已知并已编辑的频道帖子的新版本。
 //        $this->addHandler(Update::TYPE_EDITED_CHANNEL_POST, MessageHandleService::class);
 //                 新传入的内联(https://core.telegram.org/bots/api#inline-mode)查询。
@@ -51,7 +51,7 @@ class UpdateHandleService extends BaseService
 //                 聊天机器人的聊天成员状态已在聊天中更新。对于私人聊天，仅当机器人被用户阻止或解除阻止时才会收到此更新。
 //        $this->addHandler(Update::TYPE_MY_CHAT_MEMBER, MessageHandleService::class);
 //                 聊天成员的状态已在聊天中更新。机器人必须是聊天中的管理员，并且必须在'allowed_updates'列表中明确指定'chat_member'才能接收这些更新。
-        $this->addHandler(Update::TYPE_CHAT_MEMBER, ChatMemberHandleService::class);
+//        $this->addHandler(Update::TYPE_CHAT_MEMBER, ChatMemberHandleService::class);
 //                 已发送加入聊天的请求。机器人必须在聊天中拥有can_invite_users管理员权限才能接收这些更新。
 //        $this->addHandler(Update::TYPE_CHAT_JOIN_REQUEST, MessageHandleService::class);
         $updateType = $update->getUpdateType();
