@@ -3,12 +3,29 @@
 namespace App\Services;
 
 use App\Services\Base\BaseService;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Telegram;
 
 class ChatMemberHandleService extends BaseService
 {
+
+    //context={"chatMember":{"Longman\\TelegramBot\\Entities\\ChatMemberUpdated":{"chat":{"id":-1001091256481,"title":"在花の科技花 闲聊🎗","username":"ZaihuaChat","type":"supergroup"},"from":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"date":1669256314,"old_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"left"},"new_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"member"}}}}
+
+    //context={"chatMember":{"Longman\\TelegramBot\\Entities\\ChatMemberUpdated":{"chat":{"id":-1001091256481,"title":"在花の科技花 闲聊🎗","username":"ZaihuaChat","type":"supergroup"},"from":{"id":208056682,"is_bot":true,"first_name":"🛠 Security ¹ 🛠","username":"GHSecurityBot"},"date":1669256314,"old_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"member"},"new_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"restricted","until_date":0,"can_send_messages":false,"can_send_media_messages":false,"can_send_polls":false,"can_send_other_messages":false,"can_add_web_page_previews":false,"can_change_info":false,"can_invite_users":false,"can_pin_messages":false,"can_manage_topics":false,"is_member":true}}}}
+
+    //context={"chatMember":{"Longman\\TelegramBot\\Entities\\ChatMemberUpdated":{"chat":{"id":-1001091256481,"title":"在花の科技花 闲聊🎗","username":"ZaihuaChat","type":"supergroup"},"from":{"id":5090130895,"is_bot":true,"first_name":"🔫 ~biu~biu~biu","username":"ZaihuaGroupBot"},"date":1669256319,"old_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"restricted","until_date":0,"can_send_messages":false,"can_send_media_messages":false,"can_send_polls":false,"can_send_other_messages":false,"can_add_web_page_previews":false,"can_change_info":false,"can_invite_users":false,"can_pin_messages":false,"can_manage_topics":false,"is_member":true},"new_chat_member":{"user":{"id":5489183746,"is_bot":false,"first_name":"小号 - 机器人开发测试工具","username":"jyxjjj_us","language_code":"en"},"status":"member"}}}}
+
+    //context={"chatMember":{"Longman\\TelegramBot\\Entities\\ChatMemberUpdated":{"chat":{"id":-1001091256481,"title":"在花の科技花 闲聊🎗","username":"ZaihuaChat","type":"supergroup"},"from":{"id":5090130895,"is_bot":true,"first_name":"🔫 ~biu~biu~biu","username":"ZaihuaGroupBot"},"date":1669258396,"old_chat_member":{"user":{"id":5450323463,"is_bot":false,"first_name":"Yoyo"},"status":"member"},"new_chat_member":{"user":{"id":5450323463,"is_bot":false,"first_name":"Yoyo"},"status":"kicked","until_date":0}}}}
+
+    //https://telegram.desmg.org/group_join_verify
+    //?chat_id=-1001091256481
+    //&user_id=uid
+    //&id=uid
+    //&first_name=name
+    //&username=account
+    //&photo_url=urldecode.jpg
+    //&auth_date=ts(10)
+    //&hash=64str
     /**
      * @param Update $update
      * @param Telegram $telegram
@@ -72,20 +89,20 @@ class ChatMemberHandleService extends BaseService
         // - 只有管理员在设置用户为受限用户后踢出用户才会变为kicked状态
 
         // 先判断需要处理的状态
-        if ($status == 'member') {
-            if ($originStatus == 'left' || $originStatus == 'kicked') {
-                if ($fromId == $userId) {
-                    // 用户是自己加群的
-                }
-                if ($fromId != $userId) {
-                    // 用户是其他人邀请的
-                }
-            }
-        }
-
-        if ($fromId == $botId) {
-            return;
-        }
+//        if ($status == 'member') {
+//            if ($originStatus == 'left' || $originStatus == 'kicked') {
+//                if ($fromId == $userId) {
+//                    // 用户是自己加群的
+//                }
+//                if ($fromId != $userId) {
+//                    // 用户是其他人邀请的
+//                }
+//            }
+//        }
+//
+//        if ($fromId == $botId) {
+//            return;
+//        }
 //        $sender = [
 //            'chat_id' => $chatId,
 //            'text' => '',
