@@ -82,7 +82,7 @@ class MessageHandleService extends BaseService
 
     private function detectWhiteList(Message $message): bool
     {
-        if (!in_array($message->getChat()->getId(), [886776929, -1001344643532, -1001391154172])) {
+        if (!in_array($message->getChat()->getId(), [886776929, -1001344643532, -1001391154172, -1001743989979,])) {
             if ($message->getChat()->getType() == 'private') {
                 $str = sprintf(
                     <<<EOF
