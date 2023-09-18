@@ -5,6 +5,7 @@ namespace App\Services\Commands;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
@@ -54,6 +55,7 @@ class GetTransHashesCommand extends BaseCommand
             $text == '暂无交易：这个地址上没有任何交易，它就这样漫无目的的漂浮在区块链上。' && $text = '';
             $text .= '交易哈希: ' . $item['transaction_id'] . PHP_EOL;
             $text .= '金额: ' . number_format(bcdiv($item['quant'], 1000000, 16), 6, '.', '') . PHP_EOL;
+            $text .= '时间: ' . Carbon::createFromTimestampMs($item['block_ts'], 'UTC')->setTimezone('Etc/GMT-8')->format('Y-m-d H:i:s') . PHP_EOL;
         }
         return $text;
     }
