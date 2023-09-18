@@ -38,6 +38,9 @@ class DonateCommand extends BaseCommand
         $data['text'] .= "\n✥  <b>Telegram Wallet TON:</b>";
         $data['text'] .= "\n✥  <code>UQBJvcj2LF5-LJuBdYXRG98vTpmPRenf-XqfWx6aaYQxanB1</code>";
         $data['text'] .= "\n✥";
+        $data['text'] .= "\n✥  <b>Tonkeeper Wallet TON:</b>";
+        $data['text'] .= "\n✥  <code>EQDBXCGojIJphzxX2LpqI24hQdcIswoIKpknCSUG4S7atn5B</code>";
+        $data['text'] .= "\n✥";
         $data['text'] .= "\n✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥";
         $digitalOcean = new InlineKeyboardButton([
             'text' => 'Digital Ocean Server',
