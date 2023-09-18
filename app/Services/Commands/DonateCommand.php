@@ -45,6 +45,8 @@ class DonateCommand extends BaseCommand
         $data['text'] .= "\n✥  <code>TLie3XqtwQroiAxmCHT4bWocaUEmAeqEjE</code>";
         $data['text'] .= "\n✥  <b>Telegram Wallet TON:</b>";
         $data['text'] .= "\n✥  <code>UQBJvcj2LF5-LJuBdYXRG98vTpmPRenf-XqfWx6aaYQxanB1</code>";
+        $data['text'] .= "\n✥  <b>Tonkeeper Wallet TON:</b>";
+        $data['text'] .= "\n✥  <code>EQDBXCGojIJphzxX2LpqI24hQdcIswoIKpknCSUG4S7atn5B</code>";
         $data['text'] .= "\n✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥  ✥";
         $data['text'] .= "\n👆👆👆捐赠信息👆👆👆";
         $data['text'] .= "\n\nDMCA及版权反馈、技术支持\n";
