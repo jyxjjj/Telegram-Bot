@@ -56,7 +56,7 @@ class DonateCommand extends BaseCommand
         ]);
         $weiXinPay = new InlineKeyboardButton([
             'text' => 'WeiXin Pay',
-            'url' => 'https://www.desmg.com/api/qr?data=https%3a%2f%2fqr.alipay.com%2fFKX006260GRX9PQEAL5C85',
+            'url' => 'https://www.desmg.com/api/qr?data=wxp%3a%2f%2ff2f0PL8c5TC6WxzfirXw5ESmJkE8Mi4I3oaN',
         ]);
         $data['reply_markup'] = new InlineKeyboard([]);
         $data['reply_markup']->addRow($digitalOcean);
