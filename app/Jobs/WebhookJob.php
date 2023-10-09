@@ -35,7 +35,9 @@ class WebhookJob extends BaseQueue
         $telegram = $this->telegram;
         $updateId = $this->updateId;
         try {
-            app()->make(UpdateHandleService::class)->handle($update, $telegram, $updateId);
+            /** @var UpdateHandleService $service */
+            $service = app(UpdateHandleService::class);
+            $service->handle($update, $telegram, $updateId);
         } catch (TelegramException|BindingResolutionException $e) {
             Handler::logError($e);
         }
