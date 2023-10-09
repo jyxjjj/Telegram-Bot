@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\Handler;
 use App\Jobs\Base\BaseQueue;
 use App\Services\UpdateHandleService;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -29,15 +28,17 @@ class WebhookJob extends BaseQueue
         $this->updateId = $updateId;
     }
 
-    public function handle()
+    /**
+     * @throws BindingResolutionException
+     * @throws TelegramException
+     */
+    public function handle(): void
     {
         $update = $this->update;
         $telegram = $this->telegram;
         $updateId = $this->updateId;
-        try {
-            app()->make(UpdateHandleService::class)->handle($update, $telegram, $updateId);
-        } catch (TelegramException|BindingResolutionException $e) {
-            Handler::logError($e);
-        }
+        /** @var UpdateHandleService $service */
+        $service = app(UpdateHandleService::class);
+        $service->handle($update, $telegram, $updateId);
     }
 }

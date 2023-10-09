@@ -2,9 +2,8 @@
 
 namespace App\Console\Schedule;
 
-use App\Exceptions\Handler;
-use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -51,7 +50,6 @@ class LogClean extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error($e->getMessage());
-            Handler::logError($e);
             return self::FAILURE;
         }
     }
