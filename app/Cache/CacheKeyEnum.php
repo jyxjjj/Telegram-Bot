@@ -43,38 +43,6 @@ enum CacheKeyEnum: string
 
     /**
      * @param int|string ...$args
-     * @return HashKey
-     */
-    public function newHashInstance(int|string ...$args): HashKey
-    {
-        return new HashKey($this, ...$args);
-    }
-
-    /**
-     * @param int|string ...$args
-     * @return SetKey
-     */
-    public function newSetInstance(int|string ...$args): SetKey
-    {
-        return new SetKey($this, ...$args);
-    }
-
-    /**
-     * @param int|string ...$args
-     * @return SortedSet
-     */
-    public function newSortedSetInstance(int|string ...$args): SortedSet
-    {
-        return new SortedSet($this, ...$args);
-    }
-
-    public function newListInstance(int|string ...$args): ListKey
-    {
-        return new ListKey($this, ...$args);
-    }
-
-    /**
-     * @param int|string ...$args
      * @return string
      */
     public function getKey(int|string ...$args): string
