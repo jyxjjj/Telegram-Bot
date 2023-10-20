@@ -21,7 +21,7 @@ class Handler extends ExceptionHandler
                 self::logError($e, __FILE__, __LINE__);
                 return false;
             }
-        );
+        )->stop();
         $this->renderable(
             function (Throwable $e) {
             }
