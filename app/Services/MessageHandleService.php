@@ -123,7 +123,7 @@ EOF,
                         delete: 300
                     )
                 );
-                if (in_array($message->getChat()->getId(), [296672714, 1891466551, 447632604, 5738737040])) {
+                if (in_array($message->getChat()->getId(), [296672714, 1891466551, 447632604, 5738737040, 1583896650])) {
                     $this->dispatch(
                         new SendMessageJob(
                             data: [
