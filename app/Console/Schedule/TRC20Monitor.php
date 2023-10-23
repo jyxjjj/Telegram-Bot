@@ -17,8 +17,11 @@ class TRC20Monitor extends Command
     public function handle(): int
     {
         $list = [
+            'THue4NmwEVF8HKV6y9aHzanmWMQSsMMMMM' => ['@LZSMIAO ', '-1002117558170'],
+            'TQFRgPM9RuCpCffZGwnfs1ENtnrJt9oRJn' => ['@linzeen ', '-1001743989979'],
+            'TLie3XqtwQroiAxmCHT4bWocaUEmAeqEjE' => ['@jyxjjj ', '-1001261547245'],
         ];
-        foreach ($list as $address => $user) {
+        foreach ($list as $address => [$user, $chat]) {
             $text = '';
             $cacheKey = 'TRC20Monitor' . $address;
             $alreadyPushedHashes = Cache::get($cacheKey);
@@ -38,6 +41,7 @@ class TRC20Monitor extends Command
                 Cache::put($cacheKey, $alreadyPushedHashes, Carbon::now()->addDays(90));
                 $text = $user . 'TRC20交易提醒' . PHP_EOL . $text;
                 $data = [
+                    'chat_id' => $chat,
                     'text' => $text,
                 ];
                 dispatch(new SendMessageJob($data, null, 0));
