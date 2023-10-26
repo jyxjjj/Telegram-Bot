@@ -48,7 +48,7 @@ Name: {$airport['name']}
 IATA: {$airport['iata']}
 ICAO: {$airport['icao']}
 Place: {$airport['city']}, {$airport['state']}, {$airport['country']}
-Location: {$airport['lat']}, {$airport['lon']}, {$airport['elevation']}
+Location: <a href="https://www.google.com/maps?q={$airport['lat']},{$airport['lon']}">{$airport['lat']}, {$airport['lon']}, {$airport['elevation']}</a>
 Timezone: {$airport['tz']}
 EOF;
             }
