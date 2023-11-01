@@ -37,7 +37,6 @@ class SteamCommand extends BaseCommand
         $appId = $params[0];
         $countryCode = $params[1] ?? 'CN';
         $data['text'] .= "<b>AppID</b>: $appId\n";
-        $data['text'] .= "<b>Country Code</b>: $countryCode\n";
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
         $headers['User-Agent'] .= " Telegram-Steam-Price-Checker/$ts";
@@ -51,14 +50,16 @@ class SteamCommand extends BaseCommand
             ->withHeaders($headers)
             ->get("/api/appdetails")
             ->json();
+        $currency = $http[$appId]['data']['price_overview']['currency'];
         $originalPrice = bcdiv($http[$appId]['data']['price_overview']['initial'], 100, 2);
         $finalPrice = bcdiv($http[$appId]['data']['price_overview']['final'], 100, 2);
         $discountPercent = bcmul($http[$appId]['data']['price_overview']['discount_percent'], 100, 0);
         $formattedOriginalPrice = $http[$appId]['data']['price_overview']['initial_formatted'];
         $formattedFinalPrice = $http[$appId]['data']['price_overview']['final_formatted'];
+        $data['text'] .= "<b>Currency</b>: $currency\n";
         if ($discountPercent == 0) {
-            $data['text'] .= "<b>Price</b>: $originalPrice\n";
-            $data['text'] .= "<b>Formatted Price</b>: $formattedOriginalPrice\n";
+            $data['text'] .= "<b>Price</b>: $finalPrice\n";
+            $data['text'] .= "<b>Formatted Price</b>: $formattedFinalPrice\n";
         } else {
             $data['text'] .= "<b>Original Price</b>: $originalPrice\n";
             $data['text'] .= "<b>Final Price</b>: $finalPrice\n";
