@@ -25,7 +25,7 @@ class SteamCommand extends BaseCommand
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
-            'text' => '',
+            'text' => "Steam Prcie Checker [Beta]\n",
         ];
         $param = $message->getText(true);
         if ($param == '') {
@@ -50,6 +50,11 @@ class SteamCommand extends BaseCommand
             ->withHeaders($headers)
             ->get("/api/appdetails")
             ->json();
+        if (!isset($http[$appId]['data']['price_overview']['currency']) || !$http[$appId]['success']) {
+            $data['text'] .= "<b>Error</b>: Invalid AppID.\n";
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
         $currency = $http[$appId]['data']['price_overview']['currency'];
         $originalPrice = bcdiv($http[$appId]['data']['price_overview']['initial'], 100, 2);
         $finalPrice = bcdiv($http[$appId]['data']['price_overview']['final'], 100, 2);
