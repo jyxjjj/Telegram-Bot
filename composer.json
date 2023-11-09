@@ -23,11 +23,11 @@
         "ext-sockets": "*",
         "ext-zlib": "*",
         "guzzlehttp/guzzle": "^7.8.0",
-        "laravel/framework": "^10.24.0",
+        "laravel/framework": "^10.31.0",
         "longman/telegram-bot": "^0.80.0",
         "nunomaduro/collision": "^6.4.0",
         "php": "^8.2",
-        "spatie/laravel-ignition": "^2.3.0"
+        "spatie/laravel-ignition": "^2.3.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23.0"
