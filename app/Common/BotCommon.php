@@ -16,7 +16,7 @@ class BotCommon
     public static ?Telegram $telegram = null;
 
     /**
-     * @param Message $message
+     * @param Message   $message
      * @param ?Telegram $telegram
      * @return bool
      * @throws TelegramException

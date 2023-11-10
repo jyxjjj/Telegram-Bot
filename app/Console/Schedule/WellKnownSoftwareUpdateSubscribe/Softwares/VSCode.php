@@ -15,45 +15,7 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class VSCode implements SoftwareInterface
 {
     /**
-     * @return string
-     */
-    public function getVersion(): string
-    {
-        $data = $this->getJson();
-        if (!is_array($data)) {
-            return Common::getLastVersion(Software::VSCode);
-        }
-        $version = '0.0.0';
-        foreach ($data as $branch) {
-            $versionstring = $branch['tag_name'];
-            if (version_compare($versionstring, $version, '>')) {
-                $version = $versionstring;
-            }
-        }
-        return $version;
-    }
-
-    /**
-     * @return array|int|false
-     */
-    private function getJson(): array|int|false
-    {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-VSCode-Subscriber-Runner/$ts";
-        $get = Http::
-        withHeaders($headers)
-            ->accept('application/vnd.github+json')
-            ->withToken(env('GITHUB_TOKEN'))
-            ->get('https://api.github.com/repos/microsoft/vscode/releases?per_page=5');
-        if ($get->status() == 200) {
-            return $get->json();
-        }
-        return false;
-    }
-
-    /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $version
      * @return array
      */
@@ -91,5 +53,43 @@ class VSCode implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button4);
         return $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        $data = $this->getJson();
+        if (!is_array($data)) {
+            return Common::getLastVersion(Software::VSCode);
+        }
+        $version = '0.0.0';
+        foreach ($data as $branch) {
+            $versionstring = $branch['tag_name'];
+            if (version_compare($versionstring, $version, '>')) {
+                $version = $versionstring;
+            }
+        }
+        return $version;
+    }
+
+    /**
+     * @return array|int|false
+     */
+    private function getJson(): array|int|false
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= " Telegram-VSCode-Subscriber-Runner/$ts";
+        $get = Http::
+        withHeaders($headers)
+            ->accept('application/vnd.github+json')
+            ->withToken(env('GITHUB_TOKEN'))
+            ->get('https://api.github.com/repos/microsoft/vscode/releases?per_page=5');
+        if ($get->status() == 200) {
+            return $get->json();
+        }
+        return false;
     }
 }

@@ -14,9 +14,9 @@ use Throwable;
 class KeywordHandleService extends BaseService
 {
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return bool
      * @throws TelegramException
      */

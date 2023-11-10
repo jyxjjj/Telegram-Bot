@@ -17,9 +17,9 @@ class WebhookJob extends BaseQueue
     private int $updateId;
 
     /**
-     * @param Update $update
+     * @param Update   $update
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      */
     public function __construct(Update $update, Telegram $telegram, int $updateId)
     {

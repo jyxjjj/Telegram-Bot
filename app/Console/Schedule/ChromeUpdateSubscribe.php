@@ -69,7 +69,7 @@ class ChromeUpdateSubscribe extends Command
         'StableMacVersion' => 'string',
 //        'CanaryMacVersion' => 'string',
         'StableLinuxVersion' => 'string',
-        'StableiOSVersion' => 'string'
+        'StableiOSVersion' => 'string',
     ])]
     private function getUpdate(): array
     {
@@ -119,7 +119,7 @@ class ChromeUpdateSubscribe extends Command
     }
 
     /**
-     * @param int $chat_id
+     * @param int   $chat_id
      * @param array $data
      * @return string
      */
@@ -152,7 +152,7 @@ STR;
     }
 
     /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $key
      * @return string|false
      */
@@ -162,9 +162,9 @@ STR;
     }
 
     /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $key
-     * @param $version
+     * @param        $version
      * @return bool
      */
     private function setLastVersion(int $chat_id, string $key, $version): bool
@@ -182,7 +182,7 @@ STR;
     }
 
     /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $hash
      * @return bool
      */

@@ -26,9 +26,9 @@ class AddMyStickerCommand extends BaseCommand
     public string $usage = '/addmysticker';
 
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -355,7 +355,7 @@ class AddMyStickerCommand extends BaseCommand
     }
 
     /**
-     * @param int $userId
+     * @param int    $userId
      * @param string $stickerName
      * @param string $stickerEmoji
      * @param string $stickerFileDownloaded

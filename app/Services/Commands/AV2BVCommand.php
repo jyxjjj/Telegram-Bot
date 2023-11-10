@@ -20,9 +20,9 @@ class AV2BVCommand extends BaseCommand
     private string $a2bEncTable = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";
 
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void

@@ -9,15 +9,7 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 class Go implements SoftwareInterface
 {
     /**
-     * @return string
-     */
-    public function getVersion(): string
-    {
-        // TODO: Implement getVersion() method.
-    }
-
-    /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $version
      * @return array
      */
@@ -29,5 +21,13 @@ class Go implements SoftwareInterface
     public function generateMessage(int $chat_id, string $version): array
     {
         // TODO: Implement generateMessage() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        // TODO: Implement getVersion() method.
     }
 }

@@ -45,7 +45,7 @@ class Config
     ];
 
     const PLAIN_HEADER = [
-        'Content-Type' => 'text/plain; charset=UTF-8'
+        'Content-Type' => 'text/plain; charset=UTF-8',
     ];
 
     const CORS_HEADER = [

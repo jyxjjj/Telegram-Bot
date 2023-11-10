@@ -18,9 +18,9 @@ class HelpCommand extends BaseCommand
     public string $usage = '/help';
 
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -68,7 +68,7 @@ class HelpCommand extends BaseCommand
             }
             sort($help);
             return implode("\n", $help);
-        } else if ($commandName == 'ParamDesc') {
+        } elseif ($commandName == 'ParamDesc') {
             $str = "<b>ParamDesc</b>:\n";
             $str .= "reply_to: It is not a param, you can/should reply to a message to use the command contains this directive.\n";
             $str .= "at: You can/should metion a user via @ to use the command contains this directive.\n";

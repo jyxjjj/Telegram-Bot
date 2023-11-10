@@ -16,9 +16,9 @@ class UpdateHandleService extends BaseService
     private array $handlers = [];
 
     /**
-     * @param Update $update
+     * @param Update   $update
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws TelegramException
      * @throws BindingResolutionException
@@ -71,10 +71,10 @@ class UpdateHandleService extends BaseService
     }
 
     /**
-     * @param string $type
-     * @param Update $update
+     * @param string   $type
+     * @param Update   $update
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws BindingResolutionException
      * @throws TelegramException

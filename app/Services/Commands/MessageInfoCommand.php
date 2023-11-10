@@ -16,9 +16,9 @@ class MessageInfoCommand extends BaseCommand
     public string $usage = '/messageinfo [reply_to] [text(default)|json]';
 
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void

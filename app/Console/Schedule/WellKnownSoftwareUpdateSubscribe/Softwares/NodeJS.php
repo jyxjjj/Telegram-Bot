@@ -13,33 +13,8 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 
 class NodeJS implements SoftwareInterface
 {
-    public function getVersion(): string
-    {
-        $version = '0.0.0';
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-NodeJS-Subscriber-Runner/$ts";
-        $get = Http::
-        withHeaders($headers)
-            ->accept('text/plain')
-            ->get('https://nodejs.org/dist/latest/SHASUMS256.txt');
-        if ($get->status() == 200) {
-            $data = $get->body();
-            $data = str_replace('  ', ' ', $data);
-            $data = explode("\n", $data);
-            foreach ($data as $item) {
-                $item = explode(' ', $item);
-                if (str_starts_with($item[1], 'node-v') && str_ends_with($item[1], '-linux-x64.tar.gz')) {
-                    $version = str_replace(['node-v', '-linux-x64.tar.gz'], '', $item[1]);
-                    break;
-                }
-            }
-        }
-        return $version;
-    }
-
     /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $version
      * @return array
      */
@@ -66,5 +41,30 @@ class NodeJS implements SoftwareInterface
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;
+    }
+
+    public function getVersion(): string
+    {
+        $version = '0.0.0';
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= " Telegram-NodeJS-Subscriber-Runner/$ts";
+        $get = Http::
+        withHeaders($headers)
+            ->accept('text/plain')
+            ->get('https://nodejs.org/dist/latest/SHASUMS256.txt');
+        if ($get->status() == 200) {
+            $data = $get->body();
+            $data = str_replace('  ', ' ', $data);
+            $data = explode("\n", $data);
+            foreach ($data as $item) {
+                $item = explode(' ', $item);
+                if (str_starts_with($item[1], 'node-v') && str_ends_with($item[1], '-linux-x64.tar.gz')) {
+                    $version = str_replace(['node-v', '-linux-x64.tar.gz'], '', $item[1]);
+                    break;
+                }
+            }
+        }
+        return $version;
     }
 }

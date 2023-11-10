@@ -14,6 +14,32 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class Kernel implements SoftwareInterface
 {
     /**
+     * @param int    $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of Kernel($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => 'https://www.kernel.org/',
+        ]);
+        $message['reply_markup']->addRow($button1);
+        return $message;
+    }
+
+    /**
      * @return string
      */
     public function getVersion(): string
@@ -43,31 +69,5 @@ class Kernel implements SoftwareInterface
             }
         }
         return $version;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "$emoji A new version of Kernel($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => 'https://www.kernel.org/',
-        ]);
-        $message['reply_markup']->addRow($button1);
-        return $message;
     }
 }

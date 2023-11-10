@@ -8,8 +8,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property int $id
- * @property int $chat_id
+ * @property int    $id
+ * @property int    $chat_id
  * @property string $software
  */
 class TUpdateSubscribes extends BaseModel
@@ -17,7 +17,7 @@ class TUpdateSubscribes extends BaseModel
     protected $table = 'update_subscribes';
 
     /**
-     * @param int $chat_id
+     * @param int    $chat_id
      * @param string $software
      * @return Builder|Model|false
      */
@@ -51,38 +51,6 @@ class TUpdateSubscribes extends BaseModel
     }
 
     /**
-     * @param int $chat_id
-     * @return mixed
-     */
-    public static function removeAllSubscribe(int $chat_id): int
-    {
-        $int = self::query()
-            ->where('chat_id', $chat_id)
-            ->delete();
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
-        return $int;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $software
-     * @return int
-     */
-    public static function removeSubscribe(int $chat_id, string $software): int
-    {
-        $int = self::query()
-            ->where([
-                'chat_id' => $chat_id,
-                'software' => $software,
-            ])
-            ->delete();
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
-        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
-        return $int;
-    }
-
-    /**
      * @return array
      */
     public static function getAllSubscribe(): array
@@ -96,18 +64,6 @@ class TUpdateSubscribes extends BaseModel
             ->toArray();
         Cache::put("DB::TUpdateSubscribes::update_subscribes", $data, Carbon::now()->addMinutes(5));
         return $data;
-    }
-
-    /**
-     * @param string $software
-     * @return array
-     */
-    public static function getAllSubscribeBySoftware(string $software): array
-    {
-        return self::query()
-            ->where('software', $software)
-            ->get()
-            ->toArray();
     }
 
     /**
@@ -126,5 +82,49 @@ class TUpdateSubscribes extends BaseModel
             ->toArray();
         Cache::put("DB::TUpdateSubscribes::update_subscribes::$chatId", $data, Carbon::now()->addMinutes(5));
         return $data;
+    }
+
+    /**
+     * @param string $software
+     * @return array
+     */
+    public static function getAllSubscribeBySoftware(string $software): array
+    {
+        return self::query()
+            ->where('software', $software)
+            ->get()
+            ->toArray();
+    }
+
+    /**
+     * @param int $chat_id
+     * @return mixed
+     */
+    public static function removeAllSubscribe(int $chat_id): int
+    {
+        $int = self::query()
+            ->where('chat_id', $chat_id)
+            ->delete();
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
+        return $int;
+    }
+
+    /**
+     * @param int    $chat_id
+     * @param string $software
+     * @return int
+     */
+    public static function removeSubscribe(int $chat_id, string $software): int
+    {
+        $int = self::query()
+            ->where([
+                'chat_id' => $chat_id,
+                'software' => $software,
+            ])
+            ->delete();
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes");
+        Cache::forget("DB::TUpdateSubscribes::update_subscribes::$chat_id");
+        return $int;
     }
 }

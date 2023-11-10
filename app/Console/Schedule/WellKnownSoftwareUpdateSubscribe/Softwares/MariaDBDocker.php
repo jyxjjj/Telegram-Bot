@@ -15,6 +15,32 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class MariaDBDocker implements SoftwareInterface
 {
     /**
+     * @param int    $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of MariaDB Docker($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => 'https://hub.docker.com/_/mariadb',
+        ]);
+        $message['reply_markup']->addRow($button1);
+        return $message;
+    }
+
+    /**
      * @return string
      */
     public function getVersion(): string
@@ -46,31 +72,5 @@ class MariaDBDocker implements SoftwareInterface
         withHeaders($headers)
             ->get('https://registry.hub.docker.com/v2/repositories/library/mariadb/tags/latest/images')
             ->json();
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "$emoji A new version of MariaDB Docker($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => 'https://hub.docker.com/_/mariadb',
-        ]);
-        $message['reply_markup']->addRow($button1);
-        return $message;
     }
 }

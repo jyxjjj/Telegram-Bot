@@ -18,21 +18,19 @@ class TChatAdmins extends BaseModel
 
     /**
      * @param $chat_id
-     * @return array
+     * @param $admin_id
+     * @return Builder|Model
      */
-    public static function getChatAdmins($chat_id): array
+    public static function addAdmin($chat_id, $admin_id): Builder|Model
     {
-        $data = Cache::get("DB::TChatAdmins::chat_admins::$chat_id");
-        if (is_array($data)) {
-            return $data;
-        }
         $data = self::query()
-            ->select('admin_id')
-            ->where('chat_id', $chat_id)
-            ->pluck('admin_id')
-            ->toArray();
-        $data = array_merge($data, [(int)env('TELEGRAM_ADMIN_USER_ID')]);
-        Cache::put("DB::TChatAdmins::chat_admins::$chat_id", $data, Carbon::now()->addMinutes(5));
+            ->create(
+                [
+                    'chat_id' => $chat_id,
+                    'admin_id' => $admin_id,
+                ]
+            );
+        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
         return $data;
     }
 
@@ -50,19 +48,21 @@ class TChatAdmins extends BaseModel
 
     /**
      * @param $chat_id
-     * @param $admin_id
-     * @return Builder|Model
+     * @return array
      */
-    public static function addAdmin($chat_id, $admin_id): Builder|Model
+    public static function getChatAdmins($chat_id): array
     {
+        $data = Cache::get("DB::TChatAdmins::chat_admins::$chat_id");
+        if (is_array($data)) {
+            return $data;
+        }
         $data = self::query()
-            ->create(
-                [
-                    'chat_id' => $chat_id,
-                    'admin_id' => $admin_id,
-                ]
-            );
-        Cache::forget("DB::TChatAdmins::chat_admins::$chat_id");
+            ->select('admin_id')
+            ->where('chat_id', $chat_id)
+            ->pluck('admin_id')
+            ->toArray();
+        $data = array_merge($data, [(int)env('TELEGRAM_ADMIN_USER_ID')]);
+        Cache::put("DB::TChatAdmins::chat_admins::$chat_id", $data, Carbon::now()->addMinutes(5));
         return $data;
     }
 }

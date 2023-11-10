@@ -1,6 +1,6 @@
 custom:
   [
-    "https://www.desmg.com/api/qr?data=https%3a%2f%2fqr.alipay.com%2fFKX006260GRX9PQEAL5C85",
-    "https://www.desmg.com/jump.php?url=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FsaId%3D10000007%26qrcode%3DHTTPS%3A%2F%2FQR.ALIPAY.COM%2FFKX006260GRX9PQEAL5C85%3F_s%3Dweb-other",
-    "https://qr.alipay.com/FKX006260GRX9PQEAL5C85",
+      "https://www.desmg.com/api/qr?data=https%3a%2f%2fqr.alipay.com%2fFKX006260GRX9PQEAL5C85",
+      "https://www.desmg.com/jump.php?url=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FsaId%3D10000007%26qrcode%3DHTTPS%3A%2F%2FQR.ALIPAY.COM%2FFKX006260GRX9PQEAL5C85%3F_s%3Dweb-other",
+      "https://qr.alipay.com/FKX006260GRX9PQEAL5C85",
   ]

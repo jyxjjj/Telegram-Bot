@@ -15,9 +15,9 @@ class DeleteMessageWithKeyJob extends BaseQueue
     private string $key;
 
     /**
-     * @param array $data
+     * @param array  $data
      * @param string $key
-     * @param int $delay
+     * @param int    $delay
      */
     public function __construct(array $data, string $key, int $delay = 60)
     {

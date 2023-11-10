@@ -184,7 +184,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         $id = $link;
         if (preg_match('/av([0-9]+)/', $link, $matches)) {
             $id = 'av' . $matches[1];
-        } else if (preg_match('/BV([0-9A-Za-z]+)/', $link, $matches)) {
+        } elseif (preg_match('/BV([0-9A-Za-z]+)/', $link, $matches)) {
             $id = 'BV' . $matches[1];
         }
         return $id;

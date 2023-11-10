@@ -8,13 +8,13 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property int $id
- * @property int $chat_id
- * @property string $keyword
- * @property TChatKeywordsTargetEnum $target
+ * @property int                        $id
+ * @property int                        $chat_id
+ * @property string                     $keyword
+ * @property TChatKeywordsTargetEnum    $target
  * @property TChatKeywordsOperationEnum $operation
- * @property array $data
- * @property int $enable
+ * @property array                      $data
+ * @property int                        $enable
  */
 class TChatKeywords extends BaseModel
 {

@@ -52,7 +52,7 @@ class PrivateServerStatusPusher extends Command
         foreach ($icmpServerLists as $icmpServer) {
             if (filter_var($icmpServer, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_RES_RANGE)) {
                 $ip = $icmpServer;
-            } else if (filter_var($icmpServer, FILTER_VALIDATE_DOMAIN)) {
+            } elseif (filter_var($icmpServer, FILTER_VALIDATE_DOMAIN)) {
                 $ip = gethostbyname($icmpServer);
                 if ($ip === $icmpServer) {
                     $errs[$icmpServer] = 'DNS Resolve Failed';

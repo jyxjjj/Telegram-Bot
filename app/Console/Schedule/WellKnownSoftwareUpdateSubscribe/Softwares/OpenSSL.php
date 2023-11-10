@@ -15,6 +15,36 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class OpenSSL implements SoftwareInterface
 {
     /**
+     * @param int    $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of OpenSSL($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View',
+            'url' => 'https://www.openssl.org/source/',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'Download',
+            'url' => "https://www.openssl.org/source/openssl-$version.tar.gz",
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        return $message;
+    }
+
+    /**
      * @return string
      */
     public function getVersion(): string
@@ -69,35 +99,5 @@ class OpenSSL implements SoftwareInterface
             return 304;
         }
         return false;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "$emoji A new version of OpenSSL($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'View',
-            'url' => 'https://www.openssl.org/source/',
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => 'Download',
-            'url' => "https://www.openssl.org/source/openssl-$version.tar.gz",
-        ]);
-        $message['reply_markup']->addRow($button1, $button2);
-        return $message;
     }
 }

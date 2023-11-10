@@ -19,9 +19,9 @@ class MessageHandleService extends BaseService
     private array $handlers;
 
     /**
-     * @param Update $update
+     * @param Update   $update
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws TelegramException
      * @throws BindingResolutionException
@@ -139,7 +139,7 @@ EOF,
                 Log::debug(
                     'Chat',
                     [
-                        $str
+                        $str,
                     ]
                 );
                 return false;
@@ -162,10 +162,10 @@ EOF,
     }
 
     /**
-     * @param string $type
-     * @param Message $message
+     * @param string   $type
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws BindingResolutionException
      * @throws TelegramException

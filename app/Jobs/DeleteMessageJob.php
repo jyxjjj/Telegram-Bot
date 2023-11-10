@@ -14,7 +14,7 @@ class DeleteMessageJob extends BaseQueue
 
     /**
      * @param array $data
-     * @param int $delay
+     * @param int   $delay
      */
     public function __construct(array $data, int $delay = 60)
     {

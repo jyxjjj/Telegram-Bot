@@ -7,6 +7,11 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function boot(): void
+    {
+        Schema::defaultStringLength(128);
+    }
+
     public function register()
     {
 //        DB::listen(function ($sql) {
@@ -28,10 +33,5 @@ class AppServiceProvider extends ServiceProvider
 //                ERR::log($e, __FILE__, __LINE__);
 //            }
 //        });
-    }
-
-    public function boot(): void
-    {
-        Schema::defaultStringLength(128);
     }
 }

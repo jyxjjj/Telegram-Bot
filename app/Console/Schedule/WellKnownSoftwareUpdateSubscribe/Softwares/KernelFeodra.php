@@ -20,6 +20,36 @@ use Throwable;
 class KernelFeodra implements SoftwareInterface
 {
     /**
+     * @param int    $chat_id
+     * @param string $version
+     * @return array
+     */
+    #[ArrayShape([
+        'chat_id' => 'int',
+        'text' => 'string',
+        'reply_markup' => InlineKeyboard::class,
+    ])]
+    public function generateMessage(int $chat_id, string $version): array
+    {
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of FedoraKernel($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'China USTC Mirror',
+            'url' => 'https://mirrors.ustc.edu.cn/fedora/updates/37/Everything/x86_64/Packages/k/',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'Europe Edge Mirror',
+            'url' => 'https://eu.edge.kernel.org/fedora/updates/37/Everything/x86_64/Packages/k/',
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        return $message;
+    }
+
+    /**
      * @return string
      */
     public function getVersion(): string
@@ -55,35 +85,5 @@ class KernelFeodra implements SoftwareInterface
             Handler::logError($e);
         }
         return $version;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param string $version
-     * @return array
-     */
-    #[ArrayShape([
-        'chat_id' => 'int',
-        'text' => 'string',
-        'reply_markup' => InlineKeyboard::class,
-    ])]
-    public function generateMessage(int $chat_id, string $version): array
-    {
-        $emoji = Common::emoji();
-        $message = [
-            'chat_id' => $chat_id,
-            'text' => "$emoji A new version of FedoraKernel($version) is now available.",
-            'reply_markup' => new InlineKeyboard([]),
-        ];
-        $button1 = new InlineKeyboardButton([
-            'text' => 'China USTC Mirror',
-            'url' => 'https://mirrors.ustc.edu.cn/fedora/updates/37/Everything/x86_64/Packages/k/',
-        ]);
-        $button2 = new InlineKeyboardButton([
-            'text' => 'Europe Edge Mirror',
-            'url' => 'https://eu.edge.kernel.org/fedora/updates/37/Everything/x86_64/Packages/k/',
-        ]);
-        $message['reply_markup']->addRow($button1, $button2);
-        return $message;
     }
 }

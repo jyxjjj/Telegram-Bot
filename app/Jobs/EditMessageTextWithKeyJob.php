@@ -15,7 +15,7 @@ class EditMessageTextWithKeyJob extends BaseQueue
     private string $key;
 
     /**
-     * @param array $data
+     * @param array  $data
      * @param string $key
      */
     public function __construct(array $data, string $key)
