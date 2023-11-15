@@ -145,6 +145,7 @@ class ContributeKeyword extends ContributeStep
                     if (
                         !$link ||
                         strlen($link) < 8 ||
+                        !str_starts_with($link, 'https://www.alipan.com/s/') &&
                         !str_starts_with($link, 'https://www.aliyundrive.com/s/') &&
                         !str_starts_with($link, 'https://pan.baidu.com/s/') &&
                         !str_starts_with($link, 'https://1drv.ms/') &&
@@ -234,7 +235,7 @@ class ContributeKeyword extends ContributeStep
                         $sender['text'] .= "投稿ID：$cvid\n";
                         $this->dispatch(new PassPendingJob($cvid));
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    } else if (BL::get($user_id)) {
+                    } elseif (BL::get($user_id)) {
                         // 将 '黑名单用户{name}的投稿已自动拒绝' 发送到审核群
                         $sender['chat_id'] = env('YPP_SOURCE_ID');
                         $sender['text'] = "黑名单：{$data[$cvid]['name']}已自动拒绝\n\n";
@@ -301,10 +302,13 @@ class ContributeKeyword extends ContributeStep
                     }
                     break;
             }
-        } else if (isset($data['status']) && $data['status'] == 'contribute2') {
+        } elseif (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
             $messageText = $message->getCaption() ?? $message->getText();
-            if ($messageText && preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)) {
+            $matched = preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
+                ||
+                preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.alipan\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches);
+            if ($messageText && $matched) {
                 $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
                 $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                 // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
