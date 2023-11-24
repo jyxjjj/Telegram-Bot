@@ -4,12 +4,16 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Throwable;
+
+//use Illuminate\Http\Client\ConnectionException;
 
 class Handler extends ExceptionHandler
 {
     protected $dontReport = [
-        '\Symfony\Component\Console\Exception\CommandNotFoundException',
+        CommandNotFoundException::class,
+//        ConnectionException::class,
     ];
     protected $dontFlash = [
     ];
