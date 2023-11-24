@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -27,7 +26,7 @@ class TChatKeywords extends BaseModel
 
     /**
      * @param int $chat_id
-     * @return Builder|Collection|mixed
+     * @return Collection<TChatKeywords>
      */
     public static function getKeywords(int $chat_id): mixed
     {

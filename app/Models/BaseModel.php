@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static Builder|static newModelQuery()
+ * @method static Builder|static newQuery()
+ * @method static Builder|static query()
+ */
 class BaseModel extends Model
 {
     use SoftDeletes;

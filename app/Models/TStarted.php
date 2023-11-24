@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -17,9 +15,9 @@ class TStarted extends BaseModel
 
     /**
      * @param $user_id
-     * @return Builder|Model
+     * @return TStarted
      */
-    public static function addUser($user_id): Builder|Model
+    public static function addUser($user_id): TStarted
     {
         $data = Cache::get("DB::TStarted::user::$user_id");
         if ($data) {

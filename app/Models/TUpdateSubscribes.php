@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -19,9 +17,9 @@ class TUpdateSubscribes extends BaseModel
     /**
      * @param int    $chat_id
      * @param string $software
-     * @return Builder|Model|false
+     * @return false|TUpdateSubscribes
      */
-    public static function addSubscribe(int $chat_id, string $software): Builder|Model|false
+    public static function addSubscribe(int $chat_id, string $software): false|TUpdateSubscribes
     {
         $data = Cache::get("DB::TUpdateSubscribes::update_subscribes::$chat_id");
         if (is_array($data)) {
@@ -98,7 +96,7 @@ class TUpdateSubscribes extends BaseModel
 
     /**
      * @param int $chat_id
-     * @return mixed
+     * @return int
      */
     public static function removeAllSubscribe(int $chat_id): int
     {

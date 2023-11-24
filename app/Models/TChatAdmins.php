@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -19,9 +17,9 @@ class TChatAdmins extends BaseModel
     /**
      * @param $chat_id
      * @param $admin_id
-     * @return Builder|Model
+     * @return TChatAdmins
      */
-    public static function addAdmin($chat_id, $admin_id): Builder|Model
+    public static function addAdmin($chat_id, $admin_id): TChatAdmins
     {
         $data = self::query()
             ->create(
