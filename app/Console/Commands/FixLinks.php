@@ -30,7 +30,7 @@ class FixLinks extends Command
             $userId = str_replace('.json', '', $filename);
             $userData = Conversation::get($userId, 'contribute');
             foreach ($userData as $cvid => $cvinfo) {
-                if (str_starts_with($cvid, '16')) {
+                if (str_starts_with($cvid, '16') || str_starts_with($cvid, '17')) {
                     if ($cvinfo['status'] == 'pass') {
                         self::info($cvid);
                         $link = $cvinfo['link'];
