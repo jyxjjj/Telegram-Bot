@@ -39,6 +39,7 @@ class StartCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= Conversation::get('ad', 'ad')[2] ?? '';
+        $linkOK = true;
         if (str_starts_with($payload, 'get')) {
             $rest = $this->rateLimit($chatId, $username);
             if ($rest == -1) {
@@ -48,6 +49,7 @@ class StartCommand extends BaseCommand
             $cvid = substr($payload, 3);
             $linkData = Conversation::get('link', 'link');
             $link = $linkData[$cvid] ?? "获取链接失败，此链接不存在或已被删除\n您可以访问备份网站或联系管理员咨询\n如果您是链接发布者，可以尝试重新投稿。";
+            $linkOK = isset($linkData[$cvid]);
             $data['text'] .= "\n$link\n";
             Log::alert('获取链接', ['username' => $username, 'chatId' => $chatId, 'cvid' => $cvid, 'link' => $link]);
             $data['text'] .= "您今日剩余获取链接次数：$rest\n";
@@ -63,6 +65,14 @@ class StartCommand extends BaseCommand
         $data['reply_markup']->addRow(new KeyboardButton('帮助与反馈'), new KeyboardButton('捐赠信息'));
         //#endregion reply_markup
         $this->dispatch(new SendMessageJob($data, null, 0));
+        if (!$linkOK) {
+            $data = [
+                'chat_id' => $chatId,
+                'text' => '',
+            ];
+            $data['text'] .= "尊敬的用户：\n我们近期对数据库进行了整理，在删除旧数据时可能导致新数据被误删除\n如果您获取的链接无效，请向链接发布者反馈，无需咨询管理员\n如果您是链接发布者，您可以重新投稿，确认无效的情况下支持重复投稿，请在描述或标题加【补档】\n目前我们仅保留一个月数据。";
+            $this->dispatch(new SendMessageJob($data, null, 0));
+        }
     }
 
     /**
