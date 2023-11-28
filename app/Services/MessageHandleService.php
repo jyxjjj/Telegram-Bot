@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Common\Conversation;
+use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Longman\TelegramBot\Entities\Message;
@@ -17,15 +19,25 @@ class MessageHandleService extends BaseService
     private array $handlers;
 
     /**
-     * @param Update $update
+     * @param Update   $update
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws TelegramException
      * @throws BindingResolutionException
      */
     public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
+        $maintenance = Conversation::get('maintenance', 'maintenance');
+        if (($maintenance['status'] ?? 'off') == 'on') {
+            if ($update->getMessage()->getChat()->getId() != env('YPP_SOURCE_ID')) {
+                $this->dispatch(new SendMessageJob([
+                    'chat_id' => $update->getMessage()->getChat()->getId(),
+                    'text' => "维护中，请稍后再试...\n" . ($maintenance['message'] ?? ''),
+                ], null, 0));
+                return;
+            }
+        }
         $message = $update->getMessage();
         $messageType = $message->getType();
         $this->addHandler('command', CommandHandleService::class);
@@ -82,10 +94,10 @@ class MessageHandleService extends BaseService
     }
 
     /**
-     * @param string $type
-     * @param Message $message
+     * @param string   $type
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      * @throws BindingResolutionException
      * @throws TelegramException
