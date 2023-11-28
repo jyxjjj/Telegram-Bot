@@ -21,9 +21,9 @@ class StartCommand extends BaseCommand
     public bool $private = true;
 
     /**
-     * @param Message $message
+     * @param Message  $message
      * @param Telegram $telegram
-     * @param int $updateId
+     * @param int      $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -47,7 +47,7 @@ class StartCommand extends BaseCommand
             $data['text'] .= "\n👇👇👇您所获取的链接👇👇👇";
             $cvid = substr($payload, 3);
             $linkData = Conversation::get('link', 'link');
-            $link = $linkData[$cvid] ?? "获取链接失败\n请联系管理员";
+            $link = $linkData[$cvid] ?? "获取链接失败，此链接不存在或已被删除\n您可以访问备份网站或联系管理员咨询\n如果您是链接发布者，可以尝试重新投稿。";
             $data['text'] .= "\n$link\n";
             Log::alert('获取链接', ['username' => $username, 'chatId' => $chatId, 'cvid' => $cvid, 'link' => $link]);
             $data['text'] .= "您今日剩余获取链接次数：$rest\n";
@@ -66,7 +66,7 @@ class StartCommand extends BaseCommand
     }
 
     /**
-     * @param int $chatId
+     * @param int         $chatId
      * @param string|null $username
      * @return int
      */
@@ -105,7 +105,7 @@ class StartCommand extends BaseCommand
     }
 
     /**
-     * @param int $chatId
+     * @param int      $chatId
      * @param int|null $times
      * @return void
      */
