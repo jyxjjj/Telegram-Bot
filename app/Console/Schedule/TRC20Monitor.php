@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class TRC20Monitor extends Command
 {
@@ -53,12 +54,16 @@ class TRC20Monitor extends Command
     private function getTransaction(string $address): array
     {
         $url = 'https://apilist.tronscan.org/api/new/token_trc20/transfers?limit=3&toAddress=' . $address;
-        $data = Http::withHeaders(Config::CURL_HEADERS)
-            ->connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
-            ->withHeader('TRON-PRO-API-KEY', env('TRON_PRO_API_KEY'))
-            ->get($url);
+        try {
+            $data = Http::withHeaders(Config::CURL_HEADERS)
+                ->connectTimeout(10)
+                ->timeout(10)
+                ->retry(3, 1000, throw: false)
+                ->withHeader('TRON-PRO-API-KEY', env('TRON_PRO_API_KEY'))
+                ->get($url);
+        } catch (Throwable) {
+            return [];
+        }
         $data = $data->json();
         $data = $data['token_transfers'];
         $result = [];
