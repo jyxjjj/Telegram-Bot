@@ -23,12 +23,15 @@ class CancelContributeKeyword extends ContributeStep
             'text' => '',
         ];
         $data = Conversation::get($message->getChat()->getId(), 'contribute');
-        if (count($data) > 0 && $data['status'] != 'contribute' && $data['status'] != 'contribute2') {
+        if (count($data) > 0 && $data['status'] == 'free') {
             $sender['text'] .= "您未进入投稿状态，无需或无法取消，请先开始投稿。\n";
         } else {
             $data['status'] = 'free';
-            $cvid = $data['cvid'];
-            unset($data['cvid'], $data[$cvid]);
+            $cvid = $data['cvid'] ?? null;
+            unset($data['cvid']);
+            if (!is_null($cvid)) {
+                unset($data[$cvid]);
+            }
             Conversation::save($message->getChat()->getId(), 'contribute', $data);
             $sender['text'] .= "投稿已取消。\n";
         }
