@@ -149,4 +149,4 @@ Or you can let bot call the laravel official command:
 
 # Donate
 
-Alipay <img src="https://github.com/jyxjjj/jyxjjj/raw/main/resources/images/alipay.png" alt="Alipay QRCode" height="128" width="128" align="center">
+<a href="https://www.desmg.com/donate">Click Here</a>
