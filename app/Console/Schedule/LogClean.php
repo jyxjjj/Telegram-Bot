@@ -6,9 +6,6 @@ use App\Exceptions\Handler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
 use Throwable;
 
 class LogClean extends Command
@@ -30,17 +27,12 @@ class LogClean extends Command
                 return self::INVALID;
             }
             $path = storage_path('logs');
-            $files = new RegexIterator(
-                new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($path)
-                ),
-                '/^.+\.log$/i'
-            );
+            $files = glob($path . '/*.log');
             $whitelist = $this->generateWhiteLists($preserve);
             self::info("Using RegExp: $whitelist");
-            foreach ($files as $file) {
-                $fullFileName = $file->getPathName();
-                $fileName = $file->getFileName();
+            foreach ($files as $fileName) {
+                $fullFileName = $fileName;
+                $fileName = basename($fileName);
                 if (!preg_match($whitelist, $fileName)) {
                     self::error("Deleting $fileName...");
                     unlink($fullFileName);
