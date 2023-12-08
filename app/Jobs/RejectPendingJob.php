@@ -44,13 +44,13 @@ class RejectPendingJob extends BaseQueue
         Conversation::save('pending', 'pending', $pendingData);
         unset($pendingData);
         $userData = Conversation::get($user_id, 'contribute');
+        $message_name = $userData[$cvid]['name'];
         unset($userData[$cvid]);
         Conversation::save($user_id, 'contribute', $userData);
         $sender = [
             'chat_id' => $user_id,
             'text' => '',
         ];
-        $message_name = $userData[$cvid]['name'];
         $sender['text'] .= "您提交的资源<code>$message_name</code>已被拒绝。";
         $sender['reply_markup'] = new InlineKeyboard([]);
         $button1 = new InlineKeyboardButton([

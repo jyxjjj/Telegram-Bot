@@ -305,6 +305,11 @@ class ContributeKeyword extends ContributeStep
         } elseif (isset($data['status']) && $data['status'] == 'contribute2') {
             $cvid = $data['cvid'];
             $messageText = $message->getCaption() ?? $message->getText();
+            if (empty($messageText)) {
+                $sender['text'] = "格式错误，请重新发送";
+                $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                return;
+            }
             $matched = preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.alipan\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches);
