@@ -50,7 +50,7 @@ class WeatherCommand extends BaseCommand
                 ]
             )
             ->get('daily?dailysteps=1&unit=metric:v2');
-        $result = $result->json();
+        $result = $result->json('result');
         @$str = "Location: 118.7271427, 32.0348853 NKG, CN\n";
         @$str .= "日出日落：{$result['daily']['astro'][0]['sunrise']['time']} ~ {$result['daily']['astro'][0]['sunset']['time']}\n";
         @$str .= "天气：{$this->translate($result['daily']['skycon'][0]['value'])}\n";
