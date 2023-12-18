@@ -2,11 +2,13 @@
 
 namespace App\Services\Commands;
 
+use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
 
 class WeatherCommand extends BaseCommand
@@ -20,14 +22,23 @@ class WeatherCommand extends BaseCommand
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws TelegramException
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
+        $messageId = $message->getMessageId();
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
             'text' => '',
+            'reply_to_message_id' => $messageId,
         ];
+        $notAdmin = !BotCommon::isAdmin($message);
+        if ($notAdmin) {
+            $data['text'] = 'This command is only available to administrators.';
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
         $result = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(10)
             ->timeout(10)
@@ -51,7 +62,7 @@ class WeatherCommand extends BaseCommand
         @$str .= "舒适度：{$result['daily']['life_index']['comfort'][0]['desc']}\n";
         @$str .= "紫外线：{$result['daily']['life_index']['ultraviolet'][0]['desc']}\n";
         @$str .= "穿衣指数：{$result['daily']['life_index']['dressing'][0]['desc']}\n";
-        $data['text'] = $str;
+        $data['text'] .= $str;
         $this->dispatch(new SendMessageJob($data));
     }
 
