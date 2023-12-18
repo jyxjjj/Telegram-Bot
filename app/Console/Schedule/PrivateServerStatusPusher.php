@@ -2,7 +2,7 @@
 
 namespace App\Console\Schedule;
 
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use App\Jobs\SendMessageJob;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -36,7 +36,7 @@ class PrivateServerStatusPusher extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::info("Error when running the server status monitor: {$e->getMessage()}");
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }

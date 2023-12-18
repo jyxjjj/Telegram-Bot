@@ -18,8 +18,8 @@ class SendMessageWithKeyJob extends BaseQueue
     private ?array $extras;
 
     /**
-     * @param array      $data
-     * @param string     $key
+     * @param array $data
+     * @param string $key
      * @param array|null $extras
      */
     public function __construct(array $data, string $key, ?array $extras = null)

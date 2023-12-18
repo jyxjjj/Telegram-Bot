@@ -18,12 +18,6 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
     public string $version = '1.0.0';
     protected string $pattern = '/(v\.douyin\.com)/';
 
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
-    }
-
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
@@ -87,15 +81,10 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
             if ($url['scheme'] == 'http') {
                 $entity = str_replace('http://', 'https://', $entity);
             }
-            if (!in_array($url['host'], ['v.douyin.com',])) {
+            if ($url['host'] != 'v.douyin.com') {
                 continue;
             }
-            $changedLocation = false;
-            if ($url['host'] == 'v.douyin.com') {
-                $entity = $this->getLocation($entity);
-                $changedLocation = true;
-            }
-            unset($changedLocation);
+            $entity = $this->getLocation($entity);
             $link = $this->removeAllParams($entity);
             $data['text'] .= $link . PHP_EOL;
             $button = new InlineKeyboardButton([
@@ -131,5 +120,11 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
     {
         $url = parse_url($link);
         return str_replace('https://www.iesdouyin.com/share/video/', 'https://www.douyin.com/video/', "https://{$url['host']}{$url['path']}");
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 }

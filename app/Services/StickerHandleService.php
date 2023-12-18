@@ -10,9 +10,9 @@ use Longman\TelegramBot\Telegram;
 class StickerHandleService extends BaseService
 {
     /**
-     * @param Message  $message
+     * @param Message $message
      * @param Telegram $telegram
-     * @param int      $updateId
+     * @param int $updateId
      * @return bool
      */
     public function handle(Message $message, Telegram $telegram, int $updateId): bool

@@ -3,7 +3,7 @@
 namespace App\Services\Commands;
 
 use App\Common\Config;
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use App\Jobs\DeleteTempStickerFileJob;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
@@ -26,9 +26,9 @@ class AddMyStickerCommand extends BaseCommand
     public string $usage = '/addmysticker';
 
     /**
-     * @param Message  $message
+     * @param Message $message
      * @param Telegram $telegram
-     * @param int      $updateId
+     * @param int $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -100,7 +100,7 @@ class AddMyStickerCommand extends BaseCommand
             }
         } catch (Throwable $e) {
             $data['text'] .= "An error occurred while getting sticker file path.\n";
-            Handler::logError($e);
+            ERR::log($e);
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -119,7 +119,7 @@ class AddMyStickerCommand extends BaseCommand
                 $data['text'] .= "<b>Error</b>: {$e->getMessage()}.\n";
             } else {
                 $data['text'] .= "An error occurred while downloading the sticker file.\n";
-                Handler::logError($e);
+                ERR::log($e);
             }
             $this->dispatch(new SendMessageJob($data));
             return;
@@ -159,7 +159,7 @@ class AddMyStickerCommand extends BaseCommand
             return;
         } catch (Throwable $e) {
             $data['text'] .= "An error occurred while add the sticker to your pack.\n";
-            Handler::logError($e);
+            ERR::log($e);
             $this->dispatch(new SendMessageJob($data));
             return;
         }
@@ -355,7 +355,7 @@ class AddMyStickerCommand extends BaseCommand
     }
 
     /**
-     * @param int    $userId
+     * @param int $userId
      * @param string $stickerName
      * @param string $stickerEmoji
      * @param string $stickerFileDownloaded

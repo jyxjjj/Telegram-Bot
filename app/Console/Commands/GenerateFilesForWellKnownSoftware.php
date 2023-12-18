@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Common\ERR;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
-use App\Exceptions\Handler;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Throwable;
@@ -32,7 +32,7 @@ class GenerateFilesForWellKnownSoftware extends Command
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }

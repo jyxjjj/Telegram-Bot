@@ -2,9 +2,9 @@
 
 namespace App\Console\Schedule;
 
+use App\Common\ERR;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
-use App\Exceptions\Handler;
 use App\Jobs\SendMessageJob;
 use App\Models\TUpdateSubscribes;
 use Illuminate\Console\Command;
@@ -61,14 +61,14 @@ class WellKnownSoftwareUpdateSubscribe extends Command
                         }
                     }
                 } catch (Throwable $e) {
-                    Handler::logError($e);
+                    ERR::log($e);
                     continue;
                 }
                 sleep(1);
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }

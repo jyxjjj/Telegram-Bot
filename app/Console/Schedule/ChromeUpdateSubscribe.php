@@ -3,7 +3,7 @@
 namespace App\Console\Schedule;
 
 use App\Common\Config;
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use App\Jobs\SendMessageJob;
 use App\Models\TUpdateSubscribes;
 use DESMG\RFC6986\Hash;
@@ -53,7 +53,7 @@ class ChromeUpdateSubscribe extends Command
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }
@@ -119,7 +119,7 @@ class ChromeUpdateSubscribe extends Command
     }
 
     /**
-     * @param int   $chat_id
+     * @param int $chat_id
      * @param array $data
      * @return string
      */
@@ -152,7 +152,7 @@ STR;
     }
 
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $key
      * @return string|false
      */
@@ -162,7 +162,7 @@ STR;
     }
 
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $key
      * @param        $version
      * @return bool
@@ -182,7 +182,7 @@ STR;
     }
 
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $hash
      * @return bool
      */

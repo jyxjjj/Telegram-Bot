@@ -16,7 +16,7 @@ class SendPhotoJob extends BaseQueue
 
     /**
      * @param array $data
-     * @param int   $delete
+     * @param int $delete
      */
     public function __construct(array $data, int $delete = 60)
     {

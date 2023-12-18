@@ -6,8 +6,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property int    $id
- * @property int    $chat_id
+ * @property int $id
+ * @property int $chat_id
  * @property string $software
  */
 class TUpdateSubscribes extends BaseModel
@@ -15,7 +15,7 @@ class TUpdateSubscribes extends BaseModel
     protected $table = 'update_subscribes';
 
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $software
      * @return false|TUpdateSubscribes
      */
@@ -109,7 +109,7 @@ class TUpdateSubscribes extends BaseModel
     }
 
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $software
      * @return int
      */

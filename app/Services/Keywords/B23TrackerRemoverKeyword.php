@@ -18,12 +18,6 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     public string $version = '2.0.1';
     protected string $pattern = '/(b23\.tv|bilibili\.com)/';
 
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
-    }
-
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
@@ -227,6 +221,12 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             $id = 'UID: ' . $matches[1];
         }
         return $id;
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 
     /**

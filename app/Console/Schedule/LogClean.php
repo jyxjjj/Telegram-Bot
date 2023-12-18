@@ -2,7 +2,7 @@
 
 namespace App\Console\Schedule;
 
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
@@ -43,7 +43,7 @@ class LogClean extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error($e->getMessage());
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }

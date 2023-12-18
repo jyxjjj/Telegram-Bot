@@ -9,7 +9,7 @@ use Longman\TelegramBot\Entities\InlineKeyboard;
 class Go implements SoftwareInterface
 {
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $version
      * @return array
      */

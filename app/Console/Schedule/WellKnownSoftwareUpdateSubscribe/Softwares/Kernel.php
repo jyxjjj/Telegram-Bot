@@ -14,7 +14,7 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class Kernel implements SoftwareInterface
 {
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $version
      * @return array
      */

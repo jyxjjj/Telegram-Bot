@@ -20,7 +20,7 @@ class Common
     /**
      * 缓存HTTP响应中 <b>Last-Modified</b> 值
      * @param Software $software
-     * @param string   $lastModified
+     * @param string $lastModified
      * @return bool
      */
     public static function cacheLastModified(Software $software, string $lastModified): bool
@@ -53,7 +53,7 @@ class Common
     /**
      * 获取上次发送到聊天的版本号
      * @param Software $software
-     * @param int      $chat_id
+     * @param int $chat_id
      * @return string
      */
     public static function getLastSend(Software $software, int $chat_id): string
@@ -74,8 +74,8 @@ class Common
     /**
      * 设置上次发送到聊天的版本号
      * @param Software $software
-     * @param int      $chat_id
-     * @param string   $version
+     * @param int $chat_id
+     * @param string $version
      * @return bool
      */
     public static function setLastSend(Software $software, int $chat_id, string $version): bool
@@ -86,7 +86,7 @@ class Common
     /**
      * 设置上次获取的版本号
      * @param Software $software
-     * @param string   $version
+     * @param string $version
      * @return bool
      */
     public static function setLastVersion(Software $software, string $version): bool

@@ -15,7 +15,7 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class Nginx implements SoftwareInterface
 {
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $version
      * @return array
      */

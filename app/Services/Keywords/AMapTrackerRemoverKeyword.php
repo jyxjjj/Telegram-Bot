@@ -18,13 +18,6 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
     public string $version = '1.0.2';
     protected string $pattern = '/(surl\.amap\.com)/';
 
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
-    }
-
-
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
@@ -91,5 +84,11 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
             ->withoutRedirecting()
             ->get($link)
             ->header('Location');
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 }

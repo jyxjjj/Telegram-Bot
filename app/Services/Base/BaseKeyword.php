@@ -38,15 +38,15 @@ abstract class BaseKeyword
 
     /**
      * @param Message $message
-     * @return bool
-     */
-    public abstract function preExecute(Message $message): bool;
-
-    /**
-     * @param Message $message
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
      */
     public abstract function execute(Message $message, Telegram $telegram, int $updateId): void;
+
+    /**
+     * @param Message $message
+     * @return bool
+     */
+    public abstract function preExecute(Message $message): bool;
 }

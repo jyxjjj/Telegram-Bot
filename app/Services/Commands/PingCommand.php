@@ -20,9 +20,9 @@ class PingCommand extends BaseCommand
     public string $usage = '/ping';
 
     /**
-     * @param Message  $message
+     * @param Message $message
      * @param Telegram $telegram
-     * @param int      $updateId
+     * @param int $updateId
      * @return void
      * @throws Exception
      */

@@ -16,9 +16,9 @@ class SendMessageJob extends BaseQueue
     private int $delete;
 
     /**
-     * @param array      $data
+     * @param array $data
      * @param array|null $extras
-     * @param int        $delete
+     * @param int $delete
      */
     public function __construct(array $data, ?array $extras = null, int $delete = 60)
     {

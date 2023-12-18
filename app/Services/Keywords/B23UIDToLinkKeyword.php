@@ -15,12 +15,6 @@ class B23UIDToLinkKeyword extends BaseKeyword
     public string $description = 'generate link from b23 uid';
     protected string $pattern = '/UID:(\d+)/';
 
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
-    }
-
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
@@ -52,5 +46,11 @@ class B23UIDToLinkKeyword extends BaseKeyword
                 );
             }
         }
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 }

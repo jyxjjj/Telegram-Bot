@@ -3,9 +3,9 @@
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
 use App\Common\Config;
+use App\Common\ERR;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
-use App\Exceptions\Handler;
 use DOMDocument;
 use DOMElement;
 use DOMNodeList;
@@ -82,7 +82,7 @@ class KernelFeodra implements SoftwareInterface
                 }
             }
         } catch (Throwable $e) {
-            Handler::logError($e);
+            ERR::log($e);
         }
         return $version;
     }

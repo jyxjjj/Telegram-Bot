@@ -2,7 +2,7 @@
 
 namespace App\Services\Keywords;
 
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
@@ -24,11 +24,6 @@ class KeywordDetectKeyword extends BaseKeyword
     protected string $pattern = '//';
     private bool $stop = false;
 
-    public function preExecute(Message $message): bool
-    {
-        return true;
-    }
-
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         /** @var Collection<TChatKeywords> $keywords */
@@ -37,7 +32,7 @@ class KeywordDetectKeyword extends BaseKeyword
             try {
                 $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
             } catch (Throwable $e) {
-                Handler::logError($e);
+                ERR::log($e);
             }
             if ($this->stop) {
                 break;
@@ -241,5 +236,10 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
         }
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        return true;
     }
 }

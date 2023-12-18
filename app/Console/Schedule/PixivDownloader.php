@@ -3,7 +3,7 @@
 namespace App\Console\Schedule;
 
 use App\Common\Config;
-use App\Exceptions\Handler;
+use App\Common\ERR;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -30,7 +30,7 @@ class PixivDownloader extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             self::error("Error({$e->getCode()}):{$e->getMessage()}@{$e->getFile()}:{$e->getLine()}");
-            Handler::logError($e);
+            ERR::log($e);
             return self::FAILURE;
         }
     }

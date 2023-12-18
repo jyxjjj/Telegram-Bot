@@ -15,7 +15,7 @@ use Longman\TelegramBot\Entities\InlineKeyboardButton;
 class OpenSSL implements SoftwareInterface
 {
     /**
-     * @param int    $chat_id
+     * @param int $chat_id
      * @param string $version
      * @return array
      */

@@ -16,9 +16,9 @@ class StartCommand extends BaseCommand
     public bool $private = true;
 
     /**
-     * @param Message  $message
+     * @param Message $message
      * @param Telegram $telegram
-     * @param int      $updateId
+     * @param int $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -26,7 +26,6 @@ class StartCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
         $payload = $message->getText(true);
-        /** @var TStarted $startedUser */
         $startedUser = TStarted::addUser($userId);
         $data = [
             'chat_id' => $chatId,
