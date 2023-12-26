@@ -144,7 +144,7 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     private function replaceReadMobileToCVLink(string $link): string
     {
         $id = $link;
-        if (preg_match('/id=([0-9]+)/', $link, $matches)) {
+        if (preg_match('/([0-9]+)\?plat_id=/', $link, $matches)) {
             $id = 'https://www.bilibili.com/read/cv' . $matches[1];
         }
         return $id;
