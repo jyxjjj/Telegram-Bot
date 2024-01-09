@@ -58,8 +58,6 @@ class Telegraph extends BaseController
             $body = $data->body();
             $length = strlen($body);
             $ifNoneMatch = $request->header('If-None-Match');
-            ob_end_clean();
-            ob_implicit_flush();
             if ($ifNoneMatch === $etag) {
                 return new Response('', 304, [
                     'Date' => $date,
