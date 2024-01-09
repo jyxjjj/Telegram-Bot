@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Common\Config;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Telegraph extends BaseController
 {
-    public function getFile(Request $request): StreamedResponse|JsonResponse
+    public function getFile(Request $request): Response
     {
         $fileType = $request->route('type');
         if (!in_array($fileType, ['png', 'mp4'])) {
@@ -25,8 +24,15 @@ class Telegraph extends BaseController
             ]);
         }
         $file = $request->route('file');
-        ob_end_clean();
-        ob_implicit_flush();
+        if (!in_array($file, ['123456', '654321'])) {
+            return $this->json([
+                'code' => 404,
+                'msg' => 'not found',
+                'ok' => false,
+                'result' => false,
+                'description' => "requested file $file.$fileType not found",
+            ]);
+        }
         try {
             $connectTimeout = 5;
             $timeout = 5;
@@ -52,10 +58,10 @@ class Telegraph extends BaseController
             $body = $data->body();
             $length = strlen($body);
             $ifNoneMatch = $request->header('If-None-Match');
+            ob_end_clean();
+            ob_implicit_flush();
             if ($ifNoneMatch === $etag) {
-                return new StreamedResponse(function () {
-                    echo '';
-                }, 304, [
+                return new Response('', 304, [
                     'Date' => $date,
                     'Expires' => $expires,
                     'ETag' => $etag,
@@ -64,9 +70,7 @@ class Telegraph extends BaseController
                     'CloudFlare-CDN-Cache-Control' => $cacheControl,
                 ]);
             }
-            return new StreamedResponse(function () use ($body) {
-                echo $body;
-            }, 200, [
+            return new Response($body, 200, [
                 'Content-Type' => $type,
                 'Content-Length' => $length,
                 'Date' => $date,
