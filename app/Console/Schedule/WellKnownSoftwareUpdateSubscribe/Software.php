@@ -12,6 +12,7 @@ use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\MariaDB;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\MariaDBDocker;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Nginx;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\NodeJS;
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\NVM;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\OpenSSL;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\PHP;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares\Redis;
@@ -34,7 +35,8 @@ enum Software: string
     case VSCode = 'VSCODE';
     case Laravel = 'LARAVEL';
     case CURL = 'CURL';
-    case FFmpeg = 'FFmpeg';
+    case FFmpeg = 'FFMPEG';
+    case NVM = 'NVM';
 
     public function file(): string
     {
@@ -54,6 +56,7 @@ enum Software: string
             self::Laravel => __DIR__ . '/Softwares/Laravel.php',
             self::CURL => __DIR__ . '/Softwares/CURL.php',
             self::FFmpeg => __DIR__ . '/Softwares/FFmpeg.php',
+            self::NVM => __DIR__ . '/Softwares/NVM.php',
         };
     }
 
@@ -83,6 +86,7 @@ enum Software: string
             self::Laravel => Laravel::class,
             self::CURL => CURL::class,
             self::FFmpeg => FFmpeg::class,
+            self::NVM => NVM::class,
         };
     }
 }
