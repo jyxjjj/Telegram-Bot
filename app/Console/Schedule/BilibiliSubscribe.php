@@ -118,7 +118,7 @@ class BilibiliSubscribe extends Command
             return $data;
         }
         unset($data);
-        $url = "https://api.bilibili.com/x/v2/medialist/resource/list?type=1&biz_id=$mid";
+        $url = "https://api.bilibili.com/x/v2/medialist/resource/list?type=1&biz_id=$mid&ps=10";
         $json = $this->getJson($url);
         $media_list = $json['data']['media_list'];
         $vlist = [];
