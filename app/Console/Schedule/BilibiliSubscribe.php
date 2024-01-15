@@ -48,11 +48,11 @@ class BilibiliSubscribe extends Command
                     $video = $videoList[0];
                 } else {
                     for ($i = 0; $i < count($videoList); $i++) {
-                        if ($i == 0 && $videoList[$i]['bvid'] == $last_send) {
+                        if ($i == 0 && $videoList[$i]['BVID'] == $last_send) {
                             self::info("There is no new video of $mid for $chat_id");
                             continue 2;
                         }
-                        if ($i > 0 && $videoList[$i]['bvid'] == $last_send) {
+                        if ($i > 0 && $videoList[$i]['BVID'] == $last_send) {
                             self::info("Find new video of $mid for $chat_id");
                             $video = $videoList[$i - 1];
                             break;
@@ -78,8 +78,10 @@ class BilibiliSubscribe extends Command
                     $message['caption'] .= "视频: <b>{$video['title']}</b>\n";
                     $message['caption'] .= "UP主: <code>{$video['author']}</code>\n";
                     $message['caption'] .= "发布时间: <code>{$video['created']}</code>\n";
-                    $message['caption'] .= "AV No.: <a href='https://b23.tv/{$video['AVID']}'>{$video['AVID']}</a>\n";
-                    $message['caption'] .= "BV ID: <a href='https://b23.tv/{$video['BVID']}'>{$video['BVID']}</a>\n";
+                    $message['caption'] .= "AV No.: <code>{$video['AVID']}</code>\n";
+                    $message['caption'] .= "AV Link: <code>https://b23.tv/{$video['AVID']}</code>\n";
+                    $message['caption'] .= "BV ID: <code>{$video['BVID']}</code>\n";
+                    $message['caption'] .= "BV Link: <code>https://b23.tv/{$video['BVID']}</code>\n";
                     $message['caption'] .= "点赞、投币、收藏: {$video['thumb_up']}, {$video['coins']}, {$video['collect']}\n";
                     $message['caption'] .= "播放、分享: {$video['play']}, {$video['share']}\n";
                     $message['caption'] .= "评论、弹幕: {$video['comment']}, {$video['danmu']}\n";
@@ -146,6 +148,7 @@ class BilibiliSubscribe extends Command
      */
     private function getJson(string $link): array
     {
+        self::info('Cache miss, get json from bilibili');
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
         $headers['User-Agent'] .= " Telegram-B23-Subscriber-Runner/$ts";
