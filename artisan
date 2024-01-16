@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 2) {
+if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 3) {
     echo "PHP Version Mismatch\n";
     exit(130);
 }
