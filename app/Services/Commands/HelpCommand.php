@@ -12,7 +12,7 @@ class HelpCommand extends BaseCommand
 {
     public string $name = 'help';
     public string $description = 'Show commands list';
-    public string $usage = '/help';
+    public string $usage = '/help [Command|ParamDesc]';
 
     /**
      * @param Message $message
