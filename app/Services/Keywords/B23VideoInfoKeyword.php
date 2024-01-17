@@ -26,7 +26,7 @@ class B23VideoInfoKeyword extends BaseKeyword
     {
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
-        $text = $message->getText(true) ?? $message->getCaption();
+        $text = $message->getText() ?? $message->getCaption();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
@@ -132,7 +132,7 @@ class B23VideoInfoKeyword extends BaseKeyword
 
     public function preExecute(Message $message): bool
     {
-        $text = $message->getText(true) ?? $message->getCaption();
+        $text = $message->getText() ?? $message->getCaption();
         return $text && preg_match($this->pattern, $text);
     }
 }
