@@ -13,7 +13,7 @@ class BV2AVCommand extends BaseCommand
 {
     public string $name = 'bv2av';
     public string $description = 'BV to AV';
-    public string $usage = '/bv2av [BVID]';
+    public string $usage = '/bv2av {BVID}';
     private int $a2bAddEnc = 8728348608;
     private int $a2bXorEnc = 0b1010100100111011001100100100;
     private array $a2bEncIndex = [11, 10, 3, 8, 4, 6];

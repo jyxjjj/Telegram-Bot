@@ -11,7 +11,7 @@ class IATACommand extends BaseCommand
 {
     public string $name = 'iata';
     public string $description = 'Search iata info.';
-    public string $usage = '/iata [Search String]';
+    public string $usage = '/iata {Search String}';
 
     /**
      * @param Message $message

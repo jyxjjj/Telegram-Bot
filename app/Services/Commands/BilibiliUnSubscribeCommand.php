@@ -13,7 +13,7 @@ class BilibiliUnSubscribeCommand extends BaseCommand
 {
     public string $name = 'bilibiliunsubscribe';
     public string $description = 'unsubscribe bilibili videos of an UP';
-    public string $usage = '/bilibiliunsubscribe';
+    public string $usage = '/bilibiliunsubscribe {USERID}';
 
     /**
      * @param Message $message

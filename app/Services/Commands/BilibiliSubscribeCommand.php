@@ -15,7 +15,7 @@ class BilibiliSubscribeCommand extends BaseCommand
 {
     public string $name = 'bilibilisubscribe';
     public string $description = 'subscribe bilibili videos of an UP';
-    public string $usage = '/bilibilisubscribe';
+    public string $usage = '/bilibilisubscribe {USERID}';
     public string $version = '2.0.0';
 
     /**

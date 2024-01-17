@@ -14,7 +14,7 @@ use Longman\TelegramBot\Telegram;
 class WeatherCommand extends BaseCommand
 {
     public string $name = 'weather';
-    public string $description = 'Weather';
+    public string $description = 'Weather of NKG, CN';
     public string $usage = '/weather';
 
     /**

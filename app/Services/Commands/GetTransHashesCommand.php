@@ -14,7 +14,7 @@ class GetTransHashesCommand extends BaseCommand
 {
     public string $name = 'gettranshashes';
     public string $description = 'Get transaction hashes';
-    public string $usage = '/gettranshashes';
+    public string $usage = '/gettranshashes {address}';
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {

@@ -19,7 +19,7 @@ class GetBilibiliCommand extends BaseCommand
 {
     public string $name = 'getbilibili';
     public string $description = 'Get Bilibili Video Info';
-    public string $usage = '/getbilibili [AVID/BVID]';
+    public string $usage = '/getbilibili {AVID|BVID}';
     private int $a2bAddEnc = 8728348608;
     private int $a2bXorEnc = 0b1010100100111011001100100100;
     private array $a2bEncIndex = [11, 10, 3, 8, 4, 6];

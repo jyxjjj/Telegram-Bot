@@ -11,7 +11,7 @@ class TextToBinaryCommand extends BaseCommand
 {
     public string $name = 'texttobinary';
     public string $description = 'Show message text in binary';
-    public string $usage = '/texttobinary [reply_to] [text]';
+    public string $usage = '/texttobinary {reply_to|text}';
 
     /**
      * @param Message $message

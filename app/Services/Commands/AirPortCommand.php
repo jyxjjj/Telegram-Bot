@@ -11,7 +11,7 @@ class AirPortCommand extends BaseCommand
 {
     public string $name = 'airport';
     public string $description = 'Search airport info.';
-    public string $usage = '/airport [Search String]';
+    public string $usage = '/airport {Search String}';
 
     /**
      * @param Message $message
