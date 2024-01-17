@@ -6,15 +6,8 @@ use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 
-class {{CLASS}} implements SoftwareInterface
+class Software implements SoftwareInterface
 {
-    /**
-     * @return string
-     */
-    public function getVersion(): string
-    {
-    }
-
     /**
      * @param int $chat_id
      * @param string $version
@@ -26,6 +19,13 @@ class {{CLASS}} implements SoftwareInterface
         'reply_markup' => InlineKeyboard::class,
     ])]
     public function generateMessage(int $chat_id, string $version): array
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
     {
     }
 }

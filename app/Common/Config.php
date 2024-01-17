@@ -4,7 +4,7 @@ namespace App\Common;
 
 class Config
 {
-    const FILE_PERMISSIONS = [
+    const array FILE_PERMISSIONS = [
         'file' => [
             'public' => 0644,
             'private' => 0644,
@@ -15,7 +15,7 @@ class Config
         ],
     ];
 
-    const CURL_HEADERS = [
+    const array CURL_HEADERS = [
         'Accept-Encoding' => 'gzip, deflate, br',
         'Accept-Language' => 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
         'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
@@ -44,11 +44,11 @@ class Config
         'User-Agent' => "User_Agent_Protected_By_Client_Hints (https://web.dev/user-agent-client-hints/) Linux/6 Fedora/39 IA64 x86_64 Chrome/120.0.0.0 DESMG-Web-Client/2.3",
     ];
 
-    const PLAIN_HEADER = [
+    const array PLAIN_HEADER = [
         'Content-Type' => 'text/plain; charset=UTF-8',
     ];
 
-    const CORS_HEADER = [
+    const array CORS_HEADER = [
         'Access-Control-Allow-Origin' => '*',
         'Access-Control-Allow-Methods' => 'HEAD, GET, POST, OPTIONS',
         'Access-Control-Max-Age' => '3600',
