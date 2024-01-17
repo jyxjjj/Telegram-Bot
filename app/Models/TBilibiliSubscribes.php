@@ -51,38 +51,6 @@ class TBilibiliSubscribes extends BaseModel
     }
 
     /**
-     * @param int $chat_id
-     * @return mixed
-     */
-    public static function removeAllSubscribe(int $chat_id): int
-    {
-        $int = self::query()
-            ->where('chat_id', $chat_id)
-            ->delete();
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
-        return $int;
-    }
-
-    /**
-     * @param int $chat_id
-     * @param int $mid
-     * @return int
-     */
-    public static function removeSubscribe(int $chat_id, int $mid): int
-    {
-        $int = self::query()
-            ->where([
-                'chat_id' => $chat_id,
-                'mid' => $mid,
-            ])
-            ->delete();
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
-        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
-        return $int;
-    }
-
-    /**
      * @return array
      */
     public static function getAllSubscribe(): array
@@ -116,5 +84,37 @@ class TBilibiliSubscribes extends BaseModel
             ->toArray();
         Cache::put("DB::TBilibiliSubscribes::bilibili_subscribes::$chatId", $data, Carbon::now()->addMinutes(5));
         return $data;
+    }
+
+    /**
+     * @param int $chat_id
+     * @return mixed
+     */
+    public static function removeAllSubscribe(int $chat_id): int
+    {
+        $int = self::query()
+            ->where('chat_id', $chat_id)
+            ->delete();
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
+        return $int;
+    }
+
+    /**
+     * @param int $chat_id
+     * @param int $mid
+     * @return int
+     */
+    public static function removeSubscribe(int $chat_id, int $mid): int
+    {
+        $int = self::query()
+            ->where([
+                'chat_id' => $chat_id,
+                'mid' => $mid,
+            ])
+            ->delete();
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes");
+        Cache::forget("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
+        return $int;
     }
 }
