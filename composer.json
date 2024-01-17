@@ -17,15 +17,12 @@
         "ext-pdo": "*",
         "ext-simplexml": "*",
         "ext-sockets": "*",
-        "desmg/php-common": "^2.1.0",
-        "guzzlehttp/guzzle": "^7.5.0",
-        "laravel/framework": "^9.50.2",
+        "desmg/php-common": "^2.4.0",
+        "guzzlehttp/guzzle": "^7.8.1",
+        "laravel/framework": "^9.52.16",
         "longman/telegram-bot": "^0.80.0",
         "nunomaduro/collision": "^6.4.0",
         "spatie/laravel-ignition": "^1.6.4"
-    },
-    "require-dev": {
-        "fakerphp/faker": "^1.21.0"
     },
     "autoload": {
         "psr-4": {
