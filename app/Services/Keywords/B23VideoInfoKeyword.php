@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\Commands;
+namespace App\Services\Keywords;
 
 use App\Common\B23;
 use App\Common\Config;
 use App\Common\ERR;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
-use App\Services\Base\BaseCommand;
+use App\Services\Base\BaseKeyword;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -16,52 +16,62 @@ use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
 
-class GetBilibiliCommand extends BaseCommand
+class B23VideoInfoKeyword extends BaseKeyword
 {
-    public string $name = 'getbilibili';
+    public string $name = 'Bilibili video info';
     public string $description = 'Get Bilibili Video Info';
-    public string $usage = '/getbilibili {AVID|BVID}';
+    protected string $pattern = '/^(av(\d{1,19})|BV1[a-zA-Z0-9]{2}4[a-zA-Z0-9]1[a-zA-Z0-9]7[a-zA-Z0-9]{2})$/m';
 
-    /**
-     * @param Message $message
-     * @param Telegram $telegram
-     * @param int $updateId
-     * @return void
-     */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
-        $param = $message->getText(true);
-        if (!$param) {
-            $data = [
-                'chat_id' => $chatId,
-                'reply_to_message_id' => $messageId,
-                'text' => 'Invalid AVID/BVID.',
-            ];
-            $this->dispatch(new SendMessageJob($data, null, 0));
-            return;
-        }
-        try {
-            $video = $this->getVideo($param);
-        } catch (Throwable $e) {
-            ERR::log($e);
-            $data = [
-                'chat_id' => $chatId,
-                'reply_to_message_id' => $messageId,
-                'text' => 'Get Video Info Failed.',
-            ];
-            $this->dispatch(new SendMessageJob($data, null, 0));
-            return;
-        }
+        $text = $message->getText(true) ?? $message->getCaption();
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
-            'photo' => $video['photo'],
-            'caption' => $video['caption'],
-            'reply_markup' => $video['reply_markup'],
+            'text' => '',
         ];
-        $this->dispatch(new SendPhotoJob($data, 0));
+        $video = $this->handle($text);
+        if (is_array($video)) {
+            $data = [
+                'chat_id' => $chatId,
+                'reply_to_message_id' => $messageId,
+                'photo' => $video['photo'],
+                'caption' => $video['caption'],
+                'reply_markup' => $video['reply_markup'],
+            ];
+            $this->dispatch(new SendPhotoJob($data, 0));
+        } else {
+            $data['text'] = $video;
+            $this->dispatch(new SendMessageJob($data, null, 0));
+        }
+    }
+
+    private function handle(string $vid): string|array
+    {
+        $vid = $this->checkVid($vid);
+        if (!$vid) {
+            return 'Invalid AVID/BVID.';
+        }
+        $avid = str_starts_with($vid, 'BV') ? B23::BV2AV($vid) : $vid;
+        try {
+            return $this->getVideo($avid);
+        } catch (Throwable $e) {
+            ERR::log($e);
+            return 'Get Video Info Failed.';
+        }
+    }
+
+    private function checkVid(string $vid): false|string
+    {
+        if (preg_match('/^av(\d{1,19})$/m', $vid, $matches)) {
+            return $matches[0];
+        }
+        if (preg_match('/^BV1[a-zA-Z0-9]{2}4[a-zA-Z0-9]1[a-zA-Z0-9]7[a-zA-Z0-9]{2}$/m', $vid, $matches)) {
+            return $matches[0];
+        }
+        return false;
     }
 
     private function getVideo(string $vid): array
@@ -118,5 +128,11 @@ class GetBilibiliCommand extends BaseCommand
         withHeaders($headers)
             ->get($link)
             ->json();
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 }
