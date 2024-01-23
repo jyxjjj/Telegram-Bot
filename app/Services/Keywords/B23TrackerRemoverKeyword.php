@@ -176,9 +176,9 @@ class B23TrackerRemoverKeyword extends BaseKeyword
     private function getAVBV(string $link): string
     {
         $id = $link;
-        if (preg_match('/av([0-9]+)/', $link, $matches)) {
+        if (preg_match('/av(\d{1,19})/', $link, $matches)) {
             $id = 'av' . $matches[1];
-        } elseif (preg_match('/BV([0-9A-Za-z]+)/', $link, $matches)) {
+        } elseif (preg_match('/BV(1[a-zA-Z0-9]{2}4[a-zA-Z0-9]1[a-zA-Z0-9]7[a-zA-Z0-9]{2})/', $link, $matches)) {
             $id = 'BV' . $matches[1];
         }
         return $id;
