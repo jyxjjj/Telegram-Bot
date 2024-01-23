@@ -154,6 +154,9 @@ class BilibiliSubscribe extends Command
         $headers['User-Agent'] .= " Telegram-B23-Subscriber-Runner/$ts";
         return Http::
         withHeaders($headers)
+            ->connectTimeout(10)
+            ->timeout(10)
+            ->retry(3, 1000, throw: false)
             ->get($link)
             ->json();
     }
