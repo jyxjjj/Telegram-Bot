@@ -20,7 +20,7 @@ class DataBaseLogger extends AbstractProcessingHandler
             'channel' => $record->channel,
             'level' => $record->level->getName(),
             'message' => $record->message,
-            'context' => json_encode($record->context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+            'context' => json_encode($record->context, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             'extra' => json_encode($record->extra),
         ];
         if (str_starts_with($data['message'], 'Creation of dynamic property Longman')) {
