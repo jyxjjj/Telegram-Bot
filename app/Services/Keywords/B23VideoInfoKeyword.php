@@ -81,7 +81,7 @@ class B23VideoInfoKeyword extends BaseKeyword
         $video = $video['data'];
         $data['BVID'] = $video['bvid'];
         $data['AVID'] = 'av' . $video['aid'];
-        $data['CID'] = 'av' . $video['cid'];
+        $data['CID'] = $video['cid'];
         $data['title'] = $video['title'];
         $data['cover'] = $video['pic'];
         $data['author'] = $video['owner']['name'];
