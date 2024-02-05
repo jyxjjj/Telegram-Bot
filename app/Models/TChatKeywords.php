@@ -7,13 +7,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property int $id
- * @property int $chat_id
- * @property string $keyword
- * @property TChatKeywordsTargetEnum $target
- * @property TChatKeywordsOperationEnum $operation
- * @property array $data
- * @property int $enable
+ * @property int $id 主键
+ * @property int $chat_id 聊天ID
+ * @property string $keyword 关键字
+ * @property string $target 检测目标
+ * @property string $operation 执行操作
+ * @property string $data 操作数据
+ * @property int $enable 启用
+ * @property int $created_at 创建时间
+ * @property int $updated_at 更新时间
+ * @property ?int $deleted_at 删除时间
  */
 class TChatKeywords extends BaseModel
 {

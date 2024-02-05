@@ -6,9 +6,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property int $id
- * @property int $chat_id
- * @property int $user_id
+ * @property int $id 主键
+ * @property int $chat_id 聊天ID
+ * @property int $user_id 用户ID
+ * @property int $created_at 创建时间
+ * @property int $updated_at 更新时间
+ * @property ?int $deleted_at 删除时间
  */
 class TChatKeywordsWhiteLists extends BaseModel
 {
