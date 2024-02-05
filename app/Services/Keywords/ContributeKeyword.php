@@ -155,6 +155,11 @@ class ContributeKeyword extends ContributeStep
                         $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
                         break;
                     }
+                    if (str_contains($link, '大小')) {
+                        $sender['text'] .= "链接部分禁止带有大小信息，请重新发送，如果必须提供大小信息，请放在描述部分。\n";
+                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        break;
+                    }
                     $data[$cvid]['link'] = $link;
                     $data[$cvid]['status'] = 'tag';
                     Conversation::save($user_id, 'contribute', $data);
