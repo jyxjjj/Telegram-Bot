@@ -53,7 +53,6 @@ class AliYunPanOnceKeyword extends ContributeStep
             'chat_id' => $message->getChat()->getId(),
             'text' => "🥳 欢迎投稿 ~\n\n一步投稿，自组格式，发送给机器人即可。如若多次提示投稿错误，请检查投稿格式和下方是否一致。联系 @zaihua_bot\n\n请阅读<a href='https://t.me/zaihuapan/106'>投稿格式要求</a>，继续操作即代表您已知晓其内容。\n",
         ];
-        $data['text'] .= "尊敬的用户：\n我们近期对数据库进行了整理，在删除旧数据时可能导致新数据被误删除\n如果您获取的链接无效，请向链接发布者反馈，无需咨询管理员\n如果您是链接发布者，您可以重新投稿，确认无效的情况下支持重复投稿，请在描述或标题加【补档】\n目前我们仅保留一个月数据。";
         $data['reply_markup'] = new Keyboard([]);
         $data['reply_markup']->setResizeKeyboard(true);
         $data['reply_markup']->addRow(new KeyboardButton('取消投稿'));

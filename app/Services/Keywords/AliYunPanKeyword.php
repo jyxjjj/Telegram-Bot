@@ -54,7 +54,6 @@ class AliYunPanKeyword extends ContributeStep
             'chat_id' => $message->getChat()->getId(),
             'text' => "🥳 欢迎投稿 ~\n\n分步投稿，可以不发送图片。并且支持多条链接发送。\n\n请阅读<a href='https://t.me/yunpanpan/14438'>投稿格式要求</a>，继续操作即代表您已知晓其内容。\n",
         ];
-        $data['text'] .= "尊敬的用户：\n我们近期对数据库进行了整理，在删除旧数据时可能导致新数据被误删除\n如果您获取的链接无效，请向链接发布者反馈，无需咨询管理员\n如果您是链接发布者，您可以重新投稿，确认无效的情况下支持重复投稿，请在描述或标题加【补档】\n目前我们仅保留一个月数据。";
 
         $data2 = [
             'chat_id' => $message->getChat()->getId(),
