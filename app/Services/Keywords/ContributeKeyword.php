@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
 
 namespace App\Services\Keywords;
 
@@ -313,58 +313,62 @@ class ContributeKeyword extends ContributeStep
             $matched = preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.alipan\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches);
-            if ($messageText && $matched) {
-                $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
-                $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
-                // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
-                try {
-                    $data[$cvid]['desc'] = preg_replace_callback('/\[([^]]+)]\(([^)]+)\)/', function ($linkmatches) {
-                        return "<a href='$linkmatches[2]'>$linkmatches[1]</a>";
-                    }, $data[$cvid]['desc']);
-                } catch (Throwable) {
-                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
-                }
-                if (strlen($data[$cvid]['name']) > $MAX_NAME_LEN || strlen($data[$cvid]['desc']) > $MAX_DESC_LEN) {
-                    $sender['text'] = "资源名称或简介过长，请重新发送";
+            if ($matched) {
+                if (str_contains($matches[3], '大小')) {
+                    $sender['text'] = "链接部分禁止带有大小信息，请重新发送，如果必须提供大小信息，请放在描述部分。";
                 } else {
-                    $data[$cvid]['link'] = $matches[3];
-                    $data[$cvid]['tag'] = $matches[4];
-                    $photos = $message->getPhoto() ?? false;
-                    $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
-                        return bccomp(
-                            bcmul($right->getWidth(), $right->getHeight()),
-                            bcmul($left->getWidth(), $left->getHeight())
-                        );
-                    });
-                    $photos && $photoFileId = $photos[0]->getFileId();
-                    if (!isset($photoFileId)) {
-                        $data[$cvid]['pic'] = null;
-                        $data['status'] = 'contribute';
-                        $data[$cvid]['status'] = 'confirm';
-                        Conversation::save($user_id, 'contribute', $data);
-                        $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
-                        $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                        $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
-                        $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                        $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
-                    } else {
-                        $data[$cvid]['pic'] = $photoFileId;
-                        $data['status'] = 'contribute';
-                        $data[$cvid]['status'] = 'confirm';
-                        Conversation::save($user_id, 'contribute', $data);
-                        $sender['photo'] = $data[$cvid]['pic'];
-                        $sender['text'] = null;
-                        $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
-                        $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
-                        $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
-                        $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
-                        $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                    $data[$cvid]['name'] = str_replace(['<', '>'], ['《', '》'], $matches[1]);
+                    $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
+                    // replace [name](link) to <a href='link'>name</a> of $data[$cvid]['desc']
+                    try {
+                        $data[$cvid]['desc'] = preg_replace_callback('/\[([^]]+)]\(([^)]+)\)/', function ($linkmatches) {
+                            return "<a href='$linkmatches[2]'>$linkmatches[1]</a>";
+                        }, $data[$cvid]['desc']);
+                    } catch (Throwable) {
+                        $data[$cvid]['desc'] = str_replace(['<', '>'], ['《', '》'], $matches[2]);
                     }
-                    $sender['reply_markup'] = new Keyboard([]);
-                    $sender['reply_markup']->setResizeKeyboard(true);
-                    $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
-                    $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
-                    $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                    if (strlen($data[$cvid]['name']) > $MAX_NAME_LEN || strlen($data[$cvid]['desc']) > $MAX_DESC_LEN) {
+                        $sender['text'] = "资源名称或简介过长，请重新发送";
+                    } else {
+                        $data[$cvid]['link'] = $matches[3];
+                        $data[$cvid]['tag'] = $matches[4];
+                        $photos = $message->getPhoto() ?? false;
+                        $photos && usort($photos, function (PhotoSize $left, PhotoSize $right) {
+                            return bccomp(
+                                bcmul($right->getWidth(), $right->getHeight()),
+                                bcmul($left->getWidth(), $left->getHeight())
+                            );
+                        });
+                        $photos && $photoFileId = $photos[0]->getFileId();
+                        if (!isset($photoFileId)) {
+                            $data[$cvid]['pic'] = null;
+                            $data['status'] = 'contribute';
+                            $data[$cvid]['status'] = 'confirm';
+                            Conversation::save($user_id, 'contribute', $data);
+                            $sender['text'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                            $sender['text'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                            $sender['text'] .= "链接：{$data[$cvid]['link']}\n\n";
+                            $sender['text'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                            $this->dispatch((new SendMessageJob($sender, null, 0))->delay(0));
+                        } else {
+                            $data[$cvid]['pic'] = $photoFileId;
+                            $data['status'] = 'contribute';
+                            $data[$cvid]['status'] = 'confirm';
+                            Conversation::save($user_id, 'contribute', $data);
+                            $sender['photo'] = $data[$cvid]['pic'];
+                            $sender['text'] = null;
+                            $sender['caption'] = "资源名称：{$data[$cvid]['name']}\n\n";
+                            $sender['caption'] .= "资源简介：{$data[$cvid]['desc']}\n\n";
+                            $sender['caption'] .= "链接：{$data[$cvid]['link']}\n\n";
+                            $sender['caption'] .= "🔍 关键词：{$data[$cvid]['tag']}\n\n";
+                            $this->dispatch((new SendPhotoJob($sender, 0))->delay(0));
+                        }
+                        $sender['reply_markup'] = new Keyboard([]);
+                        $sender['reply_markup']->setResizeKeyboard(true);
+                        $sender['reply_markup']->addRow(new KeyboardButton('确认投稿'));
+                        $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
+                        $sender['text'] = "已生成预览，<b>请核对各项信息是否准确</b>，然后使用下方的按钮确认您的投稿内容。\n";
+                    }
                 }
             } else {
                 $sender['text'] = "格式错误，请重新发送";
