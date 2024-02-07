@@ -2,7 +2,6 @@
 
 namespace App\Services\Commands;
 
-use App\Common\B23;
 use App\Common\Config;
 use App\Common\ERR;
 use App\Jobs\SendMessageJob;
@@ -66,8 +65,7 @@ class GetBilibiliCommand extends BaseCommand
 
     private function getVideo(string $vid): array
     {
-        $avid = str_starts_with($vid, 'BV') ? B23::BV2AV($vid) : $vid;
-        $video = $this->getData($avid);
+        $video = $this->getData($vid);
         $video = $video['data'];
         $data['BVID'] = $video['bvid'];
         $data['AVID'] = 'av' . $video['aid'];
@@ -108,10 +106,10 @@ class GetBilibiliCommand extends BaseCommand
         return $message;
     }
 
-    private function getData(string $avid)
+    private function getData(string $vid): array
     {
-        $avid = str_replace('av', '', $avid);
-        $link = "https://api.bilibili.com/x/web-interface/view?aid=$avid";
+        $vid = substr($vid, 2);
+        $link = is_numeric($vid) ? "https://api.bilibili.com/x/web-interface/view?aid=$vid" : "https://api.bilibili.com/x/web-interface/view?bvid=$vid";
         $headers = Config::CURL_HEADERS;
         $headers['User-Agent'] .= " Telegram-B23-Spider/$this->version";
         return Http::
