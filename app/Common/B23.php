@@ -2,6 +2,11 @@
 
 namespace App\Common;
 
+/**
+ * @thanks USTC - LUG
+ * @thanks https://t.me/slanterns
+ * @thanks https://t.me/IAmNoLongerABot
+ */
 final readonly class B23
 {
     const int XOR_CODE = 23_442_827_791_579;
@@ -9,6 +14,10 @@ final readonly class B23
     const int MAX_AID = 2_251_799_813_685_248;
     const string ALPHABET = "FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf";
 
+    /**
+     * @param string $av
+     * @return string
+     */
     public static function AV2BV(string $av): string
     {
         $aid = substr($av, 2);
@@ -26,6 +35,10 @@ final readonly class B23
         return 'BV1' . implode('', $bvid);
     }
 
+    /**
+     * @param string $bv
+     * @return string
+     */
     public static function BV2AV(string $bv): string
     {
         $bvid = str_split(substr($bv, 3));
