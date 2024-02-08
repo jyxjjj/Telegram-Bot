@@ -4,56 +4,37 @@ namespace App\Common;
 
 final readonly class B23
 {
-    private const int a2bAddEnc = 0b1000001000010000000000011111000000;
-    private const int a2bXorEnc = 0b1010100100111011001100100100;
-    private const array a2bEncIndex = [11, 10, 3, 8, 4, 6];
-    private const string a2bEncTable = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";
-    private const int a2bEncTableLength = 58;
-    private const int a2bEncIndexLength = 6;
+    const int XOR_CODE = 23_442_827_791_579;
+    const int MASK_CODE = 2_251_799_813_685_247;
+    const int MAX_AID = 2_251_799_813_685_248;
+    const string ALPHABET = "FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf";
 
-    /**
-     * @param string $av
-     * @return string
-     * @deprecated AVID larger than 2^27 will cause issue.
-     */
     public static function AV2BV(string $av): string
     {
-        str_starts_with($av, 'av') && $av = substr($av, 2);
-        if (!is_numeric($av)) return 'Invaild AV ID.';
-        $temp = "BV1@@4@1@7@@";
-        for ($i = 0; $i < self::a2bEncIndexLength; $i++) {
-            $temp = sprintf("%s%s%s",
-                substr($temp, 0, self::a2bEncIndex[$i]),
-                self::a2bEncTable[floor(
-                    (
-                        ($av ^ self::a2bXorEnc)
-                        + self::a2bAddEnc
-                    )
-                    / (self::a2bEncTableLength ** $i)
-                )
-                % self::a2bEncTableLength],
-                substr($temp, self::a2bEncIndex[$i] + 1)
-            );
+        $aid = substr($av, 2);
+        $bvid = str_split(str_repeat(0, 9));
+        $i = 8;
+        $tmp = (self::MAX_AID | $aid) ^ self::XOR_CODE;
+        while ($tmp > 0) {
+            $r = $tmp % 58;
+            $bvid[$i] = self::ALPHABET[$r];
+            $tmp = bcdiv($tmp, 58);
+            $i -= 1;
         }
-        return $temp;
+        [$bvid[0], $bvid[6]] = [$bvid[6], $bvid[0]];
+        [$bvid[1], $bvid[4]] = [$bvid[4], $bvid[1]];
+        return 'BV1' . implode('', $bvid);
     }
 
-    /**
-     * @param string $bv
-     * @return string
-     * @deprecated AVID larger than 2^27 will cause issue.
-     */
     public static function BV2AV(string $bv): string
     {
-        $temp = 0;
-        for ($i = 0; $i < self::a2bEncIndexLength; $i++) {
-            if (!str_contains(self::a2bEncTable, $bv[self::a2bEncIndex[$i]])) {
-                return 'Invaild BV ID.';
-            } else {
-                $temp += strpos(self::a2bEncTable, $bv[self::a2bEncIndex[$i]]) * (self::a2bEncTableLength ** $i);
-            }
+        $bvid = str_split(substr($bv, 3));
+        [$bvid[0], $bvid[6]] = [$bvid[6], $bvid[0]];
+        [$bvid[1], $bvid[4]] = [$bvid[4], $bvid[1]];
+        $tmp = 0;
+        foreach ($bvid as $i) {
+            $tmp = $tmp * 58 + strpos(self::ALPHABET, $i);
         }
-        $temp = $temp - self::a2bAddEnc ^ self::a2bXorEnc;
-        return 'av' . $temp;
+        return 'av' . (($tmp & self::MASK_CODE) ^ self::XOR_CODE);
     }
 }

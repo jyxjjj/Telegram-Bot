@@ -12,7 +12,13 @@ class Test extends Command
 
     public function handle(): int
     {
-        dump(B23::BV2AV('BV1Ty421Y7gV') == 'av1550274374', B23::AV2BV('av1550274374') == 'BV1Ty421Y7gV');
+        dump(
+            'TEST',
+            B23::BV2AV('BV17x411w7KC'),
+            B23::BV2AV('BV17x411w7KC') == 'av170001',
+            B23::AV2BV('av170001'),
+            B23::AV2BV('av170001') == 'BV17x411w7KC'
+        );
         return self::SUCCESS;
     }
 }
