@@ -35,8 +35,8 @@ class AV2BVCommand extends BaseCommand
             'text' => '',
             'reply_markup' => new InlineKeyboard([]),
         ];
-        $data['text'] .= "BVID: <code>$bvid</code>" . PHP_EOL;
-        $data['text'] .= "Link: <code>$link</code>" . PHP_EOL;
+        $data['text'] .= "BVID: <code>$bvid</code>\n";
+        $data['text'] .= "Link: <code>$link</code>\n";
         $button = new InlineKeyboardButton(['text' => $bvid, 'url' => $link]);
         $data['reply_markup']->addRow($button);
         $this->dispatch(new SendMessageJob($data, null, 0));

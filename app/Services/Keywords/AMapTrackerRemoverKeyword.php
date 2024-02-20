@@ -37,7 +37,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
         $pattern = '/(http(s)?:\/\/)?(surl\.amap\.com)\/?[a-zA-Z\d]+/';
         if (preg_match_all($pattern, $text, $matches)) {
             $pattern = '/https:\/\/(www|wb)\.amap\.com\/\?p=([a-zA-Z\d]+),(\d+\.\d+),(\d+\.\d+)/';
-            $data['text'] .= "AMap Tracker Removed\n";
+            $data['text'] .= "AMap Tracker Remover v$this->version [Beta]\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (count($matches[0]) > 3) {
                 $count = 3;
@@ -51,7 +51,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
                 $location = urldecode($location);
                 if (preg_match($pattern, $location, $matchedLocation)) {
                     $location = "https://www.amap.com/place/$matchedLocation[2]";
-                    $data['text'] .= "<b>Link:</b> <code>$location</code>\n";
+                    $data['text'] .= "<code>$location</code>\n";
                     $button = new InlineKeyboardButton([
                         'text' => $location,
                         'url' => $location,

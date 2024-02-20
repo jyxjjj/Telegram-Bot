@@ -27,7 +27,7 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
             'reply_to_message_id' => $messageId,
             'text' => '',
         ];
-        $data['text'] .= 'TikTok Tracker Remover v1.0.0 [Alpha]' . PHP_EOL;
+        $data['text'] .= "TikTok Tracker Remover v$this->version [Alpha]\n\n";
         $entities = $this->getUrls($message);
         $this->handle($entities, $data);
         isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
@@ -86,7 +86,7 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
             }
             $entity = $this->getLocation($entity);
             $link = $this->removeAllParams($entity);
-            $data['text'] .= $link . PHP_EOL;
+            $data['text'] .= "$link\n";
             $button = new InlineKeyboardButton([
                 'text' => $id ?? $link,
                 'url' => $link,
