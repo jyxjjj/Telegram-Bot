@@ -74,7 +74,7 @@ class AddMyStickerCommand extends BaseCommand
                 return;
             }
         } else {
-            $stickerEmoji = $sticker->getEmoji();
+            $stickerEmoji = $sticker->getEmoji() ?? hex2bin('C2A9');
             $is_tgs = $sticker->getIsAnimated();
             $is_webm = $sticker->getIsVideo();
             $is_png = $is_tgs == false && $is_webm == false;
