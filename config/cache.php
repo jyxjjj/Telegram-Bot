@@ -11,5 +11,5 @@ return [
             'connection' => 'cache',
         ],
     ],
-    'prefix' => 'cache',
+    'prefix' => 'cache:',
 ];

@@ -22,10 +22,4 @@ return [
         'address' => env('MAIL_USERNAME'),
         'name' => env('MAIL_NAME'),
     ],
-    'markdown' => [
-        'theme' => 'default',
-        'paths' => [
-            app_path('Http/Views/Mail'),
-        ],
-    ],
 ];

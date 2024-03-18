@@ -4,12 +4,20 @@ return [
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool)env('APP_DEBUG', false),
     'url' => env('APP_URL', ''),
-    'asset_url' => '',
     'timezone' => 'Etc/GMT-8',
     'locale' => 'zh_CN',
     'fallback_locale' => 'en',
-    'key' => env('APP_KEY'),
     'cipher' => 'AES-256-GCM',
+    'key' => env('APP_KEY'),
+    'previous_keys' => [
+        ...array_filter(
+            explode(',', env('APP_PREVIOUS_KEYS', ''))
+        ),
+    ],
+    'maintenance' => [
+        'driver' => 'file',
+        'store' => 'database',
+    ],
     'providers' => [
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
@@ -25,7 +33,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         App\Providers\AppServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
 
     ],
     'aliases' => [],

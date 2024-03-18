@@ -5,12 +5,12 @@ use App\Common\Log\DataBaseLogger;
 $date = date('Y-m-d');
 
 return [
-    'default' => 'mysql',
+    'default' => 'mariadb',
     'deprecations' => 'deprecations',
     'channels' => [
-        'mysql' => [
+        'mariadb' => [
             'driver' => 'monolog',
-            'name' => 'mysql',
+            'name' => 'mariadb',
             'handler' => DataBaseLogger::class,
             'level' => 'debug',
             'bubble' => false,

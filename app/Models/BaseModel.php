@@ -17,7 +17,7 @@ class BaseModel extends Model
 
     public $incrementing = true;
     public $timestamps = false;
-    protected $connection = 'mysql';
+    protected $connection = 'mariadb';
     protected $primaryKey = 'id';
     protected $keyType = 'int';
     protected $perPage = 20;

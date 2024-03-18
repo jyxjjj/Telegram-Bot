@@ -1,11 +1,14 @@
 <?php
 
 return [
-    'default' => 'mysql',
-    'migrations' => 'migrations',
+    'default' => 'mariadb',
+    'migrations' => [
+        'table' => 'migrations',
+        'update_date_on_publish' => false,
+    ],
     'connections' => [
-        'mysql' => [
-            'driver' => 'mysql',
+        'mariadb' => [
+            'driver' => 'mariadb',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', 3306),
             'database' => env('DB_DATABASE', ''),

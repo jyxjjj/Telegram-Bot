@@ -17,29 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+use Symfony\Component\Console\Input\ArgvInput;
+
 if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 3) {
     echo "PHP Version Mismatch\n";
     exit(130);
 }
-echo <<<GPL
-    DESMG Telegram Bot Copyright (C) 2023 DESMG
-    This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE' file.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; for details see `LICENSE' file.
 
-GPL;
-define('LARAVEL_START', microtime(true));
+define('LARAVEL_START', (new DateTime())->format('U.u'));
+
 require __DIR__ . '/vendor/autoload.php';
-
-use Illuminate\Contracts\Console\Kernel;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-
-$app = require_once __DIR__ . '/bootstrap/app.php';
-$kernel = $app->make(Kernel::class);
-$status = $kernel->handle(
-    $input = new ArgvInput,
-    new ConsoleOutput
-);
-$kernel->terminate($input, $status);
+$status = (require_once __DIR__ . '/bootstrap/app.php')->handleCommand(new ArgvInput);
 exit($status);

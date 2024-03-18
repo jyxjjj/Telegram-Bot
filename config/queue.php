@@ -13,7 +13,7 @@ return [
     ],
     'failed' => [
         'driver' => 'database-uuids',
-        'database' => 'mysql',
+        'database' => 'mariadb',
         'table' => 'failed_jobs',
     ],
 ];

@@ -8,7 +8,6 @@ use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Foundation\Http\Middleware\TrimStrings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class Kernel extends HttpKernel
 {
@@ -31,9 +30,6 @@ class Kernel extends HttpKernel
         ConvertEmptyStringsToNull::class,
     ];
     protected $middlewareGroups = [
-        'api' => [
-            SubstituteBindings::class,
-        ],
     ];
     protected $middlewareAliases = [
     ];
