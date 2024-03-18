@@ -65,6 +65,9 @@ class TRC20Monitor extends Command
             return [];
         }
         $data = $data->json();
+        if (!isset($data['token_transfers'])) {
+            return [];
+        }
         $data = $data['token_transfers'];
         $result = [];
         foreach ($data as $item) {
