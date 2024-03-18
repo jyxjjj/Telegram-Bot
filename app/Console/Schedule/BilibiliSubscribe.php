@@ -42,6 +42,10 @@ class BilibiliSubscribe extends Command
                     'caption' => '',
                 ];
                 $videoList = $this->getVideoList($mid);
+                if (!$videoList) {
+                    self::error("No video of $mid for $chat_id");
+                    continue;
+                }
                 $last_send = $this->getLastSend($chat_id, $mid);
                 if (!$last_send) {
                     self::info("Haven't send any video of $mid to $chat_id ");
@@ -109,9 +113,9 @@ class BilibiliSubscribe extends Command
 
     /**
      * @param int $mid
-     * @return array
+     * @return array|null
      */
-    private function getVideoList(int $mid): array
+    private function getVideoList(int $mid): ?array
     {
         $data = Cache::get("Schedule::BilibiliSubscribe::mid_info::$mid", false);
         if ($data) {
@@ -120,6 +124,9 @@ class BilibiliSubscribe extends Command
         unset($data);
         $url = "https://api.bilibili.com/x/v2/medialist/resource/list?type=1&biz_id=$mid&ps=5";
         $json = $this->getJson($url);
+        if (!isset($json['data']['media_list'])) {
+            return null;
+        }
         $media_list = $json['data']['media_list'];
         $vlist = [];
         foreach ($media_list as $video) {
