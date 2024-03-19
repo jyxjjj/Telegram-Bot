@@ -21,9 +21,9 @@ class StartCommand extends BaseCommand
     public bool $private = true;
 
     /**
-     * @param Message  $message
+     * @param Message $message
      * @param Telegram $telegram
-     * @param int      $updateId
+     * @param int $updateId
      * @return void
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
@@ -76,7 +76,7 @@ class StartCommand extends BaseCommand
     }
 
     /**
-     * @param int         $chatId
+     * @param int $chatId
      * @param string|null $username
      * @return int
      */
@@ -87,7 +87,7 @@ class StartCommand extends BaseCommand
             'text' => '',
         ];
         if ($this->getBlackList($chatId)) {
-            $data['text'] .= '您已被拉黑，请联系技术支持 @jyxjjj 或客服 @zaihua_bot';
+            $data['text'] .= '您已严重违规，被禁用链接获取功能，请联系技术支持 @jyxjjj 或客服 @zaihua_bot';
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
@@ -115,7 +115,7 @@ class StartCommand extends BaseCommand
     }
 
     /**
-     * @param int      $chatId
+     * @param int $chatId
      * @param int|null $times
      * @return void
      */
@@ -144,6 +144,7 @@ class StartCommand extends BaseCommand
                 366181048,
 //                5151499530, 核验后已解封，允许二次封禁。
                 5401822276,
+                5418868542, // 长期盗转他人资源，不予解封
                 697867344,
                 983182500,
             ]
