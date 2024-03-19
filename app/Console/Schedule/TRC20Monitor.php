@@ -24,7 +24,7 @@ class TRC20Monitor extends Command
         ];
         foreach ($list as $address => [$user, $chat]) {
             $text = '';
-            $cacheKey = 'TRC20Monitor' . $address;
+            $cacheKey = 'TRC20Monitor_' . $address;
             $alreadyPushedHashes = Cache::get($cacheKey);
             if (empty($alreadyPushedHashes) || !is_array($alreadyPushedHashes)) {
                 $alreadyPushedHashes = [];
