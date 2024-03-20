@@ -2,8 +2,6 @@
 
 use App\Common\Log\DataBaseLogger;
 
-$date = date('Y-m-d');
-
 return [
     'default' => 'mariadb',
     'deprecations' => 'deprecations',
@@ -24,18 +22,11 @@ return [
             'bubble' => false,
             'locking' => false,
         ],
-        'perf' => [
-            'driver' => 'monolog',
-            'name' => 'perf',
-            'handler' => DataBaseLogger::class,
-            'level' => 'debug',
-            'bubble' => false,
-            'locking' => false,
-        ],
         'sql' => [
             'driver' => 'single',
             'name' => 'sql',
-            'path' => storage_path("logs/$date.sql.log"),
+            'path' => storage_path("logs/sql.log"),
+            'days' => 3,
             'level' => 'debug',
             'permission' => 0644,
             'bubble' => false,
@@ -44,7 +35,8 @@ return [
         'emergency' => [
             'driver' => 'single',
             'name' => 'emergency',
-            'path' => storage_path("logs/$date.emergency.log"),
+            'path' => storage_path("logs/emergency.log"),
+            'days' => 3,
             'level' => 'debug',
             'permission' => 0644,
             'bubble' => false,
