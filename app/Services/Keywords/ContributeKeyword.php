@@ -134,7 +134,7 @@ class ContributeKeyword extends ContributeStep
                     }
                     $data[$cvid]['status'] = 'link';
                     Conversation::save($user_id, 'contribute', $data);
-                    $sender['text'] .= "请发送分享链接，频道接受阿里云盘、百度网盘、OneDrive 和 SharePoint 资源。请确保为永久分享，尽量不要设置提取码。\n";
+                    $sender['text'] .= "请发送分享链接。\n频道接受阿里云盘、夸克网盘、迅雷网盘、百度网盘、OneDrive 和 SharePoint 资源。\n请确保为永久分享，尽量不要设置提取码。\n";
                     $sender['reply_markup'] = new Keyboard([]);
                     $sender['reply_markup']->setResizeKeyboard(true);
                     $sender['reply_markup']->addRow(new KeyboardButton('取消投稿'));
@@ -148,6 +148,7 @@ class ContributeKeyword extends ContributeStep
                         !str_starts_with($link, 'https://www.alipan.com/s/') &&
                         !str_starts_with($link, 'https://www.aliyundrive.com/s/') &&
                         !str_starts_with($link, 'https://pan.baidu.com/s/') &&
+                        !str_starts_with($link, 'https://pan.xunlei.com/s/') &&
                         !str_starts_with($link, 'https://pan.quark.cn/s/') &&
                         !str_starts_with($link, 'https://1drv.ms/') &&
                         !str_starts_with($link, 'https://sharepoint.com/')
@@ -321,6 +322,8 @@ class ContributeKeyword extends ContributeStep
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.alipan\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.quark\.cn\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
+                ||
+                preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.xunlei\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.baidu\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches);
             if ($matched) {
