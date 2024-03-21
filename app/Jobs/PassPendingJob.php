@@ -57,7 +57,22 @@ class PassPendingJob extends BaseQueue
         $message_name = $userData[$cvid]['name'];
         $message_desc = $userData[$cvid]['desc'];
         $original_link = $userData[$cvid]['link'];
-        $message_link = "<a href='https://t.me/$bot_name?start=get$cvid'>点击获取</a>";
+        if (str_contains($original_link, 'ali')) {
+            $panName = '阿里云盘';
+        } elseif (str_contains($original_link, 'baidu')) {
+            $panName = '百度网盘';
+        } elseif (str_contains($original_link, 'xunlei')) {
+            $panName = '迅雷网盘';
+        } elseif (str_contains($original_link, 'quark')) {
+            $panName = '夸克网盘';
+        } elseif (str_contains($original_link, '1drv')) {
+            $panName = 'OneDrive';
+        } elseif (str_contains($original_link, 'sharepoint')) {
+            $panName = 'SharePoint';
+        } else {
+            $panName = '其他';
+        }
+        $message_link = "<a href='https://t.me/$bot_name?start=get$cvid'>【{$panName}】点击获取</a>";
         $message_tag = $userData[$cvid]['tag'];
         $hasPic = (bool)$message_pic;
         $adText = Conversation::get('ad', 'ad')[1] ?? '';
