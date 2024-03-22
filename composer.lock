@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0601fc118af4a80f3bfb40e62f1bc12e",
+    "content-hash": "5452b11155ccc23ba58819bdb7b84e68",
     "packages": [
         {
             "name": "brick/math",
@@ -132,20 +132,21 @@
         },
         {
             "name": "desmg/php-common",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DESMG/PHP-Common.git",
-                "reference": "7e53993d67254fb2f106a97980c2caf238eb71ae"
+                "reference": "eb9c7d427eeca4ae5a28f47a96e984fba1c43f66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/7e53993d67254fb2f106a97980c2caf238eb71ae",
-                "reference": "7e53993d67254fb2f106a97980c2caf238eb71ae",
+                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/eb9c7d427eeca4ae5a28f47a96e984fba1c43f66",
+                "reference": "eb9c7d427eeca4ae5a28f47a96e984fba1c43f66",
                 "shasum": ""
             },
             "require": {
                 "ext-bcmath": "*",
+                "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "ext-sockets": "*",
                 "php": "^8.3"
@@ -174,7 +175,7 @@
                 "source": "https://github.com/DESMG/php-common",
                 "telegram": "https://t.me/jyxjjj"
             },
-            "time": "2024-03-07T13:26:12+00:00"
+            "time": "2024-03-20T07:44:02+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1164,16 +1165,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.0.7",
+            "version": "v11.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "28eabe9dcdcb017a21ce226eda4538c5c8c93b1c"
+                "reference": "0379a7ccb77e2029c43ce508fa76e251a0d68fce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/28eabe9dcdcb017a21ce226eda4538c5c8c93b1c",
-                "reference": "28eabe9dcdcb017a21ce226eda4538c5c8c93b1c",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/0379a7ccb77e2029c43ce508fa76e251a0d68fce",
+                "reference": "0379a7ccb77e2029c43ce508fa76e251a0d68fce",
                 "shasum": ""
             },
             "require": {
@@ -1276,7 +1277,7 @@
                 "league/flysystem-sftp-v3": "^3.0",
                 "mockery/mockery": "^1.6",
                 "nyholm/psr7": "^1.2",
-                "orchestra/testbench-core": "^9.0",
+                "orchestra/testbench-core": "^9.0.6",
                 "pda/pheanstalk": "^5.0",
                 "phpstan/phpstan": "^1.4.7",
                 "phpunit/phpunit": "^10.5|^11.0",
@@ -1365,7 +1366,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-03-15T23:17:58+00:00"
+            "time": "2024-03-21T14:15:49+00:00"
         },
         {
             "name": "laravel/prompts",
