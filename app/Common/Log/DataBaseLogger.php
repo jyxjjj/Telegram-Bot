@@ -15,6 +15,9 @@ class DataBaseLogger extends AbstractProcessingHandler
 
     protected function write(array $record): void
     {
+        if ($record['channel'] === 'deprecations' && str_contains($record['message'], 'Longman\TelegramBot')) {
+            return;
+        }
         $data = [
             'channel' => $record['channel'],
             'level' => $record['level_name'],
