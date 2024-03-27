@@ -22,7 +22,7 @@ class AutoPassJob extends BaseQueue
         Log::debug('AutoPassJob2');
         $data = [
             'chat_id' => env('YPP_SOURCE_ID'),
-            'text' => '全部自动通过处理完成',
+            'text' => '[SUCCESS]全部自动通过处理完成',
         ];
         Log::debug('AutoPassJob3');
         SendMessageJob::dispatch($data, null, 0);

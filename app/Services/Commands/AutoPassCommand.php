@@ -38,7 +38,7 @@ class AutoPassCommand extends BaseCommand
         }
         $data = [
             'chat_id' => $chatId,
-            'text' => '[INFO]开始处理自动通过，请耐心等待，每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令',
+            'text' => '[PENDING]开始处理自动通过，请耐心等待，每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令',
         ];
         $this->dispatch(new AutoPassJob);
         $this->dispatch(new SendMessageJob($data, null, 0));
