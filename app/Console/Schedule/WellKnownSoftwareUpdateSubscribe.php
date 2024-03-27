@@ -15,7 +15,7 @@ class WellKnownSoftwareUpdateSubscribe extends Command
 {
     use DispatchesJobs;
 
-    protected $signature = 'subscribe:update';
+    protected $signature = 'subscribe:update {--s|software=} {software?}';
     protected $description = 'Get the Newest Version then push to target chat';
 
     public function __construct()
@@ -26,51 +26,62 @@ class WellKnownSoftwareUpdateSubscribe extends Command
     public function handle(): int
     {
         try {
-            foreach (Software::cases() as $software) {
-                self::info("Checking $software->name...");
-                if (!in_array($software->name, [
-                    Software::PHP->name,
-                    Software::Nginx->name,
-                    Software::MariaDB->name,
-                    Software::MariaDBDocker->name,
-                    Software::Redis->name,
-                    Software::RedisDocker->name,
-                    Software::NodeJS->name,
-                    Software::Kernel->name,
-                    Software::KernelFeodra->name,
-                    Software::OpenSSL->name,
-                    Software::Laravel->name,
-                    Software::VSCode->name,
-                    Software::CURL->name,
-                    Software::NVM->name,
-                ])) {
-                    self::warn("Skip $software->name");
-                    continue;
-                }
-                try {
-                    /** @var TUpdateSubscribes[] $datas */
-                    $datas = TUpdateSubscribes::getAllSubscribeBySoftware($software->name);
-                    foreach ($datas as $data) {
-                        $chat_id = $data['chat_id'];
-                        $version = $software->getInstance()->getVersion();
-                        $lastVersion = Common::getLastVersion($software);
-                        self::info("$software->name Current:$version Latest:$lastVersion");
-                        if ($version && $lastVersion != $version) {
-                            $message = $software->getInstance()->generateMessage($chat_id, $version);
-                            $this->dispatch(new SendMessageJob($message, null, 0));
-                            Common::setLastVersion($software, $version);
-                        }
+            if ($this->option('software') || $this->argument('software')) {
+                $software = Software::from($this->option('software') ?? $this->argument('software'));
+                $this->dealCheck($software);
+            } else {
+                foreach (Software::cases() as $software) {
+                    self::info("Checking $software->name...");
+                    if (!in_array($software->name, [
+                        Software::PHP->name,
+                        Software::Nginx->name,
+                        Software::MariaDB->name,
+                        Software::MariaDBDocker->name,
+                        Software::Redis->name,
+                        Software::RedisDocker->name,
+                        Software::NodeJS->name,
+                        Software::Kernel->name,
+                        Software::KernelFeodra->name,
+                        Software::OpenSSL->name,
+                        Software::Laravel->name,
+                        Software::VSCode->name,
+                        Software::CURL->name,
+                        Software::NVM->name,
+                        Software::Go->name,
+                    ])) {
+                        self::warn("Skip $software->name");
+                        continue;
                     }
-                } catch (Throwable $e) {
-                    ERR::log($e);
-                    continue;
+                    try {
+                        $this->dealCheck($software);
+                    } catch (Throwable $e) {
+                        ERR::log($e);
+                        continue;
+                    }
+                    sleep(1);
                 }
-                sleep(1);
             }
             return self::SUCCESS;
         } catch (Throwable $e) {
             ERR::log($e);
             return self::FAILURE;
+        }
+    }
+
+    private function dealCheck(Software $software): void
+    {
+        /** @var TUpdateSubscribes[] $datas */
+        $datas = TUpdateSubscribes::getAllSubscribeBySoftware($software->name);
+        foreach ($datas as $data) {
+            $chat_id = $data['chat_id'];
+            $version = $software->getInstance()->getVersion();
+            $lastVersion = Common::getLastVersion($software);
+            self::info("$software->name Current:$version Latest:$lastVersion");
+            if ($version && $lastVersion != $version) {
+                $message = $software->getInstance()->generateMessage($chat_id, $version);
+                $this->dispatch(new SendMessageJob($message, null, 0));
+                Common::setLastVersion($software, $version);
+            }
         }
     }
 }
