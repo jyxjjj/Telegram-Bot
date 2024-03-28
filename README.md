@@ -19,8 +19,6 @@ A PHP Laravel Telegram Bot
 
 [GPL-3.0-Only](LICENSE)
 
-[DESMG-1.0-2024-03-28](LICENSE.md)
-
 # Versions
 
 [![DigitalOcean](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://m.do.co/c/23e8653b361a)
