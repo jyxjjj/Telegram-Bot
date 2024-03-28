@@ -5,8 +5,10 @@ namespace App\Console\Commands;
 use App\Common\Conversation;
 use App\Jobs\EditMessageReplyMarkupJob;
 use App\Jobs\PassPendingJob;
+use App\Jobs\SendMessageJob;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 
@@ -19,6 +21,11 @@ class AutoPass extends Command
 
     public function handle(): int
     {
+        if (Cache::has('autopass')) {
+            dump('Another instance has already started.');
+            return self::FAILURE;
+        }
+        Cache::set('autopass', 1, 3600);
         $pendings = $this->getPending();
         foreach ($pendings as $cvid => $pending) {
             dump("Passing $cvid");
@@ -30,6 +37,13 @@ class AutoPass extends Command
             sleep(5);
         }
         sleep(5);
+        $data = [
+            'chat_id' => env('YPP_SOURCE_ID'),
+            'text' => '[SUCCESS]全部自动通过处理完成',
+        ];
+        $this->dispatch(new SendMessageJob($data, null, 0));
+        Cache::delete('autopass');
+        dump('All Done.');
         return self::SUCCESS;
     }
 
