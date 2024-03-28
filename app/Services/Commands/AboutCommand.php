@@ -80,15 +80,15 @@ class AboutCommand extends BaseCommand
             'url' => 'https://t.me/desmg_official',
         ]);
         $data['reply_markup']->addRow($channel, $group);
-        $usage = new InlineKeyboardButton([
-            'text' => '使用条款',
-            'url' => 'https://www.desmg.com/policies#usage',
-        ]);
         $privacy = new InlineKeyboardButton([
             'text' => '隐私政策',
-            'url' => 'https://www.desmg.com/policies#privacy',
+            'url' => 'https://www.desmg.com/policies/privacy',
         ]);
-        $data['reply_markup']->addRow($usage, $privacy);
+        $usage = new InlineKeyboardButton([
+            'text' => '使用条款',
+            'url' => 'https://www.desmg.com/policies/terms',
+        ]);
+        $data['reply_markup']->addRow($privacy, $usage);
         $this->dispatch(new SendMessageJob($data));
     }
 }
