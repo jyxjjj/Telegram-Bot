@@ -18,6 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+echo <<<GPL
+    DESMG Telegram Bot Copyright (C) 2023 DESMG
+    This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE' file.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; for details see `LICENSE' file.
+
+GPL;
+
 use Symfony\Component\Console\Input\ArgvInput;
 
 if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 3) {
