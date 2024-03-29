@@ -38,7 +38,6 @@ class PassPendingJob extends BaseQueue
             'allow_sending_without_reply' => true,
         ];
         $sender3 = $sender;
-        $sender3['chat_id'] = env('YPP_TARGET_ID_3');
         $pendingData = Conversation::get('pending', 'pending');
         if (!isset($pendingData[$cvid])) {
             return;
@@ -90,9 +89,9 @@ class PassPendingJob extends BaseQueue
             $sender3['caption'] .= "资源简介：$message_desc\n\n";
             $sender3['caption'] .= "链接：$original_link\n\n";
             $sender3['caption'] .= "🔍 关键词：$message_tag\n\n";
-            $sender3['caption'] .= "$adText\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
+            $sender3['chat_id'] = env('YPP_TARGET_ID_3');
             $serverResponse = Request::sendPhoto($sender);
             $serverResponse2 = Request::sendPhoto($sender2);
             $serverResponse3 = Request::sendPhoto($sender3);
@@ -106,9 +105,9 @@ class PassPendingJob extends BaseQueue
             $sender3['text'] .= "资源简介：$message_desc\n\n";
             $sender3['text'] .= "链接：$original_link\n\n";
             $sender3['text'] .= "🔍 关键词：$message_tag\n\n";
-            $sender3['text'] .= "$adText\n\n";
             $sender2 = $sender;
             $sender2['chat_id'] = env('YPP_TARGET_ID_2');
+            $sender3['chat_id'] = env('YPP_TARGET_ID_3');
             $serverResponse = Request::sendMessage($sender);
             $serverResponse2 = Request::sendMessage($sender2);
             $serverResponse3 = Request::sendMessage($sender3);
