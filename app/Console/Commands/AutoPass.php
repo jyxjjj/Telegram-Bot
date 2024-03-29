@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Common\Conversation;
+use App\Exceptions\Handler;
 use App\Jobs\EditMessageReplyMarkupJob;
 use App\Jobs\PassPendingJob;
 use App\Jobs\SendMessageJob;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Cache;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
+use Throwable;
 
 class AutoPass extends Command
 {
@@ -26,22 +28,24 @@ class AutoPass extends Command
             return self::FAILURE;
         }
         Cache::set('autopass', 1, 3600);
-        $pendings = $this->getPending();
-        foreach ($pendings as $cvid => $pending) {
-            dump("Passing $cvid");
-            $messageId = $pending['link'];
-            sleep(5);
-            $this->dispatch(new PassPendingJob($cvid));
-            sleep(5);
-            $this->editReplyMarkup($messageId, $cvid);
-            sleep(5);
+        try {
+            $pendings = $this->getPending();
+            foreach ($pendings as $cvid => $pending) {
+                dump("Passing $cvid");
+                $messageId = $pending['link'];
+                $this->dispatch(new PassPendingJob($cvid));
+                sleep(5);
+                $this->editReplyMarkup($messageId, $cvid);
+                sleep(5);
+            }
+            $data = [
+                'chat_id' => env('YPP_SOURCE_ID'),
+                'text' => '[SUCCESS]全部自动通过处理完成',
+            ];
+            $this->dispatch(new SendMessageJob($data, null, 0));
+        } catch (Throwable $e) {
+            Handler::logError($e, __FILE__, __LINE__);
         }
-        sleep(5);
-        $data = [
-            'chat_id' => env('YPP_SOURCE_ID'),
-            'text' => '[SUCCESS]全部自动通过处理完成',
-        ];
-        $this->dispatch(new SendMessageJob($data, null, 0));
         Cache::delete('autopass');
         dump('All Done.');
         return self::SUCCESS;
