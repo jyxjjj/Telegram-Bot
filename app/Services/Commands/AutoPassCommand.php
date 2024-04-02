@@ -31,14 +31,16 @@ class AutoPassCommand extends BaseCommand
         if (Cache::has('autopass')) {
             $data = [
                 'chat_id' => $chatId,
-                'text' => '[ERROR]自动通过正在处理中，请耐心等待，每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令',
+                'text' => "[PENDING]\n自动通过正在处理中，请耐心等待\n每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令\n",
             ];
+            $cvid = Cache::get('autopass');
+            $data['text'] .= "当前正在处理的CVID: $cvid";
             $this->dispatch(new SendMessageJob($data, null, 0));
             return;
         }
         $data = [
             'chat_id' => $chatId,
-            'text' => '[PENDING]开始处理自动通过，请耐心等待，每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令',
+            'text' => "[STARTED]\n开始处理自动通过，请耐心等待\n每10秒只处理1条，处理完毕将发送回复通知，请不要重复发送指令",
         ];
         $this->dispatch(new AutoPassJob);
         $this->dispatch(new SendMessageJob($data, null, 0));

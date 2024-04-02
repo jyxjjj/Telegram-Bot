@@ -31,6 +31,7 @@ class AutoPass extends Command
         try {
             $pendings = $this->getPending();
             foreach ($pendings as $cvid => $pending) {
+                Cache::set('autopass', $cvid, 3600);
                 dump("Passing $cvid");
                 $messageId = $pending['link'];
                 $this->dispatch(new PassPendingJob($cvid));
@@ -40,7 +41,7 @@ class AutoPass extends Command
             }
             $data = [
                 'chat_id' => env('YPP_SOURCE_ID'),
-                'text' => '[SUCCESS]全部自动通过处理完成',
+                'text' => "[SUCCESS]\n全部自动通过处理完成",
             ];
             $this->dispatch(new SendMessageJob($data, null, 0));
         } catch (Throwable $e) {
