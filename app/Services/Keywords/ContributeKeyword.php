@@ -149,7 +149,7 @@ class ContributeKeyword extends ContributeStep
                         !str_starts_with($link, 'https://www.aliyundrive.com/s/') &&
                         !str_starts_with($link, 'https://pan.baidu.com/s/') &&
                         !str_starts_with($link, 'https://pan.xunlei.com/s/') &&
-                        !str_starts_with($link, 'https://pan.quark.cn/s/') &&
+//                        !str_starts_with($link, 'https://pan.quark.cn/s/') &&
                         !str_starts_with($link, 'https://1drv.ms/') &&
                         !str_starts_with($link, 'https://sharepoint.com/')
                     ) {
@@ -320,8 +320,8 @@ class ContributeKeyword extends ContributeStep
             $matched = preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.aliyundrive\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/www\.alipan\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
-                ||
-                preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.quark\.cn\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
+//                ||
+//                preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.quark\.cn\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
                 preg_match('/(?:资源)?名称：(.+)\n\n(?:资源简介|描述)：((?:.|\n)+)\n\n链接：(https:\/\/pan\.xunlei\.com\/s\/.+)\n+.+(?:关键词|标签)：(.+)/s', $messageText, $matches)
                 ||
