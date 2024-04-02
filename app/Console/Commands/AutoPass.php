@@ -43,6 +43,7 @@ class AutoPass extends Command
                 'chat_id' => env('YPP_SOURCE_ID'),
                 'text' => "[SUCCESS]\n全部自动通过处理完成",
             ];
+            sleep(5);
             $this->dispatch(new SendMessageJob($data, null, 0));
         } catch (Throwable $e) {
             Handler::logError($e, __FILE__, __LINE__);
