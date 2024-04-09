@@ -63,6 +63,11 @@ class HideMyNumbersCommand extends BaseCommand
             'reply_to_message_id' => $messageId,
             'text' => '',
         ];
+        if (preg_match('/^\d{6,64}$/', $param) === 0) {
+            $data['text'] = 'Invalid number';
+            $this->dispatch(new SendMessageJob($data, null, 0));
+            return;
+        }
         $pass = strtoupper(bin2hex(openssl_random_pseudo_bytes(16)));
         switch (strlen($param)) {
             case 11:
