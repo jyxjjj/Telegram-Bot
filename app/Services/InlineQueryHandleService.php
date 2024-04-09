@@ -55,5 +55,6 @@ class InlineQueryHandleService extends BaseService
     public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
         $query = $update->getInlineQuery();
+        $queryId = $query->getId();
     }
 }
