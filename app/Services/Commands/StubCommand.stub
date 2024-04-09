@@ -33,37 +33,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Http;
+namespace App\Services\Commands;
 
-use App\Http\Middleware\TrustProxies;
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
-use Illuminate\Foundation\Http\Middleware\TrimStrings;
-use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use App\Jobs\SendMessageJob;
+use App\Services\Base\BaseCommand;
+use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Telegram;
 
-class Kernel extends HttpKernel
+class StubCommand extends BaseCommand
 {
-    protected $middleware = [
-//        EncryptCookies::class,
-//        StartSession::class,
-        TrustProxies::class,
-        PreventRequestsDuringMaintenance::class,
-        ValidatePostSize::class,
-        TrimStrings::class,
-        ConvertEmptyStringsToNull::class,
-    ];
-    protected $middlewarePriority = [
-//        EncryptCookies::class,
-//        StartSession::class,
-        TrustProxies::class,
-        PreventRequestsDuringMaintenance::class,
-        ValidatePostSize::class,
-        TrimStrings::class,
-        ConvertEmptyStringsToNull::class,
-    ];
-    protected $middlewareGroups = [
-    ];
-    protected $middlewareAliases = [
-    ];
+    public string $name = '{{NAME}}';
+    public string $description = '{{DESCRIPTION}}';
+    public string $usage = '/{{USAGE}}';
+    public bool $admin = false;
+    public bool $private = false;
+
+    /**
+     * @param Message $message
+     * @param Telegram $telegram
+     * @param int $updateId
+     * @return void
+     */
+    public function execute(Message $message, Telegram $telegram, int $updateId): void
+    {
+        $chatId = $message->getChat()->getId();
+        $messageId = $message->getMessageId();
+        $param = $message->getText(true);
+        $data = [
+            'chat_id' => $chatId,
+            'reply_to_message_id' => $messageId,
+            'text' => '',
+        ];
+        $this->dispatch(new SendMessageJob($data, null, 0));
+    }
 }

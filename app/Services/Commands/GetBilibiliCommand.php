@@ -3,9 +3,9 @@
  * DESMG Telegram Bot
  * This file is a part of our Open Source Project (https://github.com/jyxjjj/Telegram-Bot)
  *
- * @copyright 2015-2024 DESMG Co., Ltd.
+ * @copyright 2015-2024 DESMG
  * @license GNU General Public License v3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
- * @author DESMG Co., Ltd. (www.desmg.com) < opensource@desmg.org >
+ * @author DESMG (www.desmg.com) < opensource@desmg.org >
  *
  * @QQ 773933146
  * @Telegram jyxjjj (https://t.me/jyxjjj)
@@ -15,7 +15,7 @@
  * All Rights Reserved.
  *
  * 🇨🇳 🇬🇧 🇳🇱
- * Terms of Service: https://www.desmg.com/policies/terms
+ * Addon License: https://www.desmg.com/policies/license
  *
  * Released under GNU General Public License Version 3.0
  *
