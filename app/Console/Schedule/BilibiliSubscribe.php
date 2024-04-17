@@ -114,6 +114,7 @@ class BilibiliSubscribe extends Command
                     $message['photo'] = $video['cover'];
                     $message['caption'] .= "视频: <b>{$video['title']}</b>\n";
                     $message['caption'] .= "UP主: <code>{$video['author']}</code>\n";
+                    $message['caption'] .= "UID: <code>$mid</code>\n";
                     $message['caption'] .= "发布时间: <code>{$video['created']}</code>\n";
                     $message['caption'] .= "AV No.: <code>{$video['AVID']}</code>\n";
                     $message['caption'] .= "AV Link: <code>https://b23.tv/{$video['AVID']}</code>\n";
