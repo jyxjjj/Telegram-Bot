@@ -42,6 +42,7 @@ use App\Models\TUpdateSubscribes;
 use DESMG\RFC6986\Hash;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -93,6 +94,7 @@ class ChromeUpdateSubscribe extends Command
 
     /**
      * @return array
+     * @throws ConnectionException
      */
     #[ArrayShape([
         'StableAndroidVersion' => 'string',
@@ -139,6 +141,7 @@ class ChromeUpdateSubscribe extends Command
 
     /**
      * @return array
+     * @throws ConnectionException
      */
     private function getJson(): array
     {
