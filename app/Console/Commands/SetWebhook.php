@@ -66,11 +66,11 @@ class SetWebhook extends Command
         ];
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         if ($this->option('update-token')) {
-            $secret_token = UUID::generateUniqueID();
+            $secret_token = UUID::DEID64();
             $this->setSecret($secret_token);
         } else {
             if (strlen($origin_token) < 64) {
-                $secret_token = UUID::generateUniqueID();
+                $secret_token = UUID::DEID64();
                 $this->setSecret($secret_token);
             } else {
                 $secret_token = $origin_token;

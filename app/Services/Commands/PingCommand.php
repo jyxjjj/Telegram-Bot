@@ -61,7 +61,7 @@ class PingCommand extends BaseCommand
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        $key = UUID::generateUniqueID();
+        $key = UUID::DEID64();
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
