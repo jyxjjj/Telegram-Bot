@@ -72,11 +72,11 @@ class KernelFeodra implements SoftwareInterface
         ];
         $button1 = new InlineKeyboardButton([
             'text' => 'China USTC Mirror',
-            'url' => 'https://mirrors.ustc.edu.cn/fedora/updates/39/Everything/x86_64/Packages/k/',
+            'url' => 'https://mirrors.ustc.edu.cn/fedora/updates/40/Everything/x86_64/Packages/k/',
         ]);
         $button2 = new InlineKeyboardButton([
             'text' => 'Europe Edge Mirror',
-            'url' => 'https://eu.edge.kernel.org/fedora/updates/39/Everything/x86_64/Packages/k/',
+            'url' => 'https://eu.edge.kernel.org/fedora/updates/40/Everything/x86_64/Packages/k/',
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;
@@ -87,7 +87,7 @@ class KernelFeodra implements SoftwareInterface
      */
     public function getVersion(): string
     {
-        $baseurl = 'https://eu.edge.kernel.org/fedora/updates/39/Everything/x86_64/Packages/k/';
+        $baseurl = 'https://eu.edge.kernel.org/fedora/updates/40/Everything/x86_64/Packages/k/';
         $headers = Config::CURL_HEADERS;
         $ts = Carbon::now()->getTimestamp();
         $headers['User-Agent'] .= " Telegram-Kernel-Subscriber-Runner/$ts";
