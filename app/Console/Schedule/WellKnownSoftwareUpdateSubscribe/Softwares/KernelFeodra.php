@@ -43,6 +43,7 @@ use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -84,6 +85,7 @@ class KernelFeodra implements SoftwareInterface
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {

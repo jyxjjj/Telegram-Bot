@@ -39,6 +39,7 @@ use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -75,6 +76,7 @@ class RedisDocker implements SoftwareInterface
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {
@@ -95,6 +97,7 @@ class RedisDocker implements SoftwareInterface
 
     /**
      * @return array
+     * @throws ConnectionException
      */
     private function getLatest(): array
     {

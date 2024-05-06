@@ -38,6 +38,7 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -78,6 +79,7 @@ class MariaDB implements SoftwareInterface
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {
@@ -111,6 +113,7 @@ class MariaDB implements SoftwareInterface
 
     /**
      * @return array
+     * @throws ConnectionException
      */
     private function getMajor(): array
     {
@@ -126,6 +129,7 @@ class MariaDB implements SoftwareInterface
     /**
      * @param string $release_id
      * @return array
+     * @throws ConnectionException
      */
     private function getLatest(string $release_id): array
     {

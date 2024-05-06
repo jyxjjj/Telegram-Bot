@@ -38,6 +38,7 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -74,6 +75,7 @@ class Kernel implements SoftwareInterface
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {

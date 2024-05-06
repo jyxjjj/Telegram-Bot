@@ -61,6 +61,7 @@ class FFmpeg implements SoftwareInterface
      */
     public function getVersion(): string
     {
-        // TODO: Implement getVersion() method.
+        // https://www.gyan.dev/ffmpeg/builds/release-version
+
     }
 }

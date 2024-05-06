@@ -41,6 +41,7 @@ use App\Jobs\SendPhotoJob;
 use App\Models\TBilibiliSubscribes;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -148,6 +149,7 @@ class BilibiliSubscribe extends Command
     /**
      * @param int $mid
      * @return array|null
+     * @throws ConnectionException
      */
     private function getVideoList(int $mid): ?array
     {
@@ -186,6 +188,7 @@ class BilibiliSubscribe extends Command
     /**
      * @param string $link
      * @return array
+     * @throws ConnectionException
      */
     private function getJson(string $link): array
     {

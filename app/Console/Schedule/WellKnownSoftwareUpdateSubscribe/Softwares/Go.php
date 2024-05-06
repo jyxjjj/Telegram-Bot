@@ -39,6 +39,7 @@ use App\Common\Config;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
@@ -91,6 +92,7 @@ EOF;
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {
@@ -122,6 +124,7 @@ EOF;
 
     /**
      * @return array|false
+     * @throws ConnectionException
      */
     private function getJson(): array|false
     {

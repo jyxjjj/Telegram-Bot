@@ -38,6 +38,7 @@ namespace App\Console\Schedule;
 use App\Common\Config;
 use App\Common\ERR;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -68,6 +69,10 @@ class PixivDownloader extends Command
         }
     }
 
+    /**
+     * @return array
+     * @throws ConnectionException
+     */
     private function getRanks(): array
     {
         $headers = Config::CURL_HEADERS;
