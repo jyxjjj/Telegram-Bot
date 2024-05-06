@@ -56,11 +56,6 @@ class ChromeUpdateSubscribe extends Command
     protected $signature = 'subscribe:chrome';
     protected $description = 'Get Chrome Newest Version then push to target chat';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         try {

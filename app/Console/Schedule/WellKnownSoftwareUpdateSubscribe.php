@@ -65,23 +65,8 @@ class WellKnownSoftwareUpdateSubscribe extends Command
             } else {
                 foreach (Software::cases() as $software) {
                     self::info("Checking $software->name...");
-                    if (!in_array($software->name, [
-                        Software::PHP->name,
-                        Software::Nginx->name,
-                        Software::MariaDB->name,
-                        Software::MariaDBDocker->name,
-                        Software::Redis->name,
-                        Software::RedisDocker->name,
-                        Software::NodeJS->name,
-                        Software::Kernel->name,
-                        Software::KernelFeodra->name,
-                        Software::OpenSSL->name,
-                        Software::Laravel->name,
-                        Software::VSCode->name,
-                        Software::CURL->name,
-                        Software::NVM->name,
-                        Software::Go->name,
-                    ])) {
+                    // TODO: Skip FFmpeg
+                    if ($software->name == Software::FFmpeg->name) {
                         self::warn("Skip $software->name");
                         continue;
                     }
