@@ -162,7 +162,8 @@ class JetBrainsUpdateSubscribe extends Command
                         $this->versions[$code] .= ' (NEW)';
                     }
                 }
-                $data .= "<b>{$this->PRODUCT_CODES[$code]}</b>: <code>{$this->versions[$code]}</code> <a href=\"{$this->downloads[$code]}\">Download for macOS ARM64</a>\n";
+                $data .= "<b>{$this->PRODUCT_CODES[$code]}</b>: <code>{$this->versions[$code]}</code>\n";
+                $data .= "    >>> <a href=\"{$this->downloads[$code]}\">Download {$this->PRODUCT_CODES[$code]} for macOS ARM64</a>\n";
             }
         }
         return $data;
