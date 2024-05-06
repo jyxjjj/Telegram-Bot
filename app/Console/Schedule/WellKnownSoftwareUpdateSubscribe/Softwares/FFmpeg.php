@@ -35,9 +35,15 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
+use App\Common\Config;
+use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 
 class FFmpeg implements SoftwareInterface
 {
@@ -53,15 +59,57 @@ class FFmpeg implements SoftwareInterface
     ])]
     public function generateMessage(int $chat_id, string $version): array
     {
-        // TODO: Implement generateMessage() method.
+        $emoji = Common::emoji();
+        $message = [
+            'chat_id' => $chat_id,
+            'text' => "$emoji A new version of FFmpeg($version) is now available.",
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $button1 = new InlineKeyboardButton([
+            'text' => 'View on gyan.dev',
+            'url' => 'https://www.gyan.dev/ffmpeg/builds/#release-builds',
+        ]);
+        $button2 = new InlineKeyboardButton([
+            'text' => 'View on GitHub',
+            'url' => "https://github.com/FFmpeg/FFmpeg/releases/tag/n$version",
+        ]);
+        $button3 = new InlineKeyboardButton([
+            'text' => 'Windows Shared Build',
+            'url' => 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z',
+        ]);
+        $button4 = new InlineKeyboardButton([
+            'text' => 'Windows Static Build',
+            'url' => 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z',
+        ]);
+        $message['reply_markup']->addRow($button1, $button2);
+        $message['reply_markup']->addRow($button3, $button4);
+        return $message;
     }
 
     /**
      * @return string
+     * @throws ConnectionException
      */
     public function getVersion(): string
     {
-        // https://www.gyan.dev/ffmpeg/builds/release-version
+        return $this->getVersionString();
+    }
 
+    /**
+     * @return string
+     * @throws ConnectionException
+     */
+    public function getVersionString(): string
+    {
+        $headers = Config::CURL_HEADERS;
+        $ts = Carbon::now()->getTimestamp();
+        $headers['User-Agent'] .= " Telegram-FFmpeg-Subscriber-Runner/$ts";
+        $get = Http::
+        withHeaders($headers)
+            ->get('https://www.gyan.dev/ffmpeg/builds/release-version');
+        if ($get->status() == 200) {
+            return $get->body();
+        }
+        return '0.0.0';
     }
 }

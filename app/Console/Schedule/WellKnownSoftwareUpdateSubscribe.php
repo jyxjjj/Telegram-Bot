@@ -65,11 +65,6 @@ class WellKnownSoftwareUpdateSubscribe extends Command
             } else {
                 foreach (Software::cases() as $software) {
                     self::info("Checking $software->name...");
-                    // TODO: Skip FFmpeg
-                    if ($software->name == Software::FFmpeg->name) {
-                        self::warn("Skip $software->name");
-                        continue;
-                    }
                     try {
                         $this->dealCheck($software);
                     } catch (Throwable $e) {
