@@ -35,9 +35,9 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Crypt;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use DESMG\DESMG\Sensitive;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -83,13 +83,7 @@ class HideMyNumbersCommand extends BaseCommand
                 $eLen = 2;
                 break;
         }
-        $first = substr($param, 0, $fLen);
-        $last = substr($param, -$eLen);
-        $toEnc = substr($param, $fLen, -$eLen);
-        $stars = str_repeat('*', strlen($toEnc));
-        $plain = "$first$stars$last";
-        $hash = strtoupper(hash('sha512', $param));
-        $encrypted = Crypt::encrypt($toEnc, $pass);
+        [$plain, $hash, $encrypted] = Sensitive::encrypt($param, $pass, $fLen, $eLen);
         $data['text'] .= "Plain:\n<pre>$plain</pre>\n";
         $data['text'] .= "Hash:\n<pre>$hash</pre>\n";
         $data['text'] .= "Encrypted:\n<pre>$encrypted</pre>\n";
