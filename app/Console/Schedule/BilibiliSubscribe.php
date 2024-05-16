@@ -133,7 +133,12 @@ class BilibiliSubscribe extends Command
                         'text' => $video['BVID'],
                         'url' => "https://b23.tv/{$video['BVID']}",
                     ]);
+                    $uidButton = new InlineKeyboardButton([
+                        'text' => "UID: $mid",
+                        'url' => "https://space.bilibili.com/$mid",
+                    ]);
                     $message['reply_markup']->addRow($avButton, $bvButton);
+                    $message['reply_markup']->addRow($uidButton);
                     self::info("Send new video {$video['BVID']} of $mid to $chat_id");
                     $this->dispatch(new SendPhotoJob($message, 0));
                     $this->setLastSend($chat_id, $mid, $video['BVID']);
