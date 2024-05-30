@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7310ecd79c18ca40880f79376b7173ec",
+    "content-hash": "d836e0b33ad010e9e878c729dde2add5",
     "packages": [
         {
             "name": "brick/math",
@@ -1872,16 +1872,16 @@
         },
         {
             "name": "longman/telegram-bot",
-            "version": "0.82.0",
+            "version": "0.83.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-telegram-bot/core.git",
-                "reference": "26433b3d29f31c7760ba881490f84640ebef2652"
+                "reference": "596cc9cdecfe620ac9df21fb46778c8604b2f0e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-telegram-bot/core/zipball/26433b3d29f31c7760ba881490f84640ebef2652",
-                "reference": "26433b3d29f31c7760ba881490f84640ebef2652",
+                "url": "https://api.github.com/repos/php-telegram-bot/core/zipball/596cc9cdecfe620ac9df21fb46778c8604b2f0e4",
+                "reference": "596cc9cdecfe620ac9df21fb46778c8604b2f0e4",
                 "shasum": ""
             },
             "require": {
@@ -1890,7 +1890,7 @@
                 "ext-mbstring": "*",
                 "ext-pdo": "*",
                 "guzzlehttp/guzzle": "^6.0|^7.0",
-                "php": "^7.3|^8.0",
+                "php": "^8.1",
                 "psr/log": "^1.1|^2.0|^3.0"
             },
             "require-dev": {
@@ -1902,7 +1902,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.81.x-dev"
+                    "dev-develop": "0.83.x-dev"
                 }
             },
             "autoload": {
@@ -1974,7 +1974,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-26T20:16:16+00:00"
+            "time": "2024-05-25T19:57:59+00:00"
         },
         {
             "name": "monolog/monolog",
