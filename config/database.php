@@ -49,7 +49,7 @@ return [
             'unix_socket' => file_exists('/proc') ? env('DB_SOCKET') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_general_ci',
-            'prefix' => 't_',
+            'prefix' => 'tg_',
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => 'InnoDB',
