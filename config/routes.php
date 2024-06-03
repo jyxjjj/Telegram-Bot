@@ -47,6 +47,7 @@ function defineRoutes(): void
             Route::get('/', [IndexController::class, 'index']);
             Route::get('/generate_204', fn() => response(null, Response::HTTP_NO_CONTENT)); // Captive Portal Detection
             Route::get('tf/{type}/{file}', [Telegraph::class, 'getFile']); // Telegraph File
+            Route::get('latency', [IndexController::class, 'latency']); // latency
         }
     );
 
