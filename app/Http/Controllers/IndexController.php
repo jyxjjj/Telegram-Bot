@@ -68,7 +68,6 @@ class IndexController extends BaseController
             ->select('message', 'created_at')
             ->where('level', 'NOTICE')
             ->whereRaw('CAST(message AS DECIMAL(5,2)) = message')
-            ->where('created_at', '>', Carbon::now()->subDays(2))
             ->get();
         $time = $data->pluck('created_at')->map(fn($item) => Carbon::parse($item)->format('Y-m-d H:i:s'))->toArray();
         $data = $data->pluck('message')->map(fn($item) => (float)$item)->toArray();

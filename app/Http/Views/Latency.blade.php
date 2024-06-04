@@ -1,4 +1,4 @@
-<div id="main" style="width: {{ $count * 8 }}px; height: 512px;"></div>
+<div id="main" style="width: 1024px; height: 512px;"></div>
 <a id="download" href="">Download AS PNG</a>
 <script src="https://unpkg.com/echarts@5.5.0/dist/echarts.js"></script>
 <script>
@@ -16,10 +16,10 @@
             interval: 6.25,
         },
         grid: {
-            top: '64px',
-            left: '64px',
-            right: '64px',
-            bottom: '32px',
+            top: '72px',
+            left: '72px',
+            right: '72px',
+            bottom: '64px',
         },
         series: [{
             name: 'Rate',
