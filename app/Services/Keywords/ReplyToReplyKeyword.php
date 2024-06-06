@@ -4,6 +4,7 @@ namespace App\Services\Keywords;
 
 use App\Common\Conversation;
 use App\Jobs\SendMessageJob;
+use App\Jobs\SendPhotoJob;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -47,16 +48,31 @@ class ReplyToReplyKeyword extends ContributeStep
                 $cvname = $cvInfo['name'];
                 $data = [
                     'chat_id' => $userId,
-                    'text' => ''
                 ];
-                $data['text'] .= "来自管理员有关您的投稿 <code>$cvname</code> : \n";
-                $data['text'] .= "\n";
-                $data['text'] .= $message->getText() ?? $message->getCaption() ?? '';
-                $data['text'] .= "\n";
-                $data['text'] .= "\n";
-                $data['text'] .= "[投稿ID]:$cvid\n";
-                $data['text'] .= "\n提示：引用回复本条消息，与管理对话\n";
-                $this->dispatch(new SendMessageJob($data, null, 0));
+                if ($message->getPhoto()) {
+                    $data['photo'] = $message->getPhoto()[0]->getFileId();
+                    $dataText = $message->getCaption() ?? '';
+                    $data['caption'] = "来自管理员的消息：
+---
+$dataText
+---
+有关您的投稿 <code>$cvname</code>
+[投稿ID]:$cvid
+提示：引用回复本条消息，与管理对话（图片仅管理员可用）
+";
+                    $this->dispatch(new SendPhotoJob($data, 0));
+                } else {
+                    $dataText = $message->getText() ?? '';
+                    $data['text'] = "来自管理员的消息：
+---
+$dataText
+---
+有关您的投稿 <code>$cvname</code>
+[投稿ID]:$cvid
+提示：引用回复本条消息，与管理对话（图片仅管理员可用）
+";
+                    $this->dispatch(new SendMessageJob($data, null, 0));
+                }
                 $sender = [
                     'chat_id' => $message->getChat()->getId(),
                     'reply_to_message_id' => $message->getMessageId(),
