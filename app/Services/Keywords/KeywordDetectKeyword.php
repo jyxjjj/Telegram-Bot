@@ -101,20 +101,8 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_FROMNAME:
-                if ($message->getForwardFrom()) {
-                    $fromName = strtoupper(($message->getForwardFrom()->getFirstName() ?? '') . ($message->getForwardFrom()->getLastName() ?? ''));
-                    if (str_contains($fromName, $keyword)) {
-                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
-                    }
-                }
                 break;
             case TChatKeywordsTargetEnum::TARGET_TITLE:
-                if ($message->getForwardFromChat()) {
-                    $title = strtoupper($message->getForwardFromChat()->getTitle());
-                    if (str_contains($title, $keyword)) {
-                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
-                    }
-                }
                 break;
             case TChatKeywordsTargetEnum::TARGET_TEXT:
                 $text = strtoupper($message->getText() ?? $message->getCaption() ?? '');
