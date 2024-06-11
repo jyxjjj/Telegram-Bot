@@ -68,7 +68,7 @@ class HideMyNumbersCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data, null, 0));
             return;
         }
-        $pass = strtoupper(bin2hex(openssl_random_pseudo_bytes(16)));
+        $pass = strtoupper(bin2hex(openssl_random_pseudo_bytes(32)));
         switch (strlen($param)) {
             case 11:
                 $fLen = 3;
