@@ -92,17 +92,17 @@ class StartCommand extends BaseCommand
             return -1;
         }
         $times = $this->getGettedTimes($chatId);
-        if ($times >= 50) {
+        if ($times >= 100) {
             $data['text'] = "您今日获取链接次数已达上限\n";
             $data['text'] .= "发送 /donate 获取💰捐💰赠💰信息";
             $this->dispatch(new SendMessageJob($data, null, 0));
             return -1;
         }
-        if ($times > 40) {
+        if ($times > 90) {
             Log::alert("用户 $username ($chatId) 获取链接次数 $times 次");
         }
         $this->addGettedTimes($chatId, $times);
-        return 50 - $times;
+        return 100 - $times;
     }
 
     /**
