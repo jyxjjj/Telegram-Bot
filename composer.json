@@ -23,7 +23,7 @@
         "ext-simplexml": "*",
         "ext-sockets": "*",
         "ext-zlib": "*",
-        "desmg/php-common": "^2.7.3",
+        "desmg/php-common": "^2.0.1",
         "guzzlehttp/guzzle": "^7.8.1",
         "laravel/framework": "^11.10.0",
         "longman/telegram-bot": "^0.83.0",
