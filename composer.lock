@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2890b5c27a462846b63f4fe24387f46d",
+    "content-hash": "7debf8544ff6b4bfed39d7062e086b64",
     "packages": [
         {
             "name": "brick/math",
@@ -132,16 +132,16 @@
         },
         {
             "name": "desmg/php-common",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DESMG/PHP-Common.git",
-                "reference": "db3458a9805e154eb65e5c4037e391417e0663c7"
+                "reference": "cc354d3450519b714ee8ecf10d7114a174e3e21c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/db3458a9805e154eb65e5c4037e391417e0663c7",
-                "reference": "db3458a9805e154eb65e5c4037e391417e0663c7",
+                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/cc354d3450519b714ee8ecf10d7114a174e3e21c",
+                "reference": "cc354d3450519b714ee8ecf10d7114a174e3e21c",
                 "shasum": ""
             },
             "require": {
@@ -179,7 +179,7 @@
                 "source": "https://github.com/DESMG/php-common",
                 "telegram": "https://t.me/jyxjjj"
             },
-            "time": "2024-06-12T03:56:15+00:00"
+            "time": "2024-06-12T06:47:06+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
