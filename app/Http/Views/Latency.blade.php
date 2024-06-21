@@ -27,7 +27,7 @@
             name: 'Rate',
             type: 'line',
             data: {!! $data !!},
-            smooth: true,
+            smooth: false,
             large: true,
         }],
     };
@@ -65,7 +65,7 @@
             name: 'Rate',
             type: 'line',
             data: {!! $data !!},
-            smooth: true,
+            smooth: false,
             large: true,
         }],
         dataZoom: [{
