@@ -1,15 +1,22 @@
+<!--suppress JSUnresolvedReference -->
 <div id="main1" style="width: 1024px; height: 512px;"></div>
 <a id="download1" href="">Download AS PNG</a>
 <div id="main2" style="width: 1024px; height: 512px;"></div>
 <a id="download2" href="">Download AS PNG</a>
 <script src="https://unpkg.com/echarts@5.5.0/dist/echarts.js"></script>
 <script>
+    const ldata = {
+        data: {!! $data !!},
+        time: {!! $time !!},
+    }
+</script>
+<script>
     const charts1 = echarts.init(document.getElementById('main1'));
     const option1 = {
         xAxis: {
             name: 'Time',
             type: 'category',
-            data: {!! $time !!},
+            data: ldata.time,
         },
         yAxis: {
             name: 'Rate',
@@ -26,7 +33,7 @@
         series: [{
             name: 'Rate',
             type: 'line',
-            data: {!! $data !!},
+            data: ldata.data,
             smooth: false,
             large: true,
         }],
@@ -47,7 +54,7 @@
         xAxis: {
             name: 'Time',
             type: 'category',
-            data: {!! $time !!},
+            data: ldata.time,
         },
         yAxis: {
             name: 'Rate',
@@ -64,7 +71,7 @@
         series: [{
             name: 'Rate',
             type: 'line',
-            data: {!! $data !!},
+            data: ldata.data,
             smooth: false,
             large: true,
         }],
