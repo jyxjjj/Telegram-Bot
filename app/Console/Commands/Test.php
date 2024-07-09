@@ -45,6 +45,7 @@ class Test extends Command
 
     public function handle(): int
     {
+        // 1
         $data = file_get_contents('database/city.csv');
         $data = trim($data);
         $data = explode("\n", $data);
