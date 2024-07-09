@@ -36,6 +36,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class Test extends Command
 {
@@ -44,6 +45,27 @@ class Test extends Command
 
     public function handle(): int
     {
+        $data = file_get_contents('database/city.csv');
+        $data = trim($data);
+        $data = explode("\n", $data);
+        $data = array_map(fn($v) => explode('    ', $v), $data);
+        for ($i = 0; $i < count($data); $i++) {
+            if (!isset($data[$i][2])) {
+                $data[$i][2] = 0;
+            }
+        }
+        $data = array_map(fn($v) => array_map(fn($v) => trim($v), $v), $data);
+        $sql = "CREATE TEMPORARY TABLE `tg__city` (`id` INT PRIMARY KEY AUTO_INCREMENT, `name` VARCHAR(64) NOT NULL, `adcode` VARCHAR(6) NOT NULL, `citycode` VARCHAR(6) NOT NULL);";
+        DB::statement($sql);
+        $ts = array_map(fn($v) => "('$v[0]', '$v[1]', '$v[2]')", $data);
+        $sql = "INSERT INTO `tg__city` (`name`, `adcode`, `citycode`) VALUES ";
+        $sql .= implode(',', $ts);
+        $sql .= ";";
+        DB::statement($sql);
+        $sql = "SELECT `citycode`, `adcode`, `name` FROM `tg__city` ORDER BY `adcode`;";
+        $data = DB::select($sql);
+        DB::statement("DROP TEMPORARY TABLE `tg__city`;");
+        file_put_contents('database/city.json', json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         return self::SUCCESS;
     }
 }
