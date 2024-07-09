@@ -72,31 +72,35 @@ class WeatherCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data));
             return;
         }
+        $messageText = trim($message->getText(true) ?? '南京');
+        $city = $this->getCity($messageText);
+        if ($city == 0) {
+            $data['text'] = 'City not found.';
+            $this->dispatch(new SendMessageJob($data));
+            return;
+        }
         $result = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(10)
             ->timeout(10)
             ->retry(3, 1000, throw: false)
-            ->baseUrl('https://api.caiyunapp.com/v2.6/{token}/{pos}/')
-            ->withUrlParameters([
-                    'token' => env('CAIYUN_WEATHER_API_TOKEN'),
-                    'pos' => '118.7271427,32.0348853',
+            ->baseUrl('https://restapi.amap.com/v3/weather/weatherInfo')
+            ->withQueryParameters([
+                    'key' => env('AMAP_KEY'),
+                    'city' => $city,
+                    'extensions' => 'all',
+                    'output' => 'json',
                 ]
             )
             ->get('daily?dailysteps=1&unit=metric:v2');
-        $result = $result->json('result');
-        @$str = "Location: 118.7271427, 32.0348853 NKG, CN\n";
-        @$str .= "日出日落：{$result['daily']['astro'][0]['sunrise']['time']} ~ {$result['daily']['astro'][0]['sunset']['time']}\n";
-        @$str .= "天气：{$this->translate($result['daily']['skycon'][0]['value'])}\n";
-        @$str .= "降水量：{$result['daily']['precipitation'][0]['min']} ~ {$result['daily']['precipitation'][0]['max']} AVG {$result['daily']['precipitation'][0]['avg']}\n";
-        @$str .= "降水概率：{$result['daily']['precipitation'][0]['probability']}\n";
-        @$str .= "气温：{$result['daily']['temperature'][0]['min']} ~ {$result['daily']['temperature'][0]['max']} AVG {$result['daily']['temperature'][0]['avg']}\n";
-        @$str .= "能见度：{$result['daily']['visibility'][0]['min']} ~ {$result['daily']['visibility'][0]['max']} AVG {$result['daily']['visibility'][0]['avg']}\n";
-        @$str .= "PM2.5：{$result['daily']['air_quality']['pm25'][0]['min']} ~ {$result['daily']['air_quality']['pm25'][0]['max']} AVG {$result['daily']['air_quality']['pm25'][0]['avg']}\n";
-        @$str .= "舒适度：{$result['daily']['life_index']['comfort'][0]['desc']}\n";
-        @$str .= "紫外线：{$result['daily']['life_index']['ultraviolet'][0]['desc']}\n";
-        @$str .= "穿衣指数：{$result['daily']['life_index']['dressing'][0]['desc']}\n";
         $data['text'] .= $str;
         $this->dispatch(new SendMessageJob($data));
+    }
+
+    private function getCity(string $city): ?int
+    {
+        return match ($city) {
+            '' => '',
+        };
     }
 
     private function translate(string $skycon): string

@@ -35,9 +35,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Commands\SpeedTestCommand;
 use Illuminate\Console\Command;
-use ReflectionClass;
 
 class Test extends Command
 {
@@ -46,16 +44,6 @@ class Test extends Command
 
     public function handle(): int
     {
-        dump((8987 * 1024) + .55);
-        $ref = new ReflectionClass(SpeedTestCommand::class);
-        $getBestServer = $ref->getMethod('getBestServer');
-        $instance = $ref->newInstance();
-        $server = $getBestServer->invoke($instance);
-        $shareMethod = $ref->getMethod('share');
-        $download = (25600 * 1024) + .52;
-        $upload = (25600 * 1024) + .53;
-        $share = $shareMethod->invoke($instance, $download, $upload, $server);
-        dump($share);
         return self::SUCCESS;
     }
 }
