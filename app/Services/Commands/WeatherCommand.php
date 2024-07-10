@@ -80,6 +80,9 @@ class WeatherCommand extends BaseCommand
             return;
         }
 
+        // Degree Celsius
+        $symbol = hex2bin('E2') . hex2bin('84') . hex2bin('83');
+
         // live
         $liveWeather = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(10)
@@ -101,7 +104,7 @@ class WeatherCommand extends BaseCommand
                 $data['text'] .= "江苏省南京市建邺区(320105)\n";
                 $data['text'] .= "Update Time: {$liveWeather['lives'][0]['reporttime']}\n";
                 $data['text'] .= "实时天气: {$liveWeather['lives'][0]['weather']}\n";
-                $data['text'] .= "实时温度: {$liveWeather['lives'][0]['temperature']}\u2103\n";
+                $data['text'] .= "实时温度: {$liveWeather['lives'][0]['temperature']}$symbol\n";
                 $data['text'] .= "实时湿度: {$liveWeather['lives'][0]['humidity']}%\n";
                 $data['text'] .= "实时风向: {$liveWeather['lives'][0]['winddirection']}\n";
                 $data['text'] .= "实时风力: {$liveWeather['lives'][0]['windpower']}级\n";
@@ -136,11 +139,11 @@ class WeatherCommand extends BaseCommand
                 foreach ($forecastWeather['forecasts'][0]['casts'] as $cast) {
                     $data['text'] .= "日期: {$cast['date']} 周{$this->toCNWeek($cast['week'])}\n";
                     $data['text'] .= "白天天气: {$cast['dayweather']}\n";
-                    $data['text'] .= "白天温度: {$cast['daytemp']}\u2103\n";
+                    $data['text'] .= "白天温度: {$cast['daytemp']}$symbol\n";
                     $data['text'] .= "白天风向: {$cast['daywind']}\n";
                     $data['text'] .= "白天风力: {$cast['daypower']}级\n";
                     $data['text'] .= "夜间天气: {$cast['nightweather']}\n";
-                    $data['text'] .= "夜间温度: {$cast['nighttemp']}\u2103\n";
+                    $data['text'] .= "夜间温度: {$cast['nighttemp']}$symbol\n";
                     $data['text'] .= "夜间风向: {$cast['nightwind']}\n";
                     $data['text'] .= "夜间风力: {$cast['nightpower']}级\n";
                     $data['text'] .= "----------------\n";
