@@ -114,7 +114,7 @@ class WeatherCommand extends BaseCommand
         } else {
             $data['text'] .= '实时天气数据接口调用失败';
         }
-        $this->dispatch(new SendMessageJob($data));
+        $this->dispatch(new SendMessageJob($data, null, 0));
         $data['text'] = '';
         // forecast
         $forecastWeather = Http::withHeaders(Config::CURL_HEADERS)
@@ -155,7 +155,7 @@ class WeatherCommand extends BaseCommand
         } else {
             $data['text'] .= '预报天气数据接口调用失败';
         }
-        $this->dispatch(new SendMessageJob($data));
+        $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     private function toCNWeek(string $week): string
