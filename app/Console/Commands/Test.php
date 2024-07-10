@@ -44,27 +44,6 @@ class Test extends Command
 
     public function handle(): int
     {
-//        $data1 = parse_ini_file('database/city.ini');
-        $data2 = json_decode(file_get_contents('database/city.json'), true);
-        $data3 = [];
-        foreach ($data2 as $id => ['citycode' => $cityCode, 'adcode' => $adCode, 'name' => $name]) {
-            if (str_ends_with($adCode, '0')) {
-                $data3[] = [
-                    $name => $adCode,
-                ];
-            }
-        }
-//        foreach ($data1 as $fullAdCode => $fullCityName) {
-//            foreach ($data2 as $id => ['citycode' => $cityCode, 'adcode' => $adCode, 'name' => $name]) {
-//                if ($fullAdCode == $adCode) {
-//                    $data3[] = [
-//                        $fullCityName => $fullAdCode,
-//                    ];
-//                }
-//            }
-//        }
-        dump($data3);
-        dump(count($data3));
         return self::SUCCESS;
     }
 }
