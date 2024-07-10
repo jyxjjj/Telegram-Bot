@@ -39,7 +39,9 @@ use App\Common\BotCommon;
 use App\Common\Config;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -56,6 +58,7 @@ class WeatherCommand extends BaseCommand
      * @param int $updateId
      * @return void
      * @throws TelegramException
+     * @throws ConnectionException
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
@@ -72,58 +75,21 @@ class WeatherCommand extends BaseCommand
             $this->dispatch(new SendMessageJob($data));
             return;
         }
-        $messageText = trim($message->getText(true) ?? '南京');
-        $city = $this->getCity($messageText);
-        if ($city == 0) {
-            $data['text'] = 'City not found.';
-            $this->dispatch(new SendMessageJob($data));
-            return;
-        }
         $result = Http::withHeaders(Config::CURL_HEADERS)
             ->connectTimeout(10)
             ->timeout(10)
             ->retry(3, 1000, throw: false)
-            ->baseUrl('https://restapi.amap.com/v3/weather/weatherInfo')
+            ->baseUrl('https://restapi.amap.com/v3/')
             ->withQueryParameters([
                     'key' => env('AMAP_KEY'),
-                    'city' => $city,
+                    'city' => 320105,
                     'extensions' => 'all',
                     'output' => 'json',
                 ]
             )
-            ->get('daily?dailysteps=1&unit=metric:v2');
-        $data['text'] .= $str;
-        $this->dispatch(new SendMessageJob($data));
-    }
-
-    private function getCity(string $city): ?int
-    {
-        return match ($city) {
-            '' => '',
-        };
-    }
-
-    private function translate(string $skycon): string
-    {
-        return match ($skycon) {
-            'CLEAR_DAY', 'CLEAR_NIGHT' => '晴',
-            'PARTLY_CLOUDY_DAY', 'PARTLY_CLOUDY_NIGHT' => '多云',
-            'CLOUDY' => '阴',
-            'LIGHT_HAZE' => '轻度雾霾',
-            'MODERATE_HAZE' => '中度雾霾',
-            'HEAVY_HAZE' => '重度雾霾',
-            'LIGHT_RAIN' => '小雨',
-            'MODERATE_RAIN' => '中雨',
-            'HEAVY_RAIN' => '大雨',
-            'STORM_RAIN' => '暴雨',
-            'FOG' => '雾',
-            'LIGHT_SNOW' => '小雪',
-            'MODERATE_SNOW' => '中雪',
-            'HEAVY_SNOW' => '大雪',
-            'STORM_SNOW' => '暴雪',
-            'DUST' => '浮尘',
-            'SAND' => '沙尘',
-            'WIND' => '大风',
-        };
+            ->get('weather/weatherInfo');
+        Log::debug($result);
+//        $data['text'] .= '';
+//        $this->dispatch(new SendMessageJob($data));
     }
 }
