@@ -55,13 +55,13 @@ A PHP Laravel Telegram Bot
 
 [![DigitalOcean](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://m.do.co/c/23e8653b361a)
 
-[![Fedora](https://img.shields.io/badge/Fedora-37-blue.svg?style=flat-square)](https://getfedora.org)
+[![Fedora](https://img.shields.io/badge/Fedora-40-blue.svg?style=flat-square)](https://getfedora.org)
 
-[![PHP](https://img.shields.io/badge/PHP-^8.2-purple.svg?style=flat-square)](https://www.php.net/downloads.php)
+[![PHP](https://img.shields.io/badge/PHP-^8.3-purple.svg?style=flat-square)](https://www.php.net/downloads.php)
 
-[![Mariadb](https://img.shields.io/badge/MariaDB-^10.10-yellow.svg?style=flat-square)](https://mariadb.org/download/)
+[![Mariadb](https://img.shields.io/badge/MariaDB-^11.3-yellow.svg?style=flat-square)](https://mariadb.org/download/)
 
-[![Redis](https://img.shields.io/badge/Redis-^7.0-red.svg?style=flat-square)](https://redis.io/download)
+[![Redis](https://img.shields.io/badge/Redis-^7.2-red.svg?style=flat-square)](https://redis.io/download)
 
 # Install
 
