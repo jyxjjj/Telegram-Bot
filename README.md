@@ -10,6 +10,18 @@ We always make our codes open source, and we do not earn any money from them.
 
 It is hard to maintain the codes, and we have to pay for the server.
 
+Main Bot is still available, and under maintenance.
+
+But it will have more private code and less open source code.
+
+This will not affect any of your usage or development, all migration will happen on new codes.
+
+The main reason to open this project is to make a framework instead of a full bot.
+
+After we give such a lot of functions, we found that we have no time to maintain them.
+
+And more and more APIs are not free to use.
+
 So we have no more time to maintain such a lot of bots.
 
 We are sorry for the inconvenience.
