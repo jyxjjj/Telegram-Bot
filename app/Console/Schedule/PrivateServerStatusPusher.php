@@ -41,7 +41,6 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class PrivateServerStatusPusher extends Command
@@ -146,7 +145,6 @@ class PrivateServerStatusPusher extends Command
             return "$host: Error: {$e->getMessage()}";
         }
         $rate = number_format($loss / 16 * 100, 2, '.', '');
-        Log::notice($rate);
         return $rate >= 87.5 ? "$host: Packet loss rate: $rate >= 87.5%" : "";
     }
 
