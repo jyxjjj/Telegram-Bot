@@ -1,3 +1,23 @@
+# Recently Notice
+
+We have deleted Searchable Bots and Contribute 3.0 Bots, and we will not provide any support for them.
+
+Contribute 2.0 Codes are still available, but we will not provide any support for them.
+
+It will soon be transfer to other open source enthusiasts.
+
+We always make our codes open source, and we do not earn any money from them.
+
+It is hard to maintain the codes, and we have to pay for the server.
+
+So we have no more time to maintain such a lot of bots.
+
+We are sorry for the inconvenience.
+
+If you like our codes, you can donate to us via the donate button this README file contains or right side of this repository.
+
+Thank you for your support.
+
 # Telegram-Bot
 
 A PHP Laravel Telegram Bot
