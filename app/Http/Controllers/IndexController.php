@@ -39,13 +39,11 @@ use App\Common\BotCommon;
 use App\Common\IP;
 use App\Jobs\SendMessageJob;
 use App\Jobs\WebhookJob;
-use App\Models\BaseModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\View\View;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 
@@ -57,22 +55,6 @@ class IndexController extends BaseController
     public function index(): Response
     {
         return $this->plain(IP::getClientIpInfos());
-    }
-
-    public function latency(): View
-    {
-        $model = new BaseModel;
-        $model->setTable('logs');
-        $data = $model->newQuery()
-            ->withTrashed()
-            ->select('message', 'created_at')
-            ->where('level', 'NOTICE')
-            ->whereRaw('CAST(message AS DECIMAL(5,2)) = message')
-            ->get();
-        $time = $data->pluck('created_at')->map(fn($item) => Carbon::parse($item)->format('Y-m-d H:i:s'))->toArray();
-        $data = $data->pluck('message')->map(fn($item) => (float)$item)->toArray();
-        $count = count($data);
-        return view('Latency', ['count' => $count, 'time' => json_encode($time), 'data' => json_encode($data),]);
     }
 
     public function sendMessage(Request $request): JsonResponse
