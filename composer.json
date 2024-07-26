@@ -23,11 +23,11 @@
         "ext-simplexml": "*",
         "ext-sockets": "*",
         "ext-zlib": "*",
-        "desmg/php-common": "^2.0.2",
-        "guzzlehttp/guzzle": "^7.8.1",
-        "laravel/framework": "^11.11.0",
+        "desmg/php-common": "^2.0.3",
+        "guzzlehttp/guzzle": "^7.9.2",
+        "laravel/framework": "^11.18.0",
         "longman/telegram-bot": "^0.83.0",
-        "nunomaduro/collision": "^8.1.1",
+        "nunomaduro/collision": "^8.3.0",
         "spatie/laravel-ignition": "^2.8.0"
     },
     "autoload": {
