@@ -7,7 +7,7 @@
         "Bot",
         "laravel"
     ],
-    "license": "GPL-3.0-only",
+    "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.3",
         "ext-bcmath": "*",
@@ -25,7 +25,7 @@
         "ext-zlib": "*",
         "desmg/php-common": "^2.0.3",
         "guzzlehttp/guzzle": "^7.9.2",
-        "laravel/framework": "^11.18.0",
+        "laravel/framework": "^11.19.0",
         "longman/telegram-bot": "^0.83.0",
         "nunomaduro/collision": "^8.3.0",
         "spatie/laravel-ignition": "^2.8.0"

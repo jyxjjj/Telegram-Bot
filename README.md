@@ -1,3 +1,12 @@
+# LICENSE CHANGE
+
+As of 2024-08-01, the license for Telegram-Bot has been updated
+from GNU General Public License Version 3 [(GPLv3)](https://www.gnu.org/licenses/gpl-3.0)
+to GNU Affero General Public License Version 3 [(AGPLv3)](https://www.gnu.org/licenses/agpl-3.0).
+
+This change ensures that any use of the software over a network must also provide the corresponding source code,
+in line with our commitment to software freedom.
+
 # Recently Notice
 
 We have deleted Searchable Bots and Contribute 3.0 Bots, and we will not provide any support for them.
