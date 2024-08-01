@@ -58,7 +58,7 @@ A PHP Laravel Telegram Bot
 
 # License
 
-[GPL-3.0-Only](LICENSE)
+[AGPL-3.0-Only](LICENSE)
 
 # Versions
 
