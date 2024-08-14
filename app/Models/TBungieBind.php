@@ -32,6 +32,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+
 /**
  * @property int $id 主键
  * @property int $user_id 用户ID
@@ -49,4 +51,43 @@ namespace App\Models;
 class TBungieBind extends BaseModel
 {
     protected $table = 'bungie_bind';
+
+    public function getUser(int $user_id): ?TBungieBind
+    {
+        return $this->newQuery()
+            ->where('user_id', $user_id)
+            ->first();
+    }
+
+    public function saveUser(int $user_id, int $membership_id, string $access_token, string $refresh_token, int $expires_in, int $refresh_expires_in): bool|TBungieBind
+    {
+        $data = $this->newQuery()
+            ->where('user_id', $user_id)
+            ->exists();
+        if ($data) {
+            return $this->newQuery()
+                ->where('user_id', $user_id)
+                ->update([
+                    'membership_id' => $membership_id,
+                    'access_token' => $access_token,
+                    'refresh_token' => $refresh_token,
+                    'expires_in' => $expires_in,
+                    'refresh_expires_in' => $refresh_expires_in,
+                    'token_created_at' => Carbon::createFromTimestamp(LARAVEL_START),
+                    'refresh_token_created_at' => Carbon::createFromTimestamp(LARAVEL_START),
+                ]);
+        } else {
+            return $this->newQuery()
+                ->create([
+                    'user_id' => $user_id,
+                    'membership_id' => $membership_id,
+                    'access_token' => $access_token,
+                    'refresh_token' => $refresh_token,
+                    'expires_in' => $expires_in,
+                    'refresh_expires_in' => $refresh_expires_in,
+                    'token_created_at' => Carbon::createFromTimestamp(LARAVEL_START),
+                    'refresh_token_created_at' => Carbon::createFromTimestamp(LARAVEL_START),
+                ]);
+        }
+    }
 }

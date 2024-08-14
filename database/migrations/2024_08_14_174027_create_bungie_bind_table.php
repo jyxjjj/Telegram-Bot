@@ -41,8 +41,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->autoIncrement()->comment('主键');
             $table->BigInteger('user_id')->default(0)->comment('用户ID');
             $table->BigInteger('membership_id')->default(0)->comment('棒鸡用户ID');
-            $table->string('access_token', 256)->default('')->comment('授权Token');
-            $table->string('refresh_token', 256)->default('')->comment('刷新Token');
+            $table->string('access_token', 1024)->default('')->comment('授权Token');
+            $table->string('refresh_token', 1024)->default('')->comment('刷新Token');
             $table->integer('expires_in')->default(0)->comment('Token有效期');
             $table->integer('refresh_expires_in')->default(0)->comment('刷新Token有效期');
             $table->timestamp('token_created_at')->useCurrent()->comment('Token创建时间');
