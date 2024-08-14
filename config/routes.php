@@ -51,8 +51,8 @@ function defineRoutes(): void
             'prefix' => 'api',
         ],
         function () {
-            Route::post("/webhook", [IndexController::class, 'webhook']);
-            Route::post("/sendMessage", [IndexController::class, 'sendMessage']);
+            Route::post('/webhook', [IndexController::class, 'webhook']);
+            Route::post('/sendMessage', [IndexController::class, 'sendMessage']);
 
             Route::group(
                 [
