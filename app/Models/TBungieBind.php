@@ -41,7 +41,7 @@ namespace App\Models;
  * @property int $expires_in Token有效期
  * @property int $refresh_expires_in 刷新Token有效期
  * @property int $token_created_at Token创建时间
- * @property int $refresh_token_created_at Token创建时间
+ * @property int $refresh_token_created_at 刷新Token创建时间
  * @property int $created_at 创建时间
  * @property int $updated_at 更新时间
  * @property ?int $deleted_at 删除时间

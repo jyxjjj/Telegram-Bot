@@ -46,7 +46,7 @@ return new class extends Migration {
             $table->integer('expires_in')->default(0)->comment('Token有效期');
             $table->integer('refresh_expires_in')->default(0)->comment('刷新Token有效期');
             $table->timestamp('token_created_at')->useCurrent()->comment('Token创建时间');
-            $table->timestamp('refresh_token_created_at')->useCurrent()->comment('Token创建时间');
+            $table->timestamp('refresh_token_created_at')->useCurrent()->comment('刷新Token创建时间');
             $table->timestamp('created_at')->useCurrent()->comment('创建时间');
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate()->comment('更新时间');
             $table->timestamp('deleted_at')->nullable()->comment('删除时间');
