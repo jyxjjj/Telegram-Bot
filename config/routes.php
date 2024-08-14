@@ -32,6 +32,7 @@
 
 use App\Http\Controllers\BungieController;
 use App\Http\Controllers\IndexController;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -62,6 +63,9 @@ function defineRoutes(): void
                     Route::group(
                         [
                             'prefix' => 'oauth',
+                            'middleware' => [
+                                StartSession::class,
+                            ],
                         ],
                         function () {
                             Route::get('/login', [BungieController::class, 'login']);
