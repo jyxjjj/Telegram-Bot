@@ -49,7 +49,7 @@ class B23VideoInfoKeyword extends BaseKeyword
 {
     public string $name = 'Bilibili video info';
     public string $description = 'Get Bilibili Video Info';
-    protected string $pattern = '/^(av(\d{1,19})|BV1[a-zA-Z0-9]+)$/m';
+    protected string $pattern = '/^(av(\d{1,19})|BV1[a-zA-Z0-9]{9})$/m';
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
@@ -96,7 +96,7 @@ class B23VideoInfoKeyword extends BaseKeyword
         if (preg_match('/^av(\d{1,19})$/m', $vid, $matches)) {
             return $matches[0];
         }
-        if (preg_match('/^BV1[a-zA-Z0-9]+$/m', $vid, $matches)) {
+        if (preg_match('/^BV1[a-zA-Z0-9]{9}$/m', $vid, $matches)) {
             return $matches[0];
         }
         return false;
