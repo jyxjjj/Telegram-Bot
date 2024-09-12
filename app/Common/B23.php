@@ -52,7 +52,7 @@ final readonly class B23
         while ($tmp > 0) {
             $r = $tmp % 58;
             $bvid[$i] = self::ALPHABET[$r];
-            $tmp = bcdiv($tmp, 58);
+            $tmp = intval($tmp / 58);
             $i -= 1;
         }
         [$bvid[0], $bvid[6]] = [$bvid[6], $bvid[0]];
