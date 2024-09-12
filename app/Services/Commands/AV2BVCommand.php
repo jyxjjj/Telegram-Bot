@@ -57,16 +57,21 @@ class AV2BVCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
         $param = $message->getText(true);
-        $bvid = B23::AV2BV($param);
-        $link = "https://b23.tv/$bvid";
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
             'text' => '',
-            'reply_markup' => new InlineKeyboard([]),
         ];
+        if (strlen($param) < 1) {
+            $data['text'] = 'Please input AVID.';
+            $this->dispatch(new SendMessageJob($data, null, 0));
+            return;
+        }
+        $bvid = B23::AV2BV($param);
+        $link = "https://b23.tv/$bvid";
         $data['text'] .= "BVID: <code>$bvid</code>\n";
         $data['text'] .= "Link: <code>$link</code>\n";
+        $data['reply_markup'] = new InlineKeyboard([]);
         $button = new InlineKeyboardButton(['text' => $bvid, 'url' => $link]);
         $data['reply_markup']->addRow($button);
         $this->dispatch(new SendMessageJob($data, null, 0));

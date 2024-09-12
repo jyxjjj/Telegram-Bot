@@ -57,16 +57,21 @@ class BV2AVCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $messageId = $message->getMessageId();
         $param = $message->getText(true);
-        $avid = B23::BV2AV($param);
-        $link = "https://b23.tv/$avid";
         $data = [
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
             'text' => '',
-            'reply_markup' => new InlineKeyboard([]),
         ];
+        if (strlen($param) < 1) {
+            $data['text'] = 'Please input BVID.';
+            $this->dispatch(new SendMessageJob($data, null, 0));
+            return;
+        }
+        $avid = B23::BV2AV($param);
+        $link = "https://b23.tv/$avid";
         $data['text'] .= "AVID: <code>$avid</code>\n";
         $data['text'] .= "Link: <code>$link</code>\n";
+        $data['reply_markup'] = new InlineKeyboard([]);
         $button = new InlineKeyboardButton(['text' => $avid, 'url' => $link]);
         $data['reply_markup']->addRow($button);
         $this->dispatch(new SendMessageJob($data, null, 0));
