@@ -50,7 +50,6 @@ class TRC20Monitor extends Command
         $list = [
             'THue4NmwEVF8HKV6y9aHzanmWMQSsMMMMM' => ['@LZSMIAO ', '-1002117558170'],
             'TQFRgPM9RuCpCffZGwnfs1ENtnrJt9oRJn' => ['@linzeen ', '-1001743989979'],
-            'TLie3XqtwQroiAxmCHT4bWocaUEmAeqEjE' => ['@jyxjjj ', '-1001261547245'],
         ];
         foreach ($list as $address => [$user, $chat]) {
             $text = '';
