@@ -72,16 +72,34 @@ class AboutCommand extends BaseCommand
             'text' => '',
         ];
         $data['text'] .= "龙缘特种工业集团机器人\n";
+        $data['text'] .= "DESMG Main API(DESMG)\n";
         $data['text'] .= "龙缘科技 版权所有\n";
         $data['text'] .= sprintf("Copyright (C) %s\n", date('Y'));
         $data['text'] .= "DESMG All rights reserved.\n";
-        $data['text'] .= "DESMG Main API(DESMG)\n";
         $data['text'] .= "<b>Version</b>: $version\n";
         $data['text'] .= "<b>Updated</b>: <code>$date</code>\n";
         $data['text'] .= sprintf("<b>System Time</b>: <code>%s</code>\n", date('Y-m-d H:i:s'));
         $data['text'] .= sprintf("<b>Device Name</b>: <code>%s</code>\n", php_uname('n'));
         $data['text'] .= sprintf("<b>System Version</b>: <code>%s %s %s</code>\n", php_uname('s'), php_uname('r'), php_uname('m'));
         $data['text'] .= sprintf("<b>PHP Version</b>: <code>%s %s %s</code>\n", PHP_VERSION, PHP_SAPI, PHP_OS);
+        $data['text'] .= <<<GPL
+<blockquote>
+Released under GNU Affero General Public License Version 3.0
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.
+</blockquote>
+GPL;
         $data['reply_markup'] = new InlineKeyboard([]);
         $personal = new InlineKeyboardButton([
             'text' => '个人频道',
