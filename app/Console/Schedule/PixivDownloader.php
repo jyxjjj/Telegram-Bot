@@ -32,12 +32,11 @@
 
 namespace App\Console\Schedule;
 
-use App\Common\Config;
 use App\Common\ERR;
+use App\Common\RequestHelper;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -72,7 +71,6 @@ class PixivDownloader extends Command
      */
     private function getRanks(): array
     {
-        $headers = Config::CURL_HEADERS;
         $headers['Referer'] = 'https://www.pixiv.net/ranking.php?mode=daily';
         $data = [];
         $json['next'] = 1;
@@ -80,10 +78,7 @@ class PixivDownloader extends Command
         while ($json['next']) {
             self::info("Getting Page {$json['next']}");
             $url = "https://www.pixiv.net/ranking.php?mode=daily&content=illust&p={$json['next']}&format=json";
-            $response = Http::withHeaders($headers)
-                ->connectTimeout(10)
-                ->timeout(10)
-                ->retry(3, 1000, throw: false)
+            $response = RequestHelper::getInstance()->withHeaders($headers)
                 ->get($url);
             $json = $response->json();
             $code = $response->status();

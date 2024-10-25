@@ -36,7 +36,7 @@ use App\Jobs\Base\BaseQueue;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
-class DeletePixivFileJob extends BaseQueue
+class DeleteFileJob extends BaseQueue
 {
     private string $path;
 
