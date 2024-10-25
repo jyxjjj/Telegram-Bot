@@ -54,6 +54,10 @@ This software is licensed under the AGPL, without any warranty.",
         imagecopy($image, $baseImage, 0, 0, 0, 0, 512, 512);
         imagedestroy($baseImage);
         $font = '/usr/share/fonts/google-noto-sans-sc-fonts/NotoSansSC-Medium.otf';
+        $fontHash = Hash::sha256(file_get_contents($font));
+        $data['caption'] .= "\nFont Hash: $fontHash";
+        $data['caption'] .= "\nFont Provider: Fedora Project";
+        $data['caption'] .= "\nFont Produced by: Google";
         $color = imagecolorallocate($image, 255, 255, 255);
         imagettftext($image, 48, 0, 200, 320, $color, $font, $text);
         ob_start();
