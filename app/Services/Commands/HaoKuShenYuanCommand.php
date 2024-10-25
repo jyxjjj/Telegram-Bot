@@ -29,6 +29,9 @@ IMG;
             'chat_id' => $chatId,
             'reply_to_message_id' => $messageId,
             'photo' => null,
+            'caption' => "Based on Noto Sans SC.
+Please <a href=\"https://github.com/google/fonts/issues\">contact Google</a> for character set issues.
+This software is licensed under the AGPL, without any warranty.",
             'is_file' => true,
             'protect_content' => false,
         ];
