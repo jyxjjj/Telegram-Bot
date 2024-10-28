@@ -32,10 +32,10 @@
 
 namespace App\Services\Keywords;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseKeyword;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -129,13 +129,11 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
     /**
      * @param string $link
      * @return string header Location
+     * @throws ConnectionException
      */
     private function getLocation(string $link): string
     {
-        $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= " Telegram-TikTok-Link-Tracker-Remover/$this->version";
-        $location = Http::
-        withHeaders($headers)
+        $location = RequestHelper::getInstance()
             ->withoutRedirecting()
             ->get($link)
             ->header('Location');
