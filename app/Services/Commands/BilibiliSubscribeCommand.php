@@ -32,12 +32,12 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Models\TBilibiliSubscribes;
 use App\Models\TChatAdmins;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -126,13 +126,11 @@ class BilibiliSubscribeCommand extends BaseCommand
     /**
      * @param string $link
      * @return array|null
+     * @throws ConnectionException
      */
     private function getJson(string $link): ?array
     {
-        $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= " Telegram-B23-Subscriber/$this->version";
-        return Http::
-        withHeaders($headers)
+        return RequestHelper::getInstance()
             ->get($link)
             ->json();
     }

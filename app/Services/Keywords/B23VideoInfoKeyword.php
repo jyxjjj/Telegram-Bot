@@ -32,13 +32,12 @@
 
 namespace App\Services\Keywords;
 
-use App\Common\Config;
 use App\Common\ERR;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -149,10 +148,7 @@ class B23VideoInfoKeyword extends BaseKeyword
     {
         $vid = substr($vid, 2);
         $link = is_numeric($vid) ? "https://api.bilibili.com/x/web-interface/view?aid=$vid" : "https://api.bilibili.com/x/web-interface/view?bvid=$vid";
-        $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= " Telegram-B23-Spider/$this->version";
-        return Http::
-        withHeaders($headers)
+        return RequestHelper::getInstance()
             ->get($link)
             ->json();
     }

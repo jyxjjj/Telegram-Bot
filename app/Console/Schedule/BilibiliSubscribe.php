@@ -32,8 +32,8 @@
 
 namespace App\Console\Schedule;
 
-use App\Common\Config;
 use App\Common\ERR;
+use App\Common\RequestHelper;
 use App\Jobs\SendPhotoJob;
 use App\Models\TBilibiliSubscribes;
 use Illuminate\Console\Command;
@@ -41,7 +41,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Throwable;
@@ -195,14 +194,7 @@ class BilibiliSubscribe extends Command
     private function getJson(string $link): array
     {
         self::info('Cache miss, get json from bilibili');
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-B23-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
-            ->connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
+        return RequestHelper::getInstance()
             ->get($link)
             ->json();
     }
