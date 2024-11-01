@@ -32,10 +32,9 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -56,8 +55,7 @@ class AboutCommand extends BaseCommand
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
-        $commits = Http::
-        withHeaders(Config::CURL_HEADERS)
+        $commits = RequestHelper::getInstance()
             ->accept('application/vnd.github.v3+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/jyxjjj/Telegram-Bot/commits?per_page=1')
