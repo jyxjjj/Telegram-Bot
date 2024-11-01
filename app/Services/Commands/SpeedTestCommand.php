@@ -32,11 +32,10 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -86,11 +85,9 @@ class SpeedTestCommand extends BaseCommand
             $start = Carbon::now()->getTimestampMs();
             for ($i = 0; $i < 10; $i++) {
                 try {
-                    Http::withHeaders(Config::CURL_HEADERS)
-                        ->timeout(1)
+                    RequestHelper::getInstance(1, 1, 1)
                         ->get($url);
                 } catch (Throwable) {
-
                 }
             }
             $end = Carbon::now()->getTimestampMs();
@@ -103,8 +100,7 @@ class SpeedTestCommand extends BaseCommand
 
     private function getServers(): array
     {
-        $data = Http::
-        withHeaders(Config::CURL_HEADERS)
+        $data = RequestHelper::getInstance()
             ->get('https://www.speedtest.net/speedtest-servers.php')
             ->body();
         if (strlen($data) < 10) {
@@ -135,7 +131,7 @@ class SpeedTestCommand extends BaseCommand
         $start = Carbon::now()->getTimestampMs();
         for ($i = 0; $i < 20; $i++) {
             try {
-                Http::withHeaders(Config::CURL_HEADERS)
+                RequestHelper::getInstance()
                     ->get($url);
             } catch (Throwable) {
                 return -1;
@@ -155,7 +151,7 @@ class SpeedTestCommand extends BaseCommand
         $start = Carbon::now()->getTimestampMs();
         for ($i = 0; $i < 20; $i++) {
             try {
-                Http::withHeaders(Config::CURL_HEADERS)
+                RequestHelper::getInstance()
                     ->withBody($data, 'image/jpeg')
                     ->post($url);
             } catch (Throwable) {
@@ -170,7 +166,7 @@ class SpeedTestCommand extends BaseCommand
     private function share($download, $upload, $server): string
     {
         $url = "https://www.speedtest.net/api/api.php";
-        $headers = array_merge(Config::CURL_HEADERS, ['Referer' => 'https://c.speedtest.net/flash/speedtest.swf']);
+        $headers = ['Referer' => 'https://c.speedtest.net/flash/speedtest.swf'];
         $hash = md5("{$server['latency']}-$upload-$download-297aae72");
         $data = [
             "recommendedserverid={$server['id']}",
@@ -190,7 +186,8 @@ class SpeedTestCommand extends BaseCommand
             "serverid={$server['id']}",
         ];
         $data = implode('&', $data);
-        $data = Http::withHeaders($headers)
+        $data = RequestHelper::getInstance()
+            ->withHeaders($headers)
             ->withBody($data, 'application/x-www-form-urlencoded')
             ->post($url)
             ->body();
