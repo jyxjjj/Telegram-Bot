@@ -32,8 +32,8 @@
 
 namespace App\Console\Schedule;
 
-use App\Common\Config;
 use App\Common\ERR;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Models\TUpdateSubscribes;
 use DESMG\RFC6986\Hash;
@@ -42,7 +42,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 
@@ -137,11 +136,7 @@ class ChromeUpdateSubscribe extends Command
      */
     private function getJson(): array
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-ChromeUpdate-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
+        return RequestHelper::getInstance()
             ->get('https://chromiumdash.appspot.com/fetch_releases?channel=Stable,Canary&platform=Windows,Mac,iOS,Android,Linux&num=1&offset=0')
             ->json();
     }
