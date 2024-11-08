@@ -32,11 +32,10 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 
@@ -72,7 +71,7 @@ class GetTransHashesCommand extends BaseCommand
     private function get3Transactions(string $address): string
     {
         $url = 'https://apilist.tronscan.org/api/new/token_trc20/transfers?limit=3&toAddress=' . $address;
-        $data = Http::withHeaders(Config::CURL_HEADERS)
+        $data = RequestHelper::getInstance()
             ->withHeader('TRON-PRO-API-KEY', env('TRON_PRO_API_KEY'))
             ->get($url);
         $data = $data->json();
