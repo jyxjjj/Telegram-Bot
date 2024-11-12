@@ -89,7 +89,18 @@ This software is licensed under the AGPL, without any warranty.",
         $data['caption'] .= "\nFont Provider: Fedora Project";
         $data['caption'] .= "\nFont Produced by: Google";
         $color = imagecolorallocate($image, 255, 255, 255);
-        imagettftext($image, 48, 0, 200, 320, $color, $font, $text);
+        $x1 = 190;
+        $y1 = 230;
+        $x2 = 400;
+        $y2 = 380;
+        $width = $x2 - $x1;  // 区域宽度
+        $height = $y2 - $y1;  // 区域高度
+        $bbox = imagettfbbox(36, -15, $font, '测试');
+        $textWidth = $bbox[2] - $bbox[0];  // 文本宽度
+        $textHeight = $bbox[7] - $bbox[1]; // 文本高度
+        $x = $x1 + ($width - $textWidth) / 2;
+        $y = $y1 + ($height - $textHeight) / 2 + $textHeight;
+        imagettftext($image, 36, -15, (int)$x, (int)$y, $color, $font, $text);
         ob_start();
         imagepng($image);
         $imageData = ob_get_contents();
