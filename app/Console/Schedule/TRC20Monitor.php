@@ -32,12 +32,11 @@
 
 namespace App\Console\Schedule;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Throwable;
 
 class TRC20Monitor extends Command
@@ -84,10 +83,7 @@ class TRC20Monitor extends Command
     {
         $url = 'https://apilist.tronscan.org/api/new/token_trc20/transfers?limit=3&toAddress=' . $address;
         try {
-            $data = Http::withHeaders(Config::CURL_HEADERS)
-                ->connectTimeout(10)
-                ->timeout(10)
-                ->retry(3, 1000, throw: false)
+            $data = RequestHelper::getInstance()
                 ->withHeader('TRON-PRO-API-KEY', env('TRON_PRO_API_KEY'))
                 ->get($url);
         } catch (Throwable) {
