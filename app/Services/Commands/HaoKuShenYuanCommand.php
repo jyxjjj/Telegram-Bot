@@ -93,13 +93,11 @@ This software is licensed under the AGPL, without any warranty.",
         $y1 = 230;
         $x2 = 400;
         $y2 = 380;
-        $width = $x2 - $x1;  // 区域宽度
-        $height = $y2 - $y1;  // 区域高度
-        $bbox = imagettfbbox(36, -15, $font, '测试');
-        $textWidth = $bbox[2] - $bbox[0];  // 文本宽度
-        $textHeight = $bbox[7] - $bbox[1]; // 文本高度
-        $x = $x1 + ($width - $textWidth) / 2;
-        $y = $y1 + ($height - $textHeight) / 2 + $textHeight;
+        $bbox = imagettfbbox(36, -15, $font, $text);
+        $width = $bbox[2] - $bbox[0];
+        $height = $bbox[1] - $bbox[7];
+        $x = $x1 + ($x2 - $x1 - $width) / 2;
+        $y = $y1 + ($y2 - $y1 - $height) / 2;
         imagettftext($image, 36, -15, (int)$x, (int)$y, $color, $font, $text);
         ob_start();
         imagepng($image);
