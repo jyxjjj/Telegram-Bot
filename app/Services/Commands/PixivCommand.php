@@ -32,15 +32,14 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
-use App\Jobs\DeletePixivFileJob;
+use App\Common\RequestHelper;
+use App\Jobs\DeleteFileJob;
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPhotoJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC6986\Hash;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
@@ -150,19 +149,16 @@ class PixivCommand extends BaseCommand
 
     private function download($url): ?string
     {
-        $headers = Config::CURL_HEADERS;
         $headers['Referer'] = 'https://www.pixiv.net/ranking.php?mode=daily';
-        $response = Http::withHeaders($headers)
-            ->connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
+        $response = RequestHelper::getInstance()
+            ->withHeaders($headers)
             ->get($url);
         if ($response->ok()) {
             $body = $response->body();
             $name = Hash::sha256($body);
             $path = "pixiv/$name.jpg";
             Storage::disk('public')->put($path, $body);
-            $this->dispatch(new DeletePixivFileJob($path));
+            $this->dispatch(new DeleteFileJob($path));
             return Storage::disk('public')->path($path);
         }
         return null;
