@@ -32,13 +32,11 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -112,11 +110,7 @@ class VSCode implements SoftwareInterface
      */
     private function getJson(): array|int|false
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-VSCode-Subscriber-Runner/$ts";
-        $get = Http::
-        withHeaders($headers)
+        $get = RequestHelper::getInstance()
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/microsoft/vscode/releases?per_page=5');
