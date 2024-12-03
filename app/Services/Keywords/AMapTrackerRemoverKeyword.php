@@ -32,10 +32,9 @@
 
 namespace App\Services\Keywords;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseKeyword;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -104,13 +103,7 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
 
     private function getLocation(string $link): string
     {
-        $headers = Config::CURL_HEADERS;
-        $headers['User-Agent'] .= " Telegram-AMap-Link-Tracker-Remover/$this->version";
-        return Http::
-        connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
-            ->withHeaders($headers)
+        return RequestHelper::getInstance()
             ->withoutRedirecting()
             ->get($link)
             ->header('Location');
