@@ -34,7 +34,10 @@ use App\Common\Log\DataBaseLogger;
 
 return [
     'default' => 'mariadb',
-    'deprecations' => 'deprecations',
+    'deprecations' => [
+        'channel' => 'deprecations',
+        'trace' => true,
+    ],
     'channels' => [
         'mariadb' => [
             'driver' => 'monolog',
