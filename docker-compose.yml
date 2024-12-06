@@ -2,7 +2,7 @@ version: '3.9'
 services:
     mariadb:
         container_name: mariadb
-        image: mariadb:11.3.2
+        image: mariadb:11.4.4
         environment:
             - TZ=Etc/GMT-8
             - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
@@ -50,12 +50,11 @@ services:
             -   type: bind
                 source: /www/server/mariadb/mysql/
                 target: /etc/mysql/
-        # noinspection ComposeMissingKeys
         healthcheck:
             disable: true
     redis:
         container_name: redis
-        image: redis:7.2.5
+        image: redis:7.4.1
         environment:
             - TZ=Etc/GMT-8
         deploy:
@@ -103,7 +102,6 @@ services:
                 source: /www/server/redis/data/
                 target: /data/
         command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-        # noinspection ComposeMissingKeys
         healthcheck:
             disable: true
 networks:
