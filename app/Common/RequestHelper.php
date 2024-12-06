@@ -20,13 +20,11 @@ class RequestHelper
     {
         return Http
             ::withHeaders(
-                (
                 new RequestHeader(
                     '2.3',
                     6,
                     40,
                     130
-                )
                 )->getCURLHeaders()
             )
             ->

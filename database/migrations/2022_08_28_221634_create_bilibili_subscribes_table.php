@@ -35,7 +35,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
+    public function up(): void
     {
         Schema::create('bilibili_subscribes', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement()->comment('主键');
@@ -53,7 +53,7 @@ return new class extends Migration {
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('bilibili_subscribes');
     }

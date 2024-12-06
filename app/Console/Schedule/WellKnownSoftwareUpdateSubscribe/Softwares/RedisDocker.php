@@ -79,6 +79,7 @@ class RedisDocker implements SoftwareInterface
         foreach ($latest as $item) {
             if ($item['architecture'] == 'amd64') {
                 $layers = $item['layers'];
+                /** @noinspection PhpLoopCanBeConvertedToArrayAnyInspection */
                 foreach ($layers as $layer) {
                     if (preg_match('/^.*REDIS_VERSION=(\d+\.\d+\.\d+)$/i', $layer['instruction'], $matches)) {
                         return $matches[1];

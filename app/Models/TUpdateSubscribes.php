@@ -56,10 +56,8 @@ class TUpdateSubscribes extends BaseModel
     {
         $data = Cache::get("DB::TUpdateSubscribes::update_subscribes::$chat_id");
         if (is_array($data)) {
-            foreach ($data as $item) {
-                if ($item['software'] === $software) {
-                    return false;
-                }
+            if (array_any($data, fn($item) => $item['software'] === $software)) {
+                return false;
             }
         }
         $data = self::query()

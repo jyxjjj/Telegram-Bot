@@ -58,10 +58,8 @@ class TBilibiliSubscribes extends BaseModel
     {
         $data = Cache::get("DB::TBilibiliSubscribes::bilibili_subscribes::$chat_id");
         if (is_array($data)) {
-            foreach ($data as $item) {
-                if ($item['mid'] === $mid) {
-                    return false;
-                }
+            if (array_any($data, fn($item) => $item['mid'] === $mid)) {
+                return false;
             }
         }
         $data = self::query()
