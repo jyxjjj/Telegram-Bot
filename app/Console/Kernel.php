@@ -42,6 +42,7 @@ use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Queue\Console\PruneFailedJobsCommand;
+use Laravel\Horizon\Console\SnapshotCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command(PruneFailedJobsCommand::class, ['--hours=72'])->dailyAt('00:00')->runInBackground()->withoutOverlapping(120);
+        $schedule->command(SnapshotCommand::class)->everyMinute()->runInBackground()->withoutOverlapping(120);
         $schedule->command(BilibiliSubscribe::class)->hourly()->runInBackground()->withoutOverlapping(120);
         $schedule->command(ChromeUpdateSubscribe::class)->dailyAt('06:00')->runInBackground()->withoutOverlapping(120);
         $schedule->command(JetBrainsUpdateSubscribe::class)->dailyAt('06:00')->runInBackground()->withoutOverlapping(120);

@@ -16,13 +16,13 @@ class QueueReinstall extends Command
             $this->components->error('Failed to switch to root user.');
             return self::FAILURE;
         }
-        $file = '/etc/systemd/system/' . config('app.name') . '-queue@.service';
+        $file = '/etc/systemd/system/' . config('app.name') . '-horizon.service';
         if (!file_exists($file)) {
             $this->components->warn('Service file not found.');
         } else {
             unlink($file);
         }
-        $this->call('queue:install');
+        $this->call(QueueInstall::class);
         return self::SUCCESS;
     }
 }

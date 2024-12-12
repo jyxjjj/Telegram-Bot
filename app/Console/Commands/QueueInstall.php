@@ -7,10 +7,9 @@ use Illuminate\Support\Facades\Process;
 
 class QueueInstall extends Command
 {
-    const int NUMPROCS = 4;
     const string SERVICE = <<<EOF
 [Unit]
-Description={{ APP_NAME }} Queue Worker %i
+Description={{ APP_NAME }} Horizon Queue Worker
 Wants=network-online.target
 After=network-online.target
 
@@ -18,8 +17,9 @@ After=network-online.target
 User=www
 Group=www
 WorkingDirectory={{ BASE_DIR }}
-ExecStart={{ PHP_BINARY }} -c {{ PHP_INI }} {{ BASE_DIR }}/artisan queue:work --sleep=0.05 --max-time=3600 --timeout=1800
-ExecReload={{ PHP_BINARY }} -c {{ PHP_INI }} {{ BASE_DIR }}/artisan queue:restart
+ExecStart={{ PHP_BINARY }} -c {{ PHP_INI }} {{ BASE_DIR }}/artisan horizon
+ExecStop={{ PHP_BINARY }} -c {{ PHP_INI }} {{ BASE_DIR }}/artisan horizon:terminate
+ExecReload=/usr/bin/systemctl restart {{ APP_NAME }}-horizon.service
 Restart=always
 RestartSec=1
 KillMode=control-group
@@ -63,7 +63,7 @@ EOF;
     private function installService(): int
     {
         $app_name = config('app.name');
-        $file = "/etc/systemd/system/$app_name-queue@.service";
+        $file = "/etc/systemd/system/$app_name-horizon.service";
         if (file_exists($file)) {
             $this->components->error('Service file already exists.');
             return self::FAILURE;
@@ -88,24 +88,19 @@ EOF;
             $this->components->error('Failed to reload daemon.');
             return self::FAILURE;
         }
-        $numprocs = self::NUMPROCS;
-        foreach (range(1, $numprocs) as $i) {
-            $result = Process::run(['systemctl', 'disable', '--now', "$app_name-queue@$i.service"]);
-            if ($result) {
-                $this->components->info("Disabled queue worker $i.");
-            } else {
-                $this->components->error("Failed to disable queue worker $i.");
-                return self::FAILURE;
-            }
+        $result = Process::run(['systemctl', 'disable', '--now', "$app_name-horizon.service"]);
+        if ($result->successful()) {
+            $this->components->info("Disabled queue worker.");
+        } else {
+            $this->components->error("Failed to disable queue worker.");
+            return self::FAILURE;
         }
-        foreach (range(1, $numprocs) as $i) {
-            $result = Process::run(['systemctl', 'enable', '--now', "$app_name-queue@$i.service"]);
-            if ($result) {
-                $this->components->info("Enabled queue worker $i.");
-            } else {
-                $this->components->error("Failed to enable queue worker $i.");
-                return self::FAILURE;
-            }
+        $result = Process::run(['systemctl', 'enable', '--now', "$app_name-horizon.service"]);
+        if ($result->successful()) {
+            $this->components->info("Enabled queue worker.");
+        } else {
+            $this->components->error("Failed to enable queue worker.");
+            return self::FAILURE;
         }
         return self::SUCCESS;
     }
