@@ -32,10 +32,9 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -69,10 +68,7 @@ class PSLSearchCommand extends BaseCommand
         }
         $domain = $param;
         try {
-            $resp = Http::withHeaders(Config::CURL_HEADERS)
-                ->connectTimeout(10)
-                ->timeout(10)
-                ->retry(3, 1000, throw: false)
+            $resp = RequestHelper::getInstance()
                 ->get('https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat');
             if ($resp->failed()) {
                 $result = "Failed to fetch PSL data.\n";
