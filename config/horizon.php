@@ -31,7 +31,7 @@ return [
         'default' => [
             'connection' => 'redis',
             'queue' => ['default'],
-            'balance' => true,
+            'balance' => 'auto',
             'autoScalingStrategy' => 'size',
             'minProcesses' => 1,
             'maxProcesses' => 4,
