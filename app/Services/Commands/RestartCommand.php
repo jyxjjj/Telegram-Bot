@@ -35,6 +35,7 @@ namespace App\Services\Commands;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Horizon\Console\TerminateCommand;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
 use Throwable;
@@ -56,7 +57,7 @@ class RestartCommand extends BaseCommand
     {
         $messageId = $message->getMessageId();
         try {
-            $code = Artisan::call('queue:restart');
+            $code = Artisan::call(TerminateCommand::class);
             $msg = 'Queue worker restarted';
         } catch (Throwable $e) {
             $code = $e->getCode();

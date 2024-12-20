@@ -115,8 +115,7 @@ docker-compose -f docker-compose.yml up -d
 
 ```bash
 dnf update --refresh -y
-dnf install supervisor podman* cockpit* --refresh -y
-systemctl enable --now supervisord.service
+dnf install podman* cockpit* --refresh -y
 systemctl enable --now nginx.service
 systemctl enable --now php-fpm.service
 systemctl enable --now container-mariadb.service
@@ -126,11 +125,9 @@ composer install
 ./permission.sh
 
 php artisan key:generate
+php artisan queue:install
+cp -n .env.example .env
 vim .env
-
-supervisor/init.sh
-supervisor/reload.sh
-supervisor/start.sh
 ```
 
 #### Database Migration
@@ -169,13 +166,7 @@ So you can send the signal to restart queue workers,
 via the laravel official command:
 
 ```bash
-php artisan queue:restart
-```
-
-Or force restart with supervisor(not recommended):
-
-```bash
-supervisor/restart.sh
+php artisan horizon:terminate
 ```
 
 Or you can let bot call the laravel official command:
