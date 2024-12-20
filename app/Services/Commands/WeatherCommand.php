@@ -33,11 +33,10 @@
 namespace App\Services\Commands;
 
 use App\Common\BotCommon;
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
@@ -81,10 +80,7 @@ class WeatherCommand extends BaseCommand
         $symbol = hex2bin('E2') . hex2bin('84') . hex2bin('83');
 
         // live
-        $liveWeather = Http::withHeaders(Config::CURL_HEADERS)
-            ->connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
+        $liveWeather = RequestHelper::getInstance()
             ->baseUrl('https://restapi.amap.com/v3/')
             ->withQueryParameters([
                     'key' => env('AMAP_KEY'),
@@ -114,10 +110,7 @@ class WeatherCommand extends BaseCommand
         $this->dispatch(new SendMessageJob($data, null, 0));
         $data['text'] = '';
         // forecast
-        $forecastWeather = Http::withHeaders(Config::CURL_HEADERS)
-            ->connectTimeout(10)
-            ->timeout(10)
-            ->retry(3, 1000, throw: false)
+        $forecastWeather = RequestHelper::getInstance()
             ->baseUrl('https://restapi.amap.com/v3/')
             ->withQueryParameters([
                     'key' => env('AMAP_KEY'),

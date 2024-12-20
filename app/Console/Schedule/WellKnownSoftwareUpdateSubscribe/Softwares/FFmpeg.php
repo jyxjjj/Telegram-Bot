@@ -32,12 +32,10 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -98,11 +96,7 @@ class FFmpeg implements SoftwareInterface
      */
     public function getVersionString(): string
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-FFmpeg-Subscriber-Runner/$ts";
-        $get = Http::
-        withHeaders($headers)
+        $get = RequestHelper::getInstance()
             ->get('https://www.gyan.dev/ffmpeg/builds/release-version');
         if ($get->status() == 200) {
             return $get->body();

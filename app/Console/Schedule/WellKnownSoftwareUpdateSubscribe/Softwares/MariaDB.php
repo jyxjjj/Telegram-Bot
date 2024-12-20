@@ -32,12 +32,10 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -114,11 +112,7 @@ class MariaDB implements SoftwareInterface
      */
     private function getMajor(): array
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-MariaDB-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
+        return RequestHelper::getInstance()
             ->get('https://downloads.mariadb.org/rest-api/mariadb/')
             ->json();
     }
@@ -130,11 +124,7 @@ class MariaDB implements SoftwareInterface
      */
     private function getLatest(string $release_id): array
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-MariaDB-Subscriber-Runner/$ts";
-        return Http::
-        withHeaders($headers)
+        return RequestHelper::getInstance()
             ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")
             ->json();
     }

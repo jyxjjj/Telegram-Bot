@@ -32,13 +32,11 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -116,15 +114,12 @@ class PHP implements SoftwareInterface
      */
     private function getJson(): array|int|false
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-PHP-Subscriber-Runner/$ts";
         $last_modified = Common::getLastModified(Software::PHP);
         if ($last_modified) {
             $headers['If-Modified-Since'] = $last_modified;
         }
-        $get = Http::
-        withHeaders($headers)
+        $get = RequestHelper::getInstance()
+            ->withHeaders($headers ?? [])
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/php/php-src/tags?per_page=100');

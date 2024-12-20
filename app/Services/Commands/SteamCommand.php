@@ -32,11 +32,9 @@
 
 namespace App\Services\Commands;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
@@ -67,17 +65,13 @@ class SteamCommand extends BaseCommand
         $appId = $params[0];
         $countryCode = $params[1] ?? 'CN';
         $data['text'] .= "<b>AppID</b>: $appId\n";
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-Steam-Price-Checker/$ts";
-        $http = Http::
-        baseUrl("https://store.steampowered.com")
+        $http = RequestHelper::getInstance()
+            ->baseUrl("https://store.steampowered.com")
             ->withQueryParameters([
                 'appids' => $appId,
                 'filters' => 'price_overview',
                 'cc' => $countryCode,
             ])
-            ->withHeaders($headers)
             ->get("/api/appdetails")
             ->json();
         if (!isset($http[$appId]['data']['price_overview']['currency']) || !$http[$appId]['success']) {

@@ -32,13 +32,11 @@
 
 namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
-use App\Common\Config;
+use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use JetBrains\PhpStorm\ArrayShape;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -125,11 +123,7 @@ EOF;
      */
     private function getJson(): array|false
     {
-        $headers = Config::CURL_HEADERS;
-        $ts = Carbon::now()->getTimestamp();
-        $headers['User-Agent'] .= " Telegram-Go-Subscriber-Runner/$ts";
-        $get = Http::
-        withHeaders($headers)
+        $get = RequestHelper::getInstance()
             ->withToken(env('GITHUB_TOKEN'))
             ->post('https://api.github.com/graphql', [
                 'query' => self::GQL,
