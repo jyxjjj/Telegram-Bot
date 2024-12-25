@@ -108,7 +108,7 @@ class BilibiliSubscribe extends Command
                     //            $data['danmu'] = $video['cnt_info']['danmaku'];
 
                     self::info("New video of $mid is {$video['BVID']}");
-                    $message['photo'] = $video['cover'];
+                    $message['photo'] = str_replace('http://', 'https://', $video['cover']);
                     $message['caption'] .= "视频: <b>{$video['title']}</b>\n";
                     $message['caption'] .= "UP主: <code>{$video['author']}</code>\n";
                     $message['caption'] .= "UID: <code>$mid</code>\n";
