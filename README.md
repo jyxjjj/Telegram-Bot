@@ -64,26 +64,26 @@ A PHP Laravel Telegram Bot
 
 [![DigitalOcean](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://m.do.co/c/23e8653b361a)
 
-[![Fedora](https://img.shields.io/badge/Fedora-40-blue.svg?style=flat-square)](https://getfedora.org)
+[![Fedora](https://img.shields.io/badge/Fedora-41-blue.svg?style=flat-square)](https://getfedora.org)
 
-[![PHP](https://img.shields.io/badge/PHP-^8.3-purple.svg?style=flat-square)](https://www.php.net/downloads.php)
+[![PHP](https://img.shields.io/badge/PHP-^8.4-purple.svg?style=flat-square)](https://www.php.net/downloads.php)
 
-[![Mariadb](https://img.shields.io/badge/MariaDB-^11.3-yellow.svg?style=flat-square)](https://mariadb.org/download/)
+[![Mariadb](https://img.shields.io/badge/MariaDB-^11.4-yellow.svg?style=flat-square)](https://mariadb.org/download/)
 
-[![Redis](https://img.shields.io/badge/Redis-^7.2-red.svg?style=flat-square)](https://redis.io/download)
+[![Redis](https://img.shields.io/badge/Redis-^7.4-red.svg?style=flat-square)](https://redis.io/download)
 
 # Install
 
-I recommend using systemd to manage laravel queue workers,
-and systemd-timer to manage laravel schedules.
+I recommend using SystemD to manage laravel queue workers,
+and SystemD-Timer to manage laravel schedules.
 
-This is a doc of supervisor + crontab version that laravel recommended.
+This is a doc of SystemD + Crontab version.
 
 You can do anything you want.
 
 ## Pre-install
 
-* All this repo commands are tested on Fedora 37
+* All this repo commands are tested on Fedora 41
 
 Make a file tree like this:
 
@@ -101,14 +101,11 @@ Make a file tree like this:
 Then run:
 
 ```bash
-podman-compose -f docker-compose.yml up -d
-```
-
-If you are using docker, you need to create a bridge network named podman first.
-
-```bash
-docker network create --driver bridge podman
-docker-compose -f docker-compose.yml up -d
+cp mariadb.container /etc/containers/systemd/mariadb.container
+cp redis.container /etc/containers/systemd/redis.container
+systemctl daemon-reload
+systemctl start mariadb.service
+systemctl start redis.service
 ```
 
 ## Run
@@ -118,8 +115,6 @@ dnf update --refresh -y
 dnf install podman* cockpit* --refresh -y
 systemctl enable --now nginx.service
 systemctl enable --now php-fpm.service
-systemctl enable --now container-mariadb.service
-systemctl enable --now container-redis.service
 
 composer install
 ./permission.sh
