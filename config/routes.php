@@ -30,9 +30,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use App\Http\Controllers\BungieController;
 use App\Http\Controllers\IndexController;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,26 +52,6 @@ function defineRoutes(): void
         function () {
             Route::post('/webhook', [IndexController::class, 'webhook']);
             Route::post('/sendMessage', [IndexController::class, 'sendMessage']);
-
-            Route::group(
-                [
-                    'prefix' => 'bungie',
-                ],
-                function () {
-                    Route::group(
-                        [
-                            'prefix' => 'oauth',
-                            'middleware' => [
-                                StartSession::class,
-                            ],
-                        ],
-                        function () {
-                            Route::get('/login', [BungieController::class, 'login']);
-                            Route::get('/redirect', [BungieController::class, 'redirect']);
-                        }
-                    );
-                }
-            );
         }
     );
 
