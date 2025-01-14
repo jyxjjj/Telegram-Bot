@@ -25,7 +25,7 @@
         "ext-zlib": "*",
         "desmg/php-common": "^2.0.4",
         "guzzlehttp/guzzle": "^7.9.2",
-        "laravel/framework": "^11.36.1",
+        "laravel/framework": "^11.37.0",
         "laravel/horizon": "^5.30.1",
         "longman/telegram-bot": "^0.83.1",
         "nunomaduro/collision": "^8.5.0",
