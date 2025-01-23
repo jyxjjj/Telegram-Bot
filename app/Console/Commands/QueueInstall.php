@@ -82,7 +82,7 @@ EOF;
         $this->components->info('Installing queue service...');
         $result = $this->installService();
         if ($result === self::SUCCESS) {
-            $this->components->info('Queue service installed.');
+            $this->components->success('Queue service installed.');
             return self::SUCCESS;
         }
         $this->components->error('Failed to install queue service.');
@@ -97,7 +97,7 @@ EOF;
             $this->components->error('Service file already exists.');
             return self::FAILURE;
         }
-        if (!is_writable('/etc/systemd/system')) {
+        if (!is_writable('/etc/systemd/system/')) {
             $this->components->error('Service file is not writable.');
             return self::FAILURE;
         }
