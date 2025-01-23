@@ -62,10 +62,8 @@ class PingCommand extends BaseCommand
         $chatId = $message->getChat()->getId();
         $data = [
             'chat_id' => $chatId,
-            'text' => 'Calculating...',
+            'text' => '',
         ];
-        $this->dispatch(new SendMessageWithKeyJob($data, $key, null));
-        $data['text'] = '';
         $sendTime = $message->getDate();
         $sendTime = Carbon::createFromTimestamp($sendTime)->getTimestampMs();
         $startTime = Cache::get("TelegramUpdateStartTime_$updateId", 0);
@@ -80,6 +78,9 @@ class PingCommand extends BaseCommand
         $data['text'] .= "<b>Server Latency</b>: <code>$server_latency</code> ms\n";
         $data['text'] .= "<b>Message Latency</b>: <code>$message_latency</code> ms\n";
         $data['text'] .= "<b>Telegram Update IP</b>: <code>$telegramIP</code>\n";
+        $data['text'] .= "Calculating DC Latency...\n";
+        $this->dispatch(new SendMessageWithKeyJob($data, $key, null));
+        $data['text'] .= str_replace('Calculating DC Latency...', '', $data['text']);
         $IPs = [
             '149.154.175.53',
             '149.154.167.51',
@@ -87,7 +88,7 @@ class PingCommand extends BaseCommand
             '149.154.167.91',
             '91.108.56.130',
         ];
-        $ping = new Ping();
+        $ping = new Ping;
         for ($i = 1; $i <= count($IPs); $i++) {
             $IP = $IPs[$i - 1];
             $ping->setHost($IP);
