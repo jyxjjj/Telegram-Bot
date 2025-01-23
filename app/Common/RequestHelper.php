@@ -57,8 +57,7 @@ class RequestHelper
                     130
                 )->getCURLHeaders()
             )
-            ->
-            withOptions([
+            ->withOptions([
                 'force_ip_resolve' => 'v4',
             ])
             ->withOptions($options)
