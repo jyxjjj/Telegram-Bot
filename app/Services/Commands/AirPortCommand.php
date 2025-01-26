@@ -95,7 +95,7 @@ EOF;
                     'url' => "https://maps.apple.com/?ll={$airport['lat']},{$airport['lon']}&q={$airport['name']}",
                 ]);
                 $button3 = new InlineKeyboardButton([
-                    'text' => ($airport['tz'] == 'Asia/Shanghai' ? '' : '[Unsupported] ') . 'Show In AMap',
+                    'text' => ($airport['tz'] == 'Asia/Shanghai' ? '' : '[Inexact] ') . 'Show In AMap',
                     'url' => "https://ditu.amap.com/regeo?lat={$airport['lat']}&lng={$airport['lon']}&name={$airport['name']}",
                 ]);
                 $data['reply_markup']->addRow($button1);
