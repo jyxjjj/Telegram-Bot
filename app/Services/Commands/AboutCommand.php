@@ -35,10 +35,12 @@ namespace App\Services\Commands;
 use App\Common\RequestHelper;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseCommand;
+use Illuminate\Http\Client\ConnectionException;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Telegram;
+use Throwable;
 
 class AboutCommand extends BaseCommand
 {
@@ -51,20 +53,26 @@ class AboutCommand extends BaseCommand
      * @param Telegram $telegram
      * @param int $updateId
      * @return void
+     * @throws ConnectionException
      */
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
-        $commits = RequestHelper::getInstance()
-            ->accept('application/vnd.github.v3+json')
-            ->withToken(env('GITHUB_TOKEN'))
-            ->get('https://api.github.com/repos/jyxjjj/Telegram-Bot/commits?per_page=1')
-            ->json();
-        $commits = $commits[0];
-        $home = $commits['html_url'];
-        $version = substr(strtoupper($commits['sha']), 0, 7);
-        $version = "<a href='$home'>$version</a>";
-        $date = date('Y-m-d H:i:s', strtotime($commits['commit']['committer']['date']));
+        try {
+            $commits = RequestHelper::getInstance()
+                ->accept('application/vnd.github.v3+json')
+                ->withToken(env('GITHUB_TOKEN'))
+                ->get('https://api.github.com/repos/jyxjjj/Telegram-Bot/commits?per_page=1')
+                ->json();
+            $commits = $commits[0];
+            $home = $commits['html_url'];
+            $version = substr(strtoupper($commits['sha']), 0, 7);
+            $version = "<a href='$home'>$version</a>";
+            $date = date('Y-m-d H:i:s', strtotime($commits['commit']['committer']['date']));
+        } catch (Throwable) {
+            $version = 'Fetch Failed';
+            $date = date('Y-m-d H:i:s', '1970-01-01 00:00:00');
+        }
         $data = [
             'chat_id' => $chatId,
             'text' => '',
@@ -128,11 +136,11 @@ GPL;
         $data['reply_markup']->addRow($channel, $group);
         $privacy = new InlineKeyboardButton([
             'text' => '隐私政策',
-            'url' => 'https://www.desmg.com/#/policies/privacy',
+            'url' => 'https://www.desmg.com/policies/privacy',
         ]);
         $usage = new InlineKeyboardButton([
             'text' => '使用条款',
-            'url' => 'https://www.desmg.com/#/policies/terms',
+            'url' => 'https://www.desmg.com/policies/terms',
         ]);
         $data['reply_markup']->addRow($privacy, $usage);
         $this->dispatch(new SendMessageJob($data));

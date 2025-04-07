@@ -66,7 +66,7 @@ class DonateCommand extends BaseCommand
         $data['reply_markup'] = new InlineKeyboard([]);
         $button = new InlineKeyboardButton([
             'text' => 'Donate',
-            'url' => 'https://www.desmg.com/#/donate',
+            'url' => 'https://www.desmg.com/donate',
         ]);
         $data['reply_markup']->addRow($button);
         $this->dispatch(new SendMessageJob($data, null, 0));
