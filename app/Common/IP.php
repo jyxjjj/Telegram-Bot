@@ -3,7 +3,7 @@
  * DESMG Telegram Bot
  * This file is a part of our Open Source Project (https://github.com/jyxjjj/Telegram-Bot)
  *
- * @copyright 2015-2024 DESMG
+ * @copyright 2015-2025 DESMG
  * @license GNU Affero General Public License v3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
  * @author DESMG (www.desmg.com) < opensource@desmg.org >
  *
@@ -11,7 +11,7 @@
  * @Telegram jyxjjj (https://t.me/jyxjjj)
  * @Producer DESMG
  *
- * Copyright (C) 2015-2024 DESMG
+ * Copyright (C) 2015-2025 DESMG
  * All Rights Reserved.
  *
  * Released under GNU Affero General Public License Version 3.0
