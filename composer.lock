@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fc53fbbb497034c636d6eea8757838f",
+    "content-hash": "f80e66dd2dea190ef8f1b866552fd365",
     "packages": [
         {
             "name": "brick/math",
@@ -137,16 +137,16 @@
         },
         {
             "name": "desmg/php-common",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DESMG/PHP-Common.git",
-                "reference": "081b85aff4230064138cf0ebca690aa87e78e2bb"
+                "reference": "e46ec5e486482c11afe057636d56d87c44bba47b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/081b85aff4230064138cf0ebca690aa87e78e2bb",
-                "reference": "081b85aff4230064138cf0ebca690aa87e78e2bb",
+                "url": "https://api.github.com/repos/DESMG/PHP-Common/zipball/e46ec5e486482c11afe057636d56d87c44bba47b",
+                "reference": "e46ec5e486482c11afe057636d56d87c44bba47b",
                 "shasum": ""
             },
             "require": {
@@ -184,7 +184,7 @@
                 "source": "https://github.com/DESMG/php-common",
                 "telegram": "https://t.me/jyxjjj"
             },
-            "time": "2025-03-28T09:57:15+00:00"
+            "time": "2025-04-22T04:28:58+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1593,16 +1593,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.6.1",
+            "version": "2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "d990688c91cedfb69753ffc2512727ec646df2ad"
+                "reference": "06c3b0bf2540338094575612f4a1778d0d2d5e94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/d990688c91cedfb69753ffc2512727ec646df2ad",
-                "reference": "d990688c91cedfb69753ffc2512727ec646df2ad",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/06c3b0bf2540338094575612f4a1778d0d2d5e94",
+                "reference": "06c3b0bf2540338094575612f4a1778d0d2d5e94",
                 "shasum": ""
             },
             "require": {
@@ -1696,7 +1696,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-29T14:10:59+00:00"
+            "time": "2025-04-18T21:09:27+00:00"
         },
         {
             "name": "league/config",

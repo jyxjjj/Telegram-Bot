@@ -23,7 +23,7 @@
         "ext-simplexml": "*",
         "ext-sockets": "*",
         "ext-zlib": "*",
-        "desmg/php-common": "^2.2.0",
+        "desmg/php-common": "^2.2.1",
         "guzzlehttp/guzzle": "^7.9.3",
         "laravel/framework": "^12.9.2",
         "laravel/horizon": "^5.31.1",
