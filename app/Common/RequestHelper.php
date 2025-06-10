@@ -51,10 +51,10 @@ class RequestHelper
         return Http
             ::withHeaders(
                 new RequestHeader(
-                    '2.3',
+                    '2.4',
                     6,
-                    40,
-                    130
+                    42,
+                    137
                 )->getCURLHeaders()
             )
             ->withOptions([
