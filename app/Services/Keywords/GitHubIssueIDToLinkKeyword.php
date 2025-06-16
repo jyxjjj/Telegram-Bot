@@ -48,7 +48,7 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
         $chatId = $message->getChat()->getId();
-        if ($chatId != -1002573155438) {
+        if ($chatId != -1002573155438 && $chatId != -4971290320) {
             return;
         }
         $messageId = $message->getMessageId();
