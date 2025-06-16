@@ -35,7 +35,6 @@ namespace App\Services;
 use App\Jobs\SendMessageJob;
 use App\Services\Base\BaseService;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\Message;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -59,7 +58,7 @@ class MessageHandleService extends BaseService
     public function handle(Update $update, Telegram $telegram, int $updateId): void
     {
         $message = $update->getMessage();
-        if ($this->detectWhiteList($message)) {
+        if ($this->ifBlocked($message)) {
             return;
         }
         $messageType = $message->getType();
@@ -110,73 +109,53 @@ class MessageHandleService extends BaseService
 //            'reply_markup':
     }
 
-    private function detectWhiteList(Message $message): bool
+    /**
+     * When user was whited, return false
+     * When user was blocked, return true
+     * @param Message $message
+     * @return bool
+     */
+    private function ifBlocked(Message $message): bool
     {
-        if (!in_array($message->getChat()->getId(), [886776929, -1001344643532, -1001391154172, -1001743989979,])) {
-            if ($message->getChat()->getType() == 'private') {
-                $str = sprintf(
-                    <<<EOF
-Chat Type: %s
-Chat Username: %s
-Chat ID: %s
-Chat Name: %s%s%s
-
-From Username: %s
-From ID: %s
-From Name: %s%s
-
-MSG Type: %s
-
-MSG:
-%s
-EOF,
-                    $message->getChat() ? $message->getChat()->getType() ?? 'ERR::CHAT_TYPE' : 'NOCHAT',
-                    $message->getChat() ? $message->getChat()->getUsername() ?? 'ERR::USERNAME' : 'NOCHAT',
-                    $message->getChat() ? $message->getChat()->getId() ?? 'ERR::ID' : 'NOCHAT',
-                    $message->getChat() ? $message->getChat()->getTitle() ?? 'ERR::TITLE' : 'NOCHAT',
-                    $message->getChat() ? $message->getChat()->getFirstName() ?? 'ERR::FN' : 'NOCHAT',
-                    $message->getChat() ? $message->getChat()->getLastName() ?? 'ERR::LN' : 'NOCHAT',
-                    $message->getFrom() ? $message->getFrom()->getUsername() ?? 'ERR::USERNAME' : 'NOFROM',
-                    $message->getFrom() ? $message->getFrom()->getId() ?? 'ERR::ID' : 'NOFROM',
-                    $message->getFrom() ? $message->getFrom()->getFirstName() ?? 'ERR::FN' : 'NOFROM',
-                    $message->getFrom() ? $message->getFrom()->getLastName() ?? 'ERR::LN' : 'NOFROM',
-                    $message->getType() ?? 'ERR::MSGTYPE',
-                    $message->getText() ?? $message->getCaption() ?? 'ERR::MSGTEXT',
-                );
-                $this->dispatch(
-                    new SendMessageJob(
-                        data: [
-                            'chat_id' => env('TELEGRAM_ADMIN_USER_ID'),
-                            'parse_mode' => '',
-                            'text' => $str,
-                        ],
-                        delete: 300
-                    )
-                );
-                if (in_array($message->getChat()->getId(), [296672714, 1891466551, 447632604, 5738737040, 1583896650, 5167276446,])) {
-                    $this->dispatch(
-                        new SendMessageJob(
-                            data: [
-                                'chat_id' => $message->getChat()->getId(),
-                                'parse_mode' => '',
-                                'text' => 'You have been blocked',
-                            ],
-                            delete: 0
-                        )
-                    );
-                    return true;
-                }
-                Log::debug(
-                    'Chat',
-                    [
-                        $str,
-                    ]
-                );
+        $blockedUsers = [
+            296672714,
+            1891466551,
+            447632604,
+            5738737040,
+            1583896650,
+            5167276446,
+        ];
+        // 黑名单用户直接拒绝 发送拒绝消息
+        if (in_array($message->getChat()->getId(), $blockedUsers)) {
+            $this->dispatch(
+                new SendMessageJob(
+                    data: [
+                        'chat_id' => $message->getChat()->getId(),
+                        'parse_mode' => '',
+                        'text' => 'You have been blocked',
+                    ],
+                    delete: 0
+                )
+            );
+            return true;
+        }
+        $whitedChats = [
+            env('TELEGRAM_ADMIN_USER_ID'),
+            -1001344643532, // 龙缘科技
+            -1001391154172, // 关于这件事
+            -1002573155438, // OpenList交流群
+        ];
+        // 白名单用户直接通过
+        if (in_array($message->getChat()->getId(), $whitedChats)) {
+            return false;
+        } else {
+            // 其他用户需要判断是否是关于命令
+            if ($message->getType() == 'command' && $message->getCommand() == 'about') {
                 return false;
             }
-            return !($message->getType() == 'command' && $message->getCommand() == 'about');
+            // 非关于命令直接拒绝
+            return true;
         }
-        return false;
     }
 
     /**
