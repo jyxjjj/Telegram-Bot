@@ -4,3 +4,4 @@
 *.log
 .env
 cert.crt
+release.sh
