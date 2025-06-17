@@ -69,13 +69,9 @@ class GoogleFontsToLinkKeyword extends BaseKeyword
                 $data['text'] .= "您是不是在找：\n";
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "Noto Color Emoji",
-                        'url' => "https://fonts.google.com/noto/specimen/Noto+Color+Emoji",
+                        'text' => 'JetBrains Mono',
+                        'url' => 'https://fonts.google.com/specimen/JetBrains+Mono',
                     ]),
-                    new InlineKeyboardButton([
-                        'text' => "Noto Emoji",
-                        'url' => "https://fonts.google.com/noto/specimen/Noto+Emoji",
-                    ])
                 );
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
@@ -89,9 +85,13 @@ class GoogleFontsToLinkKeyword extends BaseKeyword
                 );
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "JetBrains Mono",
-                        'url' => "https://fonts.google.com/specimen/JetBrains+Mono",
+                        'text' => 'Noto Color Emoji',
+                        'url' => 'https://fonts.google.com/noto/specimen/Noto+Color+Emoji',
                     ]),
+                    new InlineKeyboardButton([
+                        'text' => 'Noto Emoji',
+                        'url' => 'https://fonts.google.com/noto/specimen/Noto+Emoji',
+                    ])
                 );
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
