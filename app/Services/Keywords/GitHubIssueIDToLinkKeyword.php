@@ -43,7 +43,7 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
 {
     public string $name = 'github issue id to link';
     public string $description = 'generate link from github issue id';
-    protected string $pattern = '/ #(\d{1,5})/';
+    protected string $pattern = '/(?:^| )#(\d{1,5})/';
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
