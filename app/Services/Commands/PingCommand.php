@@ -80,7 +80,7 @@ class PingCommand extends BaseCommand
         $data['text'] .= "<b>Telegram Update IP</b>: <code>$telegramIP</code>\n";
         $data['text'] .= "Calculating DC Latency...\n";
         $this->dispatch(new SendMessageWithKeyJob($data, $key, null));
-        $data['text'] .= str_replace('Calculating DC Latency...', '', $data['text']);
+        $data['text'] = str_replace('Calculating DC Latency...', '', $data['text']);
         $IPs = [
             '149.154.175.53',
             '149.154.167.51',
