@@ -65,7 +65,7 @@ class GitHubWebHookController extends BaseController
         $issue = $payload['issue']['number'];
         $data = [
             'chat_id' => -4971290320,
-            'text' => "$sender created a new issue #$issue in $repository:\n",
+            'text' => "🐛 New Issue Created\nFrom: $sender\nID: #$issue\n",
         ];
         $data['reply_markup'] = new InlineKeyboard([]);
         $data['reply_markup']->addRow(
@@ -80,7 +80,6 @@ class GitHubWebHookController extends BaseController
 
     private function handlePullRequestEvent(string $org, array $payload): string
     {
-
         $action = $payload['action'];
         switch ($action) {
             case 'opened':
@@ -89,7 +88,7 @@ class GitHubWebHookController extends BaseController
                 $prNumber = $payload['pull_request']['number'];
                 $data = [
                     'chat_id' => -4971290320,
-                    'text' => "$sender opened a new pull request #$prNumber in $repository\n",
+                    'text' => "🔀 New PR Created\nFrom: $sender\nID: #$prNumber\n",
                 ];
                 $data['reply_markup'] = new InlineKeyboard([]);
                 $data['reply_markup']->addRow(
@@ -104,11 +103,12 @@ class GitHubWebHookController extends BaseController
                 $repository = $payload['repository']['name'];
                 $sender = $payload['sender']['login'] ?? 'Unknown User';
                 $prNumber = $payload['pull_request']['number'];
+                $merged = $payload['pull_request']['merged'] ?? false;
+                $status = $merged ? '✅Merged' : '⛔Not Merged';
                 $data = [
                     'chat_id' => -4971290320,
-                    'text' => "$sender closed pull request #$prNumber in $repository\n",
+                    'text' => "🔀PR Closed\nFrom: $sender\nID: #$prNumber\nStatus:$status\n",
                 ];
-                $data['text'] .= "Status: " . ($payload['pull_request']['merged'] ? 'Merged' : 'Not Merged') . "\n";
                 $data['reply_markup'] = new InlineKeyboard([]);
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
