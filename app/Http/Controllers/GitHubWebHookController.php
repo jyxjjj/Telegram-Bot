@@ -43,6 +43,9 @@ class GitHubWebHookController extends BaseController
 
     private function verifySignature(string $getContent, string $signature, string $secret): bool
     {
+        if (empty($signature)) {
+            return false;
+        }
         $realSignature = 'sha256=' . hash_hmac('sha256', $getContent, $secret);
         return hash_equals($realSignature, $signature);
     }
@@ -86,7 +89,7 @@ EOF;
             case 'closed':
                 $operator = $payload['issue']['user']['login'] ?? '-';
                 $state_reason = $payload['issue']['state_reason'] ?? '';
-                $data  ['text'] = <<<EOF
+                $data['text'] = <<<EOF
 🐛 Issue Closed ✅
 Repo: $repository
 From: $sender
@@ -97,6 +100,16 @@ Status: ✅ Closed as $state_reason
 EOF;
                 break;
             case 'reopened':
+                $operator = $payload['issue']['user']['login'] ?? '-';
+                $data['text'] = <<<EOF
+🐛 Issue Reopened ♻️
+Repo: $repository
+From: $sender
+Operator: $operator
+ID: #$issue
+Status: ♻️ Reopen
+
+EOF;
                 break;
             default:
                 return;
@@ -164,6 +177,18 @@ Status: ❌ Closed
 
 EOF;
                 }
+                break;
+            case 'reopened':
+                $operator = $payload['pull_request']['user']['login'] ?? '-';
+                $data['text'] = <<<EOF
+🔀 PR Reopened ♻️
+Repo: $repository
+From: $sender
+Operator: $operator
+ID: #$prNumber
+Status: ♻️ Reopen
+
+EOF;
                 break;
             default:
                 return;
