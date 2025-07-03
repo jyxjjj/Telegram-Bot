@@ -75,6 +75,12 @@ class GitHubWebHookController extends BaseController
             'text' => '',
             'reply_markup' => new InlineKeyboard([]),
         ];
+        $data['reply_markup']->addRow(
+            new InlineKeyboardButton([
+                'text' => "View #$issue",
+                'url' => "https://github.com/$org/$repository/issues/$issue",
+            ]),
+        );
         switch ($action) {
             case 'opened':
                 $data['text'] = <<<EOF
@@ -114,12 +120,6 @@ EOF;
             default:
                 return;
         }
-        $data['reply_markup']->addRow(
-            new InlineKeyboardButton([
-                'text' => "View #$issue",
-                'url' => "https://github.com/$org/$repository/issues/$issue",
-            ]),
-        );
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
