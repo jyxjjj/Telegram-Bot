@@ -34,92 +34,10 @@ class GitHubWebHookController extends BaseController
                 return $this->json(['code' => 403]);
             }
             $event = (string)$request->header('X-GitHub-Event');
-            $data = $this->handleEvent($org, $event, $request->post());
-            return $this->json([
-                'code' => 200,
-                'data' => $data,
-            ]);
+            $this->handleEvent($org, $event, $request->post());
+            return $this->json(['code' => 200,]);
         } catch (Throwable) {
-            return $this->json(['code' => 500]);
-        }
-    }
-
-    private function handleEvent(string $org, string $event, array $payload): array|string
-    {
-        return match ($event) {
-//            'push' => $this->handlePushEvent($org, $payload),
-            'pull_request' => $this->handlePullRequestEvent($org, $payload),
-            'issues' => $this->handleIssuesEvent($org, $payload),
-            default => '',
-        };
-    }
-
-    private function handleIssuesEvent(string $org, array $payload): string
-    {
-        $action = $payload['action'];
-        if ($action != 'opened') {
-            return '';
-        }
-        $repository = $payload['repository']['name'];
-        $sender = $payload['sender']['login'] ?? 'Unknown User';
-        $issue = $payload['issue']['number'];
-        $data = [
-            'chat_id' => -4971290320,
-            'text' => "🐛 New Issue Created\nRepo: $repository\nFrom: $sender\nID: #$issue\n",
-        ];
-        $data['reply_markup'] = new InlineKeyboard([]);
-        $data['reply_markup']->addRow(
-            new InlineKeyboardButton([
-                'text' => "View #$issue",
-                'url' => "https://github.com/$org/$repository/issues/$issue",
-            ]),
-        );
-        $this->dispatch(new SendMessageJob($data, null, 0));
-        return 'Issue notification sent successfully.';
-    }
-
-    private function handlePullRequestEvent(string $org, array $payload): string
-    {
-        $action = $payload['action'];
-        switch ($action) {
-            case 'opened':
-                $repository = $payload['repository']['name'];
-                $sender = $payload['sender']['login'] ?? 'Unknown User';
-                $prNumber = $payload['pull_request']['number'];
-                $data = [
-                    'chat_id' => -4971290320,
-                    'text' => "🔀 New PR Created\nRepo: $repository\nFrom: $sender\nID: #$prNumber\n",
-                ];
-                $data['reply_markup'] = new InlineKeyboard([]);
-                $data['reply_markup']->addRow(
-                    new InlineKeyboardButton([
-                        'text' => "View #$prNumber",
-                        'url' => "https://github.com/$org/$repository/pull/$prNumber",
-                    ]),
-                );
-                $this->dispatch(new SendMessageJob($data, null, 0));
-                return 'Pull request opened notification sent successfully.';
-            case 'closed':
-                $repository = $payload['repository']['name'];
-                $sender = $payload['sender']['login'] ?? 'Unknown User';
-                $prNumber = $payload['pull_request']['number'];
-                $merged = $payload['pull_request']['merged'] ?? false;
-                $status = $merged ? '✅Merged' : '⛔Not Merged';
-                $data = [
-                    'chat_id' => -4971290320,
-                    'text' => "🔀PR Closed\nRepo: $repository\nFrom: $sender\nID: #$prNumber\nStatus:$status\n",
-                ];
-                $data['reply_markup'] = new InlineKeyboard([]);
-                $data['reply_markup']->addRow(
-                    new InlineKeyboardButton([
-                        'text' => "View #$prNumber",
-                        'url' => "https://github.com/$org/$repository/pull/$prNumber",
-                    ]),
-                );
-                $this->dispatch(new SendMessageJob($data, null, 0));
-                return 'Pull request closed notification sent successfully.';
-            default:
-                return '';
+            return $this->json(['code' => 500,]);
         }
     }
 
@@ -127,5 +45,129 @@ class GitHubWebHookController extends BaseController
     {
         $realSignature = 'sha256=' . hash_hmac('sha256', $getContent, $secret);
         return hash_equals($realSignature, $signature);
+    }
+
+    private function handleEvent(string $org, string $event, array $payload): void
+    {
+        switch ($event) {
+            case 'pull_request':
+                $this->handlePullRequestEvent($org, $payload);
+                break;
+            case 'issues':
+                $this->handleIssuesEvent($org, $payload);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private function handleIssuesEvent(string $org, array $payload): void
+    {
+        $action = $payload['action'];
+        $repository = $payload['repository']['name'];
+        $sender = $payload['sender']['login'] ?? '-';
+        $issue = $payload['issue']['number'];
+        $data = [
+            'chat_id' => -4971290320,
+            'text' => '',
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        switch ($action) {
+            case 'opened':
+                $data['text'] = <<<EOF
+🐛 Issue Created 🆕
+Repo: $repository
+From: $sender
+ID: #$issue
+Status: ⏳ Open
+
+EOF;
+                break;
+            case 'closed':
+                $operator = $payload['issue']['user']['login'] ?? '-';
+                $state_reason = $payload['issue']['state_reason'] ?? '';
+                $data  ['text'] = <<<EOF
+🐛 Issue Closed ✅
+Repo: $repository
+From: $sender
+Operator: $operator
+ID: #$issue
+Status: ✅ Closed as $state_reason
+
+EOF;
+                break;
+            case 'reopened':
+                break;
+            default:
+                return;
+        }
+        $data['reply_markup']->addRow(
+            new InlineKeyboardButton([
+                'text' => "View #$issue",
+                'url' => "https://github.com/$org/$repository/issues/$issue",
+            ]),
+        );
+        $this->dispatch(new SendMessageJob($data, null, 0));
+    }
+
+    private function handlePullRequestEvent(string $org, array $payload): void
+    {
+        $action = $payload['action'];
+        $repository = $payload['repository']['name'];
+        $sender = $payload['sender']['login'] ?? '-';
+        $prNumber = $payload['pull_request']['number'];
+        $data = [
+            'chat_id' => -4971290320,
+            'text' => '',
+            'reply_markup' => new InlineKeyboard([]),
+        ];
+        $data['reply_markup']->addRow(
+            new InlineKeyboardButton([
+                'text' => "View #$prNumber",
+                'url' => "https://github.com/$org/$repository/pull/$prNumber",
+            ]),
+        );
+        switch ($action) {
+            case 'opened':
+                $data['text'] = <<<EOF
+🔀 New PR 🆕
+Repo: $repository
+From: $sender
+ID: #$prNumber
+Status: ⏳ Open
+
+EOF;
+
+                break;
+            case 'closed':
+                $merged = $payload['pull_request']['merged'] ?? false;
+                $operator = $payload['pull_request']['user']['login'] ?? '-';
+                if ($merged) {
+                    $data['text'] = <<<EOF
+🔀 PR Merged ✅
+Repo: $repository
+From: $sender
+Operator: $operator
+ID: #$prNumber
+Status: ✅ Merged
+
+EOF;
+
+                } else {
+                    $data['text'] = <<<EOF
+🔀 PR Closed ❌
+Repo: $repository
+From: $sender
+Operator: $operator
+ID: #$prNumber
+Status: ❌ Closed
+
+EOF;
+                }
+                break;
+            default:
+                return;
+        }
+        $this->dispatch(new SendMessageJob($data, null, 0));
     }
 }
