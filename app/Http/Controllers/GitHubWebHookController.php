@@ -65,7 +65,7 @@ class GitHubWebHookController extends BaseController
         $issue = $payload['issue']['number'];
         $data = [
             'chat_id' => -4971290320,
-            'text' => "🐛 New Issue Created\nFrom: $sender\nID: #$issue\n",
+            'text' => "🐛 New Issue Created\nRepo: $repository\nFrom: $sender\nID: #$issue\n",
         ];
         $data['reply_markup'] = new InlineKeyboard([]);
         $data['reply_markup']->addRow(
@@ -88,7 +88,7 @@ class GitHubWebHookController extends BaseController
                 $prNumber = $payload['pull_request']['number'];
                 $data = [
                     'chat_id' => -4971290320,
-                    'text' => "🔀 New PR Created\nFrom: $sender\nID: #$prNumber\n",
+                    'text' => "🔀 New PR Created\nRepo: $repository\nFrom: $sender\nID: #$prNumber\n",
                 ];
                 $data['reply_markup'] = new InlineKeyboard([]);
                 $data['reply_markup']->addRow(
@@ -107,7 +107,7 @@ class GitHubWebHookController extends BaseController
                 $status = $merged ? '✅Merged' : '⛔Not Merged';
                 $data = [
                     'chat_id' => -4971290320,
-                    'text' => "🔀PR Closed\nFrom: $sender\nID: #$prNumber\nStatus:$status\n",
+                    'text' => "🔀PR Closed\nRepo: $repository\nFrom: $sender\nID: #$prNumber\nStatus:$status\n",
                 ];
                 $data['reply_markup'] = new InlineKeyboard([]);
                 $data['reply_markup']->addRow(
