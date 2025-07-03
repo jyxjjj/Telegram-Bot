@@ -63,11 +63,11 @@ class OpenSSL implements SoftwareInterface
         ];
         $button1 = new InlineKeyboardButton([
             'text' => 'View',
-            'url' => 'https://www.openssl.org/source/',
+            'url' => 'https://openssl-library.org/source/',
         ]);
         $button2 = new InlineKeyboardButton([
             'text' => 'Download',
-            'url' => "https://www.openssl.org/source/openssl-$version.tar.gz",
+            'url' => "https://github.com/openssl/openssl/releases/download/openssl-$version/openssl-$version.tar.gz",
         ]);
         $message['reply_markup']->addRow($button1, $button2);
         return $message;
