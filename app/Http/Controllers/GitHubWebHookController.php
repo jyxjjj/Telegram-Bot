@@ -68,7 +68,8 @@ class GitHubWebHookController extends BaseController
     {
         $action = $payload['action'];
         $repository = $payload['repository']['name'];
-        $sender = $payload['sender']['login'] ?? '-';
+        $operator = $payload['sender']['login'] ?? '-';
+        $from = $payload['issue']['user']['login'] ?? '-';
         $issue = $payload['issue']['number'];
         $data = [
             'chat_id' => -4971290320,
@@ -86,19 +87,18 @@ class GitHubWebHookController extends BaseController
                 $data['text'] = <<<EOF
 🐛 Issue Created 🆕
 Repo: $repository
-From: $sender
+From: $from
 ID: #$issue
 Status: ⏳ Open
 
 EOF;
                 break;
             case 'closed':
-                $operator = $payload['issue']['user']['login'] ?? '-';
                 $state_reason = $payload['issue']['state_reason'] ?? '';
                 $data['text'] = <<<EOF
 🐛 Issue Closed ✅
 Repo: $repository
-From: $sender
+From: $from
 Operator: $operator
 ID: #$issue
 Status: ✅ Closed as $state_reason
@@ -106,11 +106,10 @@ Status: ✅ Closed as $state_reason
 EOF;
                 break;
             case 'reopened':
-                $operator = $payload['issue']['user']['login'] ?? '-';
                 $data['text'] = <<<EOF
 🐛 Issue Reopened ♻️
 Repo: $repository
-From: $sender
+From: $from
 Operator: $operator
 ID: #$issue
 Status: ♻️ Reopen
@@ -127,7 +126,8 @@ EOF;
     {
         $action = $payload['action'];
         $repository = $payload['repository']['name'];
-        $sender = $payload['sender']['login'] ?? '-';
+        $operator = $payload['sender']['login'] ?? '-';
+        $from = $payload['pull_request']['user']['login'] ?? '-';
         $prNumber = $payload['pull_request']['number'];
         $data = [
             'chat_id' => -4971290320,
@@ -145,7 +145,7 @@ EOF;
                 $data['text'] = <<<EOF
 🔀 New PR 🆕
 Repo: $repository
-From: $sender
+From: $from
 ID: #$prNumber
 Status: ⏳ Open
 
@@ -154,12 +154,11 @@ EOF;
                 break;
             case 'closed':
                 $merged = $payload['pull_request']['merged'] ?? false;
-                $operator = $payload['pull_request']['user']['login'] ?? '-';
                 if ($merged) {
                     $data['text'] = <<<EOF
 🔀 PR Merged ✅
 Repo: $repository
-From: $sender
+From: $from
 Operator: $operator
 ID: #$prNumber
 Status: ✅ Merged
@@ -170,7 +169,7 @@ EOF;
                     $data['text'] = <<<EOF
 🔀 PR Closed ❌
 Repo: $repository
-From: $sender
+From: $from
 Operator: $operator
 ID: #$prNumber
 Status: ❌ Closed
@@ -179,11 +178,10 @@ EOF;
                 }
                 break;
             case 'reopened':
-                $operator = $payload['pull_request']['user']['login'] ?? '-';
                 $data['text'] = <<<EOF
 🔀 PR Reopened ♻️
 Repo: $repository
-From: $sender
+From: $from
 Operator: $operator
 ID: #$prNumber
 Status: ♻️ Reopen
