@@ -116,11 +116,11 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                 // 文档 PR 新老放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "文档 PR: #{$matches[1][0]}",
+                        'text' => "老文档 PR: #{$matches[1][0]}",
                         'url' => "https://github.com/OpenListTeam/docs/pull/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => "文档 PR: #{$matches[1][0]}",
+                        'text' => "新文档 PR: #{$matches[1][0]}",
                         'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
                     ]),
                 );
