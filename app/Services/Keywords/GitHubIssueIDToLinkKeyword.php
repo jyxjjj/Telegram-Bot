@@ -106,18 +106,33 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => "API项目 Issue: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/cf-worker-api/issues/{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-APIPages/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
                         'text' => "API项目 PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/cf-worker-api/pull/{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-APIPages/pull/{$matches[1][0]}",
                     ]),
                 );
-                // 文档 PR
+                // 文档 PR 新老放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => "文档 PR: #{$matches[1][0]}",
                         'url' => "https://github.com/OpenListTeam/docs/pull/{$matches[1][0]}",
+                    ]),
+                    new InlineKeyboardButton([
+                        'text' => "文档 PR: #{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
+                    ]),
+                );
+                // Desktop 两个放一行
+                $data['reply_markup']->addRow(
+                    new InlineKeyboardButton([
+                        'text' => "Desktop Issue: #{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/issues/{$matches[1][0]}",
+                    ]),
+                    new InlineKeyboardButton([
+                        'text' => "Desktop PR: #{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
                     ]),
                 );
             }
