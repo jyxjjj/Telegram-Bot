@@ -128,11 +128,11 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => "Desktop Issue: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/issues/{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Desktop/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
                         'text' => "Desktop PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Desktop/pull/{$matches[1][0]}",
                     ]),
                 );
             }
