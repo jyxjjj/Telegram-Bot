@@ -145,6 +145,7 @@ class MessageHandleService extends BaseService
             -1001391154172, // 关于这件事
             -1002573155438, // OpenList交流群
             -4971290320,    // OpenList开发群
+            -1001743989979, // LINZEEN的
         ];
         // 白名单用户直接通过
         if (in_array($message->getChat()->getId(), $whitedChats)) {
