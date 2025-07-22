@@ -81,7 +81,7 @@ class RedisDocker implements SoftwareInterface
                 $layers = $item['layers'];
                 /** @noinspection PhpLoopCanBeConvertedToArrayAnyInspection */
                 foreach ($layers as $layer) {
-                    if (preg_match('/^.*REDIS_VERSION=(\d+\.\d+\.\d+)$/i', $layer['instruction'], $matches)) {
+                    if (preg_match('/^ENV REDIS_DOWNLOAD_URL=https:\/\/github.com\/redis\/redis\/archive\/refs\/tags\/(\d+\.\d+\.\d+)\.tar.gz$/i', $layer['instruction'], $matches)) {
                         return $matches[1];
                     }
                 }
