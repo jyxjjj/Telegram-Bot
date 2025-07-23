@@ -63,6 +63,6 @@ class RequestHelper
             ->withOptions($options)
             ->connectTimeout($connectTimeout)
             ->timeout($timeout)
-            ->retry($retry, $retryDelay, throw: false);
+            ->retry($retry, $retryDelay, fn() => true, false);
     }
 }
