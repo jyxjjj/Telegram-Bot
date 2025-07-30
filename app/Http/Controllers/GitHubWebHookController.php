@@ -85,34 +85,40 @@ class GitHubWebHookController extends BaseController
         switch ($action) {
             case 'opened':
                 $data['text'] = <<<EOF
-🐛 Issue Created 🆕
-Repo: $repository
-From: $from
+🚨🆕 问题已创建
 ID: #$issue
-Status: ⏳ Open
+仓库: $repository
+创建人: $from
+Status: ⏳ 打开
 
 EOF;
                 break;
             case 'closed':
                 $state_reason = $payload['issue']['state_reason'] ?? '';
+                $state_reason = match ($state_reason) {
+                    'completed' => '完成',
+                    'not_planned' => '无此计划',
+                    'duplicate' => '重复',
+                    default => $state_reason,
+                };
                 $data['text'] = <<<EOF
-🐛 Issue Closed ✅
-Repo: $repository
-From: $from
-Operator: $operator
+🚨✅ 问题已关闭
 ID: #$issue
-Status: ✅ Closed as $state_reason
+仓库: $repository
+创建人: $from
+操作人: $operator
+Status: ✅ 关闭为 $state_reason
 
 EOF;
                 break;
             case 'reopened':
                 $data['text'] = <<<EOF
-🐛 Issue Reopened ♻️
-Repo: $repository
-From: $from
-Operator: $operator
+🚨♻️ 问题被重新打开
 ID: #$issue
-Status: ♻️ Reopen
+仓库: $repository
+创建人: $from
+操作人: $operator
+Status: ♻️ 重新打开
 
 EOF;
                 break;
@@ -143,10 +149,10 @@ EOF;
         switch ($action) {
             case 'opened':
                 $data['text'] = <<<EOF
-🔀 New PR 🆕
-Repo: $repository
-From: $from
+🔀🆕 新的拉取请求
 ID: #$prNumber
+仓库: $repository
+创建人: $from
 Status: ⏳ Open
 
 EOF;
@@ -156,35 +162,35 @@ EOF;
                 $merged = $payload['pull_request']['merged'] ?? false;
                 if ($merged) {
                     $data['text'] = <<<EOF
-🔀 PR Merged ✅
-Repo: $repository
-From: $from
-Operator: $operator
+🔀✅ 合并了拉取请求
 ID: #$prNumber
-Status: ✅ Merged
+仓库: $repository
+创建人: $from
+操作人: $operator
+Status: ✅ 合并
 
 EOF;
 
                 } else {
                     $data['text'] = <<<EOF
-🔀 PR Closed ❌
-Repo: $repository
-From: $from
-Operator: $operator
+🔀❌ 关闭了拉取请求
 ID: #$prNumber
-Status: ❌ Closed
+仓库: $repository
+创建人: $from
+操作人: $operator
+Status: ❌ 关闭
 
 EOF;
                 }
                 break;
             case 'reopened':
                 $data['text'] = <<<EOF
-🔀 PR Reopened ♻️
+🔀♻️ 重新打开拉取请求
+ID: #$prNumber
 Repo: $repository
 From: $from
 Operator: $operator
-ID: #$prNumber
-Status: ♻️ Reopen
+Status: ♻️ 重新打开
 
 EOF;
                 break;
