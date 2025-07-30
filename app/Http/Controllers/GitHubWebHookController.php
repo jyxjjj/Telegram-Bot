@@ -71,6 +71,7 @@ class GitHubWebHookController extends BaseController
         $operator = $payload['sender']['login'] ?? '-';
         $from = $payload['issue']['user']['login'] ?? '-';
         $issue = $payload['issue']['number'];
+        $issueTitle = $payload['issue']['title'] ?? '';
         $data = [
             'chat_id' => -4971290320,
             'text' => '',
@@ -87,6 +88,7 @@ class GitHubWebHookController extends BaseController
                 $data['text'] = <<<EOF
 🚨🆕 问题已创建
 ID: #$issue
+<blockquote>$issueTitle</blockquote>
 仓库: $repository
 创建人: $from
 Status: ⏳ 打开
@@ -104,6 +106,7 @@ EOF;
                 $data['text'] = <<<EOF
 🚨✅ 问题已关闭
 ID: #$issue
+<blockquote>$issueTitle</blockquote>
 仓库: $repository
 创建人: $from
 操作人: $operator
@@ -115,6 +118,7 @@ EOF;
                 $data['text'] = <<<EOF
 🚨♻️ 问题被重新打开
 ID: #$issue
+<blockquote>$issueTitle</blockquote>
 仓库: $repository
 创建人: $from
 操作人: $operator
@@ -135,6 +139,7 @@ EOF;
         $operator = $payload['sender']['login'] ?? '-';
         $from = $payload['pull_request']['user']['login'] ?? '-';
         $prNumber = $payload['pull_request']['number'];
+        $prTitle = $payload['pull_request']['title'] ?? '';
         $data = [
             'chat_id' => -4971290320,
             'text' => '',
@@ -151,9 +156,10 @@ EOF;
                 $data['text'] = <<<EOF
 🔀🆕 新的拉取请求
 ID: #$prNumber
+<blockquote>$prTitle</blockquote>
 仓库: $repository
 创建人: $from
-Status: ⏳ Open
+Status: ⏳ 打开
 
 EOF;
 
@@ -164,10 +170,11 @@ EOF;
                     $data['text'] = <<<EOF
 🔀✅ 合并了拉取请求
 ID: #$prNumber
+<blockquote>$prTitle</blockquote>
 仓库: $repository
 创建人: $from
 操作人: $operator
-Status: ✅ 合并
+Status: ✅ 已合并
 
 EOF;
 
@@ -175,6 +182,7 @@ EOF;
                     $data['text'] = <<<EOF
 🔀❌ 关闭了拉取请求
 ID: #$prNumber
+<blockquote>$prTitle</blockquote>
 仓库: $repository
 创建人: $from
 操作人: $operator
@@ -187,6 +195,7 @@ EOF;
                 $data['text'] = <<<EOF
 🔀♻️ 重新打开拉取请求
 ID: #$prNumber
+<blockquote>$prTitle</blockquote>
 Repo: $repository
 From: $from
 Operator: $operator
