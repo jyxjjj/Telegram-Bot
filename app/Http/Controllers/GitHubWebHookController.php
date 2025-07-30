@@ -86,10 +86,9 @@ class GitHubWebHookController extends BaseController
         switch ($action) {
             case 'opened':
                 $data['text'] = <<<EOF
-🚨🆕 问题已创建
-ID: #$issue
+🚨🆕 问题已创建 #$issue
 <blockquote>$issueTitle</blockquote>
-仓库: $repository
+<blockquote>$repository #$issue</blockquote>
 创建人: $from
 Status: ⏳ 打开
 
@@ -104,10 +103,9 @@ EOF;
                     default => $state_reason,
                 };
                 $data['text'] = <<<EOF
-🚨✅ 问题已关闭
-ID: #$issue
+🚨✅ 问题已关闭 #$issue
 <blockquote>$issueTitle</blockquote>
-仓库: $repository
+<blockquote>$repository #$issue</blockquote>
 创建人: $from
 操作人: $operator
 Status: ✅ 关闭为 $state_reason
@@ -116,10 +114,9 @@ EOF;
                 break;
             case 'reopened':
                 $data['text'] = <<<EOF
-🚨♻️ 问题被重新打开
-ID: #$issue
+🚨♻️ 问题被重新打开 #$issue
 <blockquote>$issueTitle</blockquote>
-仓库: $repository
+<blockquote>$repository #$issue</blockquote>
 创建人: $from
 操作人: $operator
 Status: ♻️ 重新打开
@@ -154,9 +151,9 @@ EOF;
         switch ($action) {
             case 'opened':
                 $data['text'] = <<<EOF
-🔀🆕 新的拉取请求
-ID: #$prNumber
+🔀🆕 新的拉取请求 #$prNumber
 <blockquote>$prTitle</blockquote>
+<blockquote>$repository #$prNumber</blockquote>
 仓库: $repository
 创建人: $from
 Status: ⏳ 打开
@@ -168,10 +165,9 @@ EOF;
                 $merged = $payload['pull_request']['merged'] ?? false;
                 if ($merged) {
                     $data['text'] = <<<EOF
-🔀✅ 合并了拉取请求
-ID: #$prNumber
+🔀✅ 合并了拉取请求 #$prNumber
 <blockquote>$prTitle</blockquote>
-仓库: $repository
+<blockquote>$repository #$prNumber</blockquote>
 创建人: $from
 操作人: $operator
 Status: ✅ 已合并
@@ -180,10 +176,9 @@ EOF;
 
                 } else {
                     $data['text'] = <<<EOF
-🔀❌ 关闭了拉取请求
-ID: #$prNumber
+🔀❌ 关闭了拉取请求 #$prNumber
 <blockquote>$prTitle</blockquote>
-仓库: $repository
+<blockquote>$repository #$prNumber</blockquote>
 创建人: $from
 操作人: $operator
 Status: ❌ 关闭
@@ -193,12 +188,11 @@ EOF;
                 break;
             case 'reopened':
                 $data['text'] = <<<EOF
-🔀♻️ 重新打开拉取请求
-ID: #$prNumber
+🔀♻️ 重新打开拉取请求 #$prNumber
 <blockquote>$prTitle</blockquote>
-Repo: $repository
-From: $from
-Operator: $operator
+<blockquote>$repository #$prNumber</blockquote>
+创建人: $from
+操作人: $operator
 Status: ♻️ 重新打开
 
 EOF;
