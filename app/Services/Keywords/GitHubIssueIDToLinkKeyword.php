@@ -78,6 +78,10 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                         'text' => "讨论区",
                         'url' => "https://github.com/orgs/OpenListTeam/discussions/{$matches[1][0]}",
                     ]),
+                    new InlineKeyboardButton([
+                        'text' => '文档',
+                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
+                    ]),
                 );
                 // 后端 两个放一行
                 $data['reply_markup']->addRow(
@@ -89,23 +93,13 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                         'text' => "前端",
                         'url' => "https://github.com/OpenListTeam/OpenList-Frontend/issues/{$matches[1][0]}",
                     ]),
-                );
-                // API项目 两个放一行
-                $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "API",
+                        'text' => 'API',
                         'url' => "https://github.com/OpenListTeam/OpenList-APIPages/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => "Desktop",
+                        'text' => '桌面',
                         'url' => "https://github.com/OpenListTeam/OpenList-Desktop/issues/{$matches[1][0]}",
-                    ]),
-                );
-                // 文档 PR 新老放一行
-                $data['reply_markup']->addRow(
-                    new InlineKeyboardButton([
-                        'text' => "文档",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
                     ]),
                 );
             }
