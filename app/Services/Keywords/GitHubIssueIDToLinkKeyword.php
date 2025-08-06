@@ -69,70 +69,43 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
             $data['text'] .= "<b>注意</b>: 由于检测方式原因，您发送的可能不是GitHub Issue ID。\n";
             $data['reply_markup'] = new InlineKeyboard([]);
             if (isset($matches[1][0])) {
-                $data['text'] .= "您发送的ID是: <code>{$matches[1][0]}</code>\n";
-                $data['text'] .= "请根据您发送的内容自行选择链接打开，按钮中的链接可能并不对应您发送的Issue ID，故可能访问目标404或被302到其他位置。\n\n";
-                $data['text'] .= "您是不是在找：\n";
+                $data['text'] .= "您发送的ID是:\n";
+                $data['text'] .= "<blockquote>#{$matches[1][0]}</blockquote>\n";
 
                 // 讨论区
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "讨论区: #{$matches[1][0]}",
+                        'text' => "讨论区",
                         'url' => "https://github.com/orgs/OpenListTeam/discussions/{$matches[1][0]}",
                     ]),
                 );
                 // 后端 两个放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "后端 Issue: #{$matches[1][0]}",
+                        'text' => "后端",
                         'url' => "https://github.com/OpenListTeam/OpenList/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => "后端 PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList/pull/{$matches[1][0]}",
-                    ]),
-                );
-                // 前端 两个放一行
-                $data['reply_markup']->addRow(
-                    new InlineKeyboardButton([
-                        'text' => "前端 Issue: #{$matches[1][0]}",
+                        'text' => "前端",
                         'url' => "https://github.com/OpenListTeam/OpenList-Frontend/issues/{$matches[1][0]}",
-                    ]),
-                    new InlineKeyboardButton([
-                        'text' => "前端 PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Frontend/pull/{$matches[1][0]}",
                     ]),
                 );
                 // API项目 两个放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "API项目 Issue: #{$matches[1][0]}",
+                        'text' => "API",
                         'url' => "https://github.com/OpenListTeam/OpenList-APIPages/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => "API项目 PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-APIPages/pull/{$matches[1][0]}",
+                        'text' => "Desktop",
+                        'url' => "https://github.com/OpenListTeam/OpenList-Desktop/issues/{$matches[1][0]}",
                     ]),
                 );
                 // 文档 PR 新老放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "老文档 PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/docs/pull/{$matches[1][0]}",
-                    ]),
-                    new InlineKeyboardButton([
-                        'text' => "新文档 PR: #{$matches[1][0]}",
+                        'text' => "文档",
                         'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
-                    ]),
-                );
-                // Desktop 两个放一行
-                $data['reply_markup']->addRow(
-                    new InlineKeyboardButton([
-                        'text' => "Desktop Issue: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Desktop/issues/{$matches[1][0]}",
-                    ]),
-                    new InlineKeyboardButton([
-                        'text' => "Desktop PR: #{$matches[1][0]}",
-                        'url' => "https://github.com/OpenListTeam/OpenList-Desktop/pull/{$matches[1][0]}",
                     ]),
                 );
             }
