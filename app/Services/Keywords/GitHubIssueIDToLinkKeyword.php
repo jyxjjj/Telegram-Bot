@@ -72,25 +72,23 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                 $data['text'] .= "您发送的ID是:\n";
                 $data['text'] .= "<blockquote>#{$matches[1][0]}</blockquote>\n";
 
-                // 讨论区
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "讨论区",
+                        'text' => "讨",
                         'url' => "https://github.com/orgs/OpenListTeam/discussions/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => '文档',
+                        'text' => '文',
                         'url' => "https://github.com/OpenListTeam/OpenList-Docs/pull/{$matches[1][0]}",
                     ]),
                 );
-                // 后端 两个放一行
                 $data['reply_markup']->addRow(
                     new InlineKeyboardButton([
-                        'text' => "后端",
+                        'text' => "后",
                         'url' => "https://github.com/OpenListTeam/OpenList/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => "前端",
+                        'text' => "前",
                         'url' => "https://github.com/OpenListTeam/OpenList-Frontend/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
@@ -98,8 +96,12 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                         'url' => "https://github.com/OpenListTeam/OpenList-APIPages/issues/{$matches[1][0]}",
                     ]),
                     new InlineKeyboardButton([
-                        'text' => '桌面',
+                        'text' => '桌',
                         'url' => "https://github.com/OpenListTeam/OpenList-Desktop/issues/{$matches[1][0]}",
+                    ]),
+                    new InlineKeyboardButton([
+                        'text' => '手',
+                        'url' => "https://github.com/OpenListTeam/OpenList-Mobile/issues/{$matches[1][0]}",
                     ]),
                 );
             }
