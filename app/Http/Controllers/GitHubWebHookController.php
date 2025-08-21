@@ -44,15 +44,6 @@ class GitHubWebHookController extends BaseController
         }
     }
 
-    private function verifySignature(string $getContent, string $signature, string $secret): bool
-    {
-        if (empty($signature)) {
-            return false;
-        }
-        $realSignature = 'sha256=' . hash_hmac('sha256', $getContent, $secret);
-        return hash_equals($realSignature, $signature);
-    }
-
     private function handleEvent(string $org, string $event, array $payload): void
     {
         switch ($event) {
@@ -94,12 +85,32 @@ class GitHubWebHookController extends BaseController
         );
         switch ($action) {
             case 'opened':
+                if (isset($payload['changes']['old_repository'])) {
+                    return;
+                }
                 $data['text'] = <<<EOF
 🚨🆕 问题已创建 #$issue
 <blockquote>$issueTitle</blockquote>
 <blockquote>$repository #$issue</blockquote>
 创建人: $from
 Status: ⏳ 打开
+
+EOF;
+                break;
+            case 'transferred':
+                $oldRepo = $payload['repository']['name'];
+                $newRepo = $payload['changes']['new_repository']['name'];
+                $oldIssueId = $payload['issue']['number'];
+                $newIssueId = $payload['changes']['new_issue']['number'];
+                $data['text'] = <<<EOF
+🚨➡️ 问题已转移 #$oldIssueId
+<blockquote>$issueTitle</blockquote>
+<blockquote>🔒 $oldRepo #$oldIssueId</blockquote>
+⬇️⬇️⬇️
+<blockquote>⌛️ $newRepo #$newIssueId</blockquote>
+创建人: $from
+操作人: $operator
+Status: ➡️ 转移
 
 EOF;
                 break;
@@ -214,55 +225,64 @@ EOF;
 
     private function handlePushEvent(string $org, array $payload): void
     {
-        $repository = $payload['repository']['name'];
-        $pusher = $payload['pusher']['name'] ?? '-';
-        $commits = $payload['commits'] ?? [];
-        if (empty($commits)) {
-            return;
-        }
-        $data = [
-            'chat_id' => $this->chatId,
-            'text' => '',
-        ];
-        $data['text'] .= "🚀 新的提交到仓库 $repository\n";
-        $data['text'] .= "推送者: $pusher\n";
-        $data['text'] .= "提交数量: " . count($commits) . "\n";
-        $this->dispatch(new SendMessageJob($data, null, 0));
+//        $repository = $payload['repository']['name'];
+//        $pusher = $payload['pusher']['name'] ?? '-';
+//        $commits = $payload['commits'] ?? [];
+//        if (empty($commits)) {
+//            return;
+//        }
+//        $data = [
+//            'chat_id' => $this->chatId,
+//            'text' => '',
+//        ];
+//        $data['text'] .= "🚀 新的提交到仓库 $repository\n";
+//        $data['text'] .= "推送者: $pusher\n";
+//        $data['text'] .= "提交数量: " . count($commits) . "\n";
+//        $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
     private function handleReleaseEvent(string $org, array $payload): void
     {
-        $action = $payload['action'];
-        $repository = $payload['repository']['name'];
-        $operator = $payload['sender']['login'] ?? '-';
-        $releaseTag = $payload['release']['tag_name'] ?? '';
-        $releaseName = $payload['release']['name'] ?? '';
-        $data = [
-            'chat_id' => $this->chatId,
-            'text' => '',
-        ];
-        switch ($action) {
-            case 'published':
-                $data['text'] = <<<EOF
-🎉 新的发布版本 $releaseTag
-<blockquote>$releaseName</blockquote>
-<blockquote>$repository</blockquote>
-操作人: $operator
-Status: 发布
-EOF;
-                break;
-            case 'unpublished':
-                $data['text'] = <<<EOF
-🎉 取消发布版本 $releaseTag
-<blockquote>$releaseName</blockquote>
-<blockquote>$repository</blockquote>
-操作人: $operator
-Status: 取消发布
-EOF;
-                break;
-            default:
-                return;
+//        $action = $payload['action'];
+//        $repository = $payload['repository']['name'];
+//        $operator = $payload['sender']['login'] ?? '-';
+//        $releaseTag = $payload['release']['tag_name'] ?? '';
+//        $releaseName = $payload['release']['name'] ?? '';
+//        $data = [
+//            'chat_id' => $this->chatId,
+//            'text' => '',
+//        ];
+//        switch ($action) {
+//            case 'published':
+//                $data['text'] = <<<EOF
+//🎉 新的发布版本 $releaseTag
+//<blockquote>$releaseName</blockquote>
+//<blockquote>$repository</blockquote>
+//操作人: $operator
+//Status: 发布
+//EOF;
+//                break;
+//            case 'unpublished':
+//                $data['text'] = <<<EOF
+//🎉 取消发布版本 $releaseTag
+//<blockquote>$releaseName</blockquote>
+//<blockquote>$repository</blockquote>
+//操作人: $operator
+//Status: 取消发布
+//EOF;
+//                break;
+//            default:
+//                return;
+//        }
+//        $this->dispatch(new SendMessageJob($data, null, 0));
+    }
+
+    private function verifySignature(string $getContent, string $signature, string $secret): bool
+    {
+        if (empty($signature)) {
+            return false;
         }
-        $this->dispatch(new SendMessageJob($data, null, 0));
+        $realSignature = 'sha256=' . hash_hmac('sha256', $getContent, $secret);
+        return hash_equals($realSignature, $signature);
     }
 }
