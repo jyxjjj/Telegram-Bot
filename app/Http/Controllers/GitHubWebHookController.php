@@ -11,6 +11,8 @@ use Throwable;
 
 class GitHubWebHookController extends BaseController
 {
+    private int $chatId;
+
     /**
      * @param Request $request
      * @return JsonResponse
@@ -24,6 +26,7 @@ class GitHubWebHookController extends BaseController
                 return $this->json(['code' => 400]);
             }
             $secret = (string)env('GITHUB_WEBHOOK_SECRET_' . strtoupper($org));
+            $this->chatId = (int)env('GITHUB_WEBHOOK_CHAT_ID_' . strtoupper($org), env('TELEGRAM_ADMIN_USER_ID'));
             $signature = (string)$request->header('X-Hub-Signature-256');
             $body = $request->getContent();
             if (!is_string($body)) {
@@ -59,6 +62,12 @@ class GitHubWebHookController extends BaseController
             case 'issues':
                 $this->handleIssuesEvent($org, $payload);
                 break;
+            case 'pushes':
+                $this->handlePushEvent($org, $payload);
+                break;
+            case 'release':
+                $this->handleReleaseEvent($org, $payload);
+                break;
             default:
                 break;
         }
@@ -73,7 +82,7 @@ class GitHubWebHookController extends BaseController
         $issue = $payload['issue']['number'];
         $issueTitle = $payload['issue']['title'] ?? '';
         $data = [
-            'chat_id' => -4971290320,
+            'chat_id' => $this->chatId,
             'text' => '',
             'reply_markup' => new InlineKeyboard([]),
         ];
@@ -138,7 +147,7 @@ EOF;
         $prNumber = $payload['pull_request']['number'];
         $prTitle = $payload['pull_request']['title'] ?? '';
         $data = [
-            'chat_id' => -4971290320,
+            'chat_id' => $this->chatId,
             'text' => '',
             'reply_markup' => new InlineKeyboard([]),
         ];
@@ -195,6 +204,60 @@ EOF;
 操作人: $operator
 Status: ♻️ 重新打开
 
+EOF;
+                break;
+            default:
+                return;
+        }
+        $this->dispatch(new SendMessageJob($data, null, 0));
+    }
+
+    private function handlePushEvent(string $org, array $payload): void
+    {
+        $repository = $payload['repository']['name'];
+        $pusher = $payload['pusher']['name'] ?? '-';
+        $commits = $payload['commits'] ?? [];
+        if (empty($commits)) {
+            return;
+        }
+        $data = [
+            'chat_id' => $this->chatId,
+            'text' => '',
+        ];
+        $data['text'] .= "🚀 新的提交到仓库 $repository\n";
+        $data['text'] .= "推送者: $pusher\n";
+        $data['text'] .= "提交数量: " . count($commits) . "\n";
+        $this->dispatch(new SendMessageJob($data, null, 0));
+    }
+
+    private function handleReleaseEvent(string $org, array $payload): void
+    {
+        $action = $payload['action'];
+        $repository = $payload['repository']['name'];
+        $operator = $payload['sender']['login'] ?? '-';
+        $releaseTag = $payload['release']['tag_name'] ?? '';
+        $releaseName = $payload['release']['name'] ?? '';
+        $data = [
+            'chat_id' => $this->chatId,
+            'text' => '',
+        ];
+        switch ($action) {
+            case 'published':
+                $data['text'] = <<<EOF
+🎉 新的发布版本 $releaseTag
+<blockquote>$releaseName</blockquote>
+<blockquote>$repository</blockquote>
+操作人: $operator
+Status: 发布
+EOF;
+                break;
+            case 'unpublished':
+                $data['text'] = <<<EOF
+🎉 取消发布版本 $releaseTag
+<blockquote>$releaseName</blockquote>
+<blockquote>$repository</blockquote>
+操作人: $operator
+Status: 取消发布
 EOF;
                 break;
             default:
