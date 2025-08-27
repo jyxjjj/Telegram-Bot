@@ -32,7 +32,7 @@
  */
 
 echo <<<GPL
-    DESMG Telegram Bot Copyright (C) 2023 DESMG
+    DESMG Telegram Bot Copyright (C) 2015 DESMG
     This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE' file.
     This is free software, and you are welcome to redistribute it
     under certain conditions; for details see `LICENSE' file.
