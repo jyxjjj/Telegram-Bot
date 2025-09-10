@@ -40,8 +40,8 @@ class Config
             'private' => 0644,
         ],
         'dir' => [
-            'public' => 0775,
-            'private' => 0775,
+            'public' => 2775,
+            'private' => 2775,
         ],
     ];
 
