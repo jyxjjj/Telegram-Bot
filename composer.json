@@ -25,11 +25,10 @@
         "ext-zlib": "*",
         "desmg/php-common": "^2.2.2",
         "guzzlehttp/guzzle": "^7.10.0",
-        "laravel/framework": "^12.28.1",
-        "laravel/horizon": "^5.33.5",
+        "laravel/framework": "^12.31.1",
+        "laravel/horizon": "^5.34.0",
         "longman/telegram-bot": "^0.83.1",
-        "nunomaduro/collision": "^8.8.2",
-        "spatie/laravel-ignition": "^2.9.1"
+        "nunomaduro/collision": "^8.8.2"
     },
     "autoload": {
         "psr-4": {
