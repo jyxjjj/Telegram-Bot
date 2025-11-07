@@ -43,6 +43,8 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use JetBrains\PhpStorm\ArrayShape;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Throwable;
 
 class ChromeUpdateSubscribe extends Command
@@ -65,6 +67,27 @@ class ChromeUpdateSubscribe extends Command
                     'chat_id' => $chat_id,
                     'text' => $string,
                 ];
+                $message['reply_markup'] = new InlineKeyboard([]);
+                $message['reply_markup']->addRow(
+                    new InlineKeyboardButton([
+                        'text' => 'View Releases',
+                        'url' => 'https://chromiumdash.appspot.com/releases',
+                    ]),
+                    new InlineKeyboardButton([
+                        'text' => 'Download Other Platforms',
+                        'url' => 'https://www.google.com/chrome/?standalone=1',
+                    ]),
+                );
+                $message['reply_markup']->addRow(
+                    new InlineKeyboardButton([
+                        'text' => 'Download Win-HKLM',
+                        'url' => 'https://www.google.com/chrome/?standalone=1&system=true',
+                    ]),
+                    new InlineKeyboardButton([
+                        'text' => 'Download Win-HKCU',
+                        'url' => 'https://www.google.com/chrome/?standalone=1',
+                    ]),
+                );
                 $lastSend = $this->getLastSend($chat_id);
                 if (!$lastSend) {
                     $this->dispatch(new SendMessageJob($message, null, 0));
