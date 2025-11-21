@@ -82,7 +82,6 @@ This software is licensed under the AGPL, without any warranty.",
         imagefill($image, 0, 0, $transparent);
         imagesavealpha($image, true);
         imagecopy($image, $baseImage, 0, 0, 0, 0, 512, 512);
-        imagedestroy($baseImage);
         $font = '/usr/share/fonts/google-noto-sans-sc-fonts/NotoSansSC-Medium.otf';
         $fontHash = Hash::sha256(file_get_contents($font));
         $data['caption'] .= "\nFont Hash: $fontHash";
@@ -103,7 +102,6 @@ This software is licensed under the AGPL, without any warranty.",
         imagepng($image);
         $imageData = ob_get_contents();
         ob_end_clean();
-        imagedestroy($image);
         $name = Hash::sha256($imageData);
         $path = "HKSY/$name.png";
         Storage::disk('public')->put($path, $imageData);
