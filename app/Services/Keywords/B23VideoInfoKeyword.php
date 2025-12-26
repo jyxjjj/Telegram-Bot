@@ -76,6 +76,12 @@ class B23VideoInfoKeyword extends BaseKeyword
         }
     }
 
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText() ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
+    }
+
     private function handle(string $vid): string|array
     {
         $vid = $this->checkVid($vid);
@@ -151,11 +157,5 @@ class B23VideoInfoKeyword extends BaseKeyword
         return RequestHelper::getInstance()
             ->get($link)
             ->json();
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText() ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 }

@@ -43,7 +43,7 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
 {
     public string $name = 'github issue id to link';
     public string $description = 'generate link from github issue id';
-    protected string $pattern = '/(?:^| )#(\d{1,5})/';
+    protected string $pattern = '/(?<!\S)#(\d+)/u';
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
@@ -60,6 +60,12 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
         ];
         $this->handle($text, $data);
         $this->dispatch(new SendMessageJob($data, null, 0));
+    }
+
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
     }
 
     private function handle(string $text, array &$data): void
@@ -106,11 +112,5 @@ class GitHubIssueIDToLinkKeyword extends BaseKeyword
                 );
             }
         }
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 }

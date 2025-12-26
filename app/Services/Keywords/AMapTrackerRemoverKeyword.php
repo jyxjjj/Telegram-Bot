@@ -61,6 +61,12 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
+    }
+
     private function handle(string $text, array &$data): void
     {
         $pattern = '/(http(s)?:\/\/)?(surl\.amap\.com)\/?[a-zA-Z\d]+/';
@@ -107,11 +113,5 @@ class AMapTrackerRemoverKeyword extends BaseKeyword
             ->withoutRedirecting()
             ->get($link)
             ->header('Location');
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 }

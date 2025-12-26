@@ -59,6 +59,12 @@ class B23UIDToLinkKeyword extends BaseKeyword
         $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
+    }
+
     private function handle(string $text, array &$data): void
     {
         if (preg_match_all($this->pattern, $text, $matches)) {
@@ -76,11 +82,5 @@ class B23UIDToLinkKeyword extends BaseKeyword
                 );
             }
         }
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 }

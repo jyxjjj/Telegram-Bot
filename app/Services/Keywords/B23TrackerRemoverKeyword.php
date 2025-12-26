@@ -63,6 +63,12 @@ class B23TrackerRemoverKeyword extends BaseKeyword
         isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
+    }
+
     /**
      * @param Message $message
      * @return array
@@ -251,12 +257,6 @@ class B23TrackerRemoverKeyword extends BaseKeyword
             $id = 'UID: ' . $matches[1];
         }
         return $id;
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 
     /**

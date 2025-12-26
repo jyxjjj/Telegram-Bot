@@ -63,6 +63,12 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
         isset($data['reply_markup']) && $this->dispatch(new SendMessageJob($data, null, 0));
     }
 
+    public function preExecute(Message $message): bool
+    {
+        $text = $message->getText(true) ?? $message->getCaption();
+        return $text && preg_match($this->pattern, $text);
+    }
+
     /**
      * @param Message $message
      * @return array
@@ -148,11 +154,5 @@ class TikTokTrackerRemoverKeyword extends BaseKeyword
     {
         $url = parse_url($link);
         return str_replace('https://www.iesdouyin.com/share/video/', 'https://www.douyin.com/video/', "https://{$url['host']}{$url['path']}");
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        $text = $message->getText(true) ?? $message->getCaption();
-        return $text && preg_match($this->pattern, $text);
     }
 }

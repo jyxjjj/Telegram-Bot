@@ -70,6 +70,11 @@ class KeywordDetectKeyword extends BaseKeyword
         }
     }
 
+    public function preExecute(Message $message): bool
+    {
+        return true;
+    }
+
     private function handle(
         string                     $keyword,
         TChatKeywordsTargetEnum    $target,
@@ -254,10 +259,5 @@ class KeywordDetectKeyword extends BaseKeyword
                 }
                 break;
         }
-    }
-
-    public function preExecute(Message $message): bool
-    {
-        return true;
     }
 }
