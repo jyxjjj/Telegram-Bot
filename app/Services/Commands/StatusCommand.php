@@ -141,7 +141,7 @@ class StatusCommand extends BaseCommand
         foreach ($fields as $f) {
             $totalTime += $times2[$f] - $times1[$f];
         }
-        $idleAllTime = ($times2['idle'] + $times2['ioWait']) - ($times1['idle'] + $times1['ioWait']);
+        $idleAllTime = $times2['idle'] - $times1['idle'];
         $stat = [
             'idleAllTime' => $idleAllTime,
             'totalTime' => $totalTime,
