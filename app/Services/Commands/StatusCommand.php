@@ -136,33 +136,15 @@ class StatusCommand extends BaseCommand
         $times1['nice'] -= $times1['guestnice'];
         $times2['user'] -= $times2['guest'];
         $times2['nice'] -= $times2['guestnice'];
+        $fields = ['user', 'nice', 'system', 'idle', 'ioWait', 'irq', 'softIrq', 'steal', 'guest', 'guestnice'];
+        $totalTime = 0;
+        foreach ($fields as $f) {
+            $totalTime += $times2[$f] - $times1[$f];
+        }
+        $idleAllTime = ($times2['idle'] + $times2['ioWait']) - ($times1['idle'] + $times1['ioWait']);
         $stat = [
-            'idleAllTime' =>
-                $times2['idle']
-                + $times2['ioWait']
-                - $times1['idle']
-                - $times1['ioWait'],
-            'totalTime' =>
-                $times2['user']
-                + $times2['nice']
-                + $times2['steal']
-                + $times2['system']
-                + $times2['irq']
-                + $times2['softIrq']
-                + $times2['idle']
-                + $times2['ioWait']
-                + $times2['guest']
-                + $times2['guestnice']
-                - $times1['user']
-                - $times1['nice']
-                - $times1['steal']
-                - $times1['system']
-                - $times1['irq']
-                - $times1['softIrq']
-                - $times1['idle']
-                - $times1['ioWait']
-                - $times1['guest']
-                - $times1['guestnice'],
+            'idleAllTime' => $idleAllTime,
+            'totalTime' => $totalTime,
         ];
         return number_format(100 * ($stat['totalTime'] - $stat['idleAllTime']) / $stat['totalTime'], 2, '.', '');
     }
