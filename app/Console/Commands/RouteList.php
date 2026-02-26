@@ -89,6 +89,7 @@ class RouteList extends RouteListCommand
             ['method', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by method'],
             ['name', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by name'],
             ['domain', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by domain'],
+            ['middleware', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by middleware'],
             ['path', null, InputOption::VALUE_OPTIONAL, 'Only show routes matching the given path pattern'],
             ['except-path', null, InputOption::VALUE_OPTIONAL, 'Do not display the routes matching the given path pattern'],
             ['reverse', 'r', InputOption::VALUE_NONE, 'Reverse the ordering of the routes'],
@@ -100,9 +101,7 @@ class RouteList extends RouteListCommand
 
     protected function getRoutes(): array
     {
-        $routes = collect($this->router->getRoutes())->map(function ($route) {
-            return $this->getRouteInformation($route);
-        })->filter()->all();
+        $routes = collect($this->router->getRoutes())->map(fn($route) => $this->getRouteInformation($route))->filter()->all();
         $sort = $this->option('sort');
         $routes = $this->sortRoutes($sort !== null ? $sort : 'domain', $routes);
         if ($this->option('reverse')) {
