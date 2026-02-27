@@ -23,12 +23,12 @@
         "ext-simplexml": "*",
         "ext-sockets": "*",
         "ext-zlib": "*",
-        "desmg/php-common": "^2.2.2",
+        "desmg/php-common": "^2.2.4",
         "guzzlehttp/guzzle": "^7.10.0",
-        "laravel/framework": "^12.31.1",
-        "laravel/horizon": "^5.34.0",
+        "laravel/framework": "^12.53.0",
+        "laravel/horizon": "^5.45.0",
         "longman/telegram-bot": "^0.83.1",
-        "nunomaduro/collision": "^8.8.2"
+        "nunomaduro/collision": "^8.9.1"
     },
     "autoload": {
         "psr-4": {
