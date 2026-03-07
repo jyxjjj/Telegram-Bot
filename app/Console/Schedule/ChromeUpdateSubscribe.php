@@ -73,18 +73,22 @@ class ChromeUpdateSubscribe extends Command
                         'text' => 'View Releases',
                         'url' => 'https://chromiumdash.appspot.com/releases',
                     ]),
-                    new InlineKeyboardButton([
-                        'text' => 'Download Other Platforms',
-                        'url' => 'https://www.google.com/chrome/?standalone=1',
-                    ]),
                 );
                 $message['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => 'Download Win-HKLM',
                         'url' => 'https://www.google.com/chrome/?standalone=1&system=true',
                     ]),
+                );
+                $message['reply_markup']->addRow(
                     new InlineKeyboardButton([
                         'text' => 'Download Win-HKCU',
+                        'url' => 'https://www.google.com/chrome/?standalone=1',
+                    ]),
+                );
+                $message['reply_markup']->addRow(
+                    new InlineKeyboardButton([
+                        'text' => 'Download Other Platforms',
                         'url' => 'https://www.google.com/chrome/?standalone=1',
                     ]),
                 );
