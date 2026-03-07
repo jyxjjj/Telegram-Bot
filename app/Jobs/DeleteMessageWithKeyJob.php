@@ -51,7 +51,6 @@ class DeleteMessageWithKeyJob extends BaseQueue
      */
     public function __construct(array $data, string $key, int $delay = 60)
     {
-        parent::__construct();
         $this->data = $data;
         $this->key = $key;
         $this->delay($delay);

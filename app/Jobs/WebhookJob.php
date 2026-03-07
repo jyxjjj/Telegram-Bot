@@ -53,7 +53,6 @@ class WebhookJob extends BaseQueue
      */
     public function __construct(Update $update, Telegram $telegram, int $updateId)
     {
-        parent::__construct();
         $this->update = $update;
         $this->telegram = $telegram;
         $this->updateId = $updateId;

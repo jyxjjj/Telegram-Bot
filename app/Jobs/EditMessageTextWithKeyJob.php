@@ -50,7 +50,6 @@ class EditMessageTextWithKeyJob extends BaseQueue
      */
     public function __construct(array $data, string $key)
     {
-        parent::__construct();
         $this->data = array_merge($data, [
             'parse_mode' => 'HTML',
             'disable_web_page_preview' => true,

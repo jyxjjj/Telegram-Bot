@@ -52,7 +52,6 @@ class SendMessageJob extends BaseQueue
      */
     public function __construct(array $data, ?array $extras = null, int $delete = 60)
     {
-        parent::__construct();
         $this->data = array_merge([
             'parse_mode' => 'HTML',
             'disable_web_page_preview' => true,

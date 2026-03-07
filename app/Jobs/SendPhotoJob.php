@@ -50,7 +50,6 @@ class SendPhotoJob extends BaseQueue
      */
     public function __construct(array $data, int $delete = 60)
     {
-        parent::__construct();
         $this->data = array_merge($data, [
             'parse_mode' => 'HTML',
             'disable_web_page_preview' => true,

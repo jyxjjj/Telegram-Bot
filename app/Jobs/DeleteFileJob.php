@@ -42,7 +42,6 @@ class DeleteFileJob extends BaseQueue
 
     public function __construct(string $path)
     {
-        parent::__construct();
         $this->path = $path;
         $this->delay(180);
     }
