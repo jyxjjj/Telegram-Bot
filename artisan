@@ -32,22 +32,31 @@
  */
 
 echo <<<GPL
-    DESMG Telegram Bot Copyright (C) 2015 DESMG
-    This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE' file.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; for details see `LICENSE' file.
+#    DESMG Telegram Bot Copyright (C) 2015 DESMG
+#    This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE' file.
+#    This is free software, and you are welcome to redistribute it
+#    under certain conditions; for details see `LICENSE' file.
 
 GPL;
 
+use Illuminate\Foundation\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 
-if (PHP_MAJOR_VERSION != 8 || PHP_MINOR_VERSION != 4) {
+if (PHP_MAJOR_VERSION != 8 || (PHP_MINOR_VERSION != 4 && PHP_MINOR_VERSION != 5)) {
     echo "PHP Version Mismatch\n";
     exit(130);
+}
+
+try {
+    /** @noinspection PhpComposerExtensionStubsInspection */
+    pcntl_setcpuaffinity(null, [pcntl_getcpu()]);
+} catch (Throwable) {
 }
 
 define('LARAVEL_START', new DateTime()->format('U.u'));
 
 require __DIR__ . '/vendor/autoload.php';
-$status = (require_once __DIR__ . '/bootstrap/app.php')->handleCommand(new ArgvInput);
+/** @var Application $app */
+$app = require_once __DIR__ . '/bootstrap/app.php';
+$status = $app->handleCommand(new ArgvInput);
 exit($status);

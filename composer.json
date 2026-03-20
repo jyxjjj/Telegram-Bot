@@ -30,6 +30,9 @@
         "longman/telegram-bot": "^0.83.1",
         "nunomaduro/collision": "^8.9.1"
     },
+    "suggest": {
+        "ext-pcntl": "*"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app/"
