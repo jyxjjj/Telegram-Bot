@@ -1,3 +1,11 @@
+# MAINTAINCE NOTICE
+
+Due to limitations of the current PHP stack in long-lived connection scenarios such as WebSocket, SSE, and streaming,
+the project will gradually migrate to a Go-based implementation.
+
+The current PHP version is now in LTS mode,
+and will no longer receive new features, except for necessary bug fixes and security updates.
+
 # LICENSE CHANGE
 
 As of 2024-08-01, the license for Telegram-Bot has been updated
