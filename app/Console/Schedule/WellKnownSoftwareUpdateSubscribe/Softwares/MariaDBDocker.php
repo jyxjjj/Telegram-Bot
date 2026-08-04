@@ -34,7 +34,6 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
 use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
-use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -70,35 +69,41 @@ class MariaDBDocker implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $latest = $this->getLatest();
+        if ($latest === null) {
+            return null;
+        }
         foreach ($latest as $item) {
-            if ($item['architecture'] == 'amd64') {
-                $layers = $item['layers'];
+            if (is_array($item) && ($item['architecture'] ?? null) === 'amd64' && isset($item['layers']) && is_array($item['layers'])) {
                 /** @noinspection PhpLoopCanBeConvertedToArrayAnyInspection */
-                foreach ($layers as $layer) {
-                    if (preg_match('/^.*MARIADB_VERSION=.*:(\d+\.\d+\.\d+)\+.*$/i', $layer['instruction'], $matches)) {
+                foreach ($item['layers'] as $layer) {
+                    if (is_array($layer) && isset($layer['instruction']) && is_string($layer['instruction']) && preg_match('/^.*MARIADB_VERSION=.*:(\d+\.\d+\.\d+)\+.*$/i', $layer['instruction'], $matches) === 1) {
                         return $matches[1];
                     }
                 }
                 break;
             }
         }
-        return Common::getLastVersion(Software::MariaDBDocker);
+        return null;
     }
 
     /**
-     * @return array
+     * @return array|null
      * @throws ConnectionException
      */
-    private function getLatest(): array
+    private function getLatest(): ?array
     {
-        return RequestHelper::getInstance()
-            ->get('https://registry.hub.docker.com/v2/repositories/library/mariadb/tags/latest/images')
-            ->json();
+        $get = RequestHelper::getInstance()
+            ->get('https://registry.hub.docker.com/v2/repositories/library/mariadb/tags/latest/images');
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $data = $get->json();
+        return is_array($data) ? $data : null;
     }
 }

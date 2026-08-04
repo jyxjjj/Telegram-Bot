@@ -69,28 +69,28 @@ class Kernel implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $get = RequestHelper::getInstance()
             ->accept('text/html')
             ->get('https://www.kernel.org/feeds/kdist.xml');
-        $version = '0.0.0';
-        if ($get->status() == 200) {
-            $data = $get->body();
-            $xml = (array)simplexml_load_string($data);
-            $channel = (array)$xml['channel'];
-            $items = (array)$channel['item'];
-            foreach ($items as $item) {
-                $item = (array)$item;
-                $title = $item['title'];
-                if (str_ends_with($title, 'stable')) {
-                    $versionstring = explode(':', $title)[0];
-                    if ($version == '0.0.0' || version_compare($versionstring, $version, '>')) {
-                        $version = $versionstring;
-                    }
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $xml = @simplexml_load_string($get->body());
+        if ($xml === false || !isset($xml->channel->item)) {
+            return null;
+        }
+        $version = null;
+        foreach ($xml->channel->item as $item) {
+            $title = trim((string)$item->title);
+            if (preg_match('/^(\d+\.\d+\.\d+):\s+stable$/D', $title, $matches) === 1) {
+                $versionstring = $matches[1];
+                if ($version === null || version_compare($versionstring, $version, '>')) {
+                    $version = $versionstring;
                 }
             }
         }

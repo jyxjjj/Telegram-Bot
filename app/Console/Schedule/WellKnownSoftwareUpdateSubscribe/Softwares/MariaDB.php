@@ -73,59 +73,68 @@ class MariaDB implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $majors = $this->getMajor();
-        $majors = $majors['major_releases'];
-        $major = 0;
-        $minor = 0;
-        foreach ($majors as $release) {
-            if ($release['release_status'] == 'Stable') {
-                $release_id = $release['release_id'];
-                if (preg_match('/^(\d+)\.(\d+)$/i', $release_id, $matches)) {
-                    if ($matches[1] > $major) {
-                        $major = $matches[1];
-                        $minor = $matches[2];
-                    } elseif ($matches[1] == $major && $matches[2] > $minor) {
-                        $minor = $matches[2];
-                    }
-                }
+        if ($majors === null || !isset($majors['major_releases']) || !is_array($majors['major_releases'])) {
+            return null;
+        }
+        $releaseId = null;
+        foreach ($majors['major_releases'] as $release) {
+            if (!is_array($release) || ($release['release_status'] ?? null) !== 'Stable' || !isset($release['release_id']) || !is_string($release['release_id'])) {
+                continue;
+            }
+            if (preg_match('/^\d+\.\d+$/D', $release['release_id']) === 1 && ($releaseId === null || version_compare($release['release_id'], $releaseId, '>'))) {
+                $releaseId = $release['release_id'];
             }
         }
-        $release_id = "$major.$minor";
-        $release = $this->getLatest($release_id);
-        $release = $release['releases'];
-        $version = '';
-        foreach ($release as $key => $value) {
-            $version = $key;
-            break;
+        if ($releaseId === null) {
+            return null;
+        }
+        $release = $this->getLatest($releaseId);
+        if ($release === null || !isset($release['releases']) || !is_array($release['releases'])) {
+            return null;
+        }
+        $version = null;
+        foreach (array_keys($release['releases']) as $candidate) {
+            if (is_string($candidate) && preg_match('/^\d+\.\d+\.\d+$/D', $candidate) === 1 && ($version === null || version_compare($candidate, $version, '>'))) {
+                $version = $candidate;
+            }
         }
         return $version;
     }
 
     /**
-     * @return array
+     * @return array|null
      * @throws ConnectionException
      */
-    private function getMajor(): array
+    private function getMajor(): ?array
     {
-        return RequestHelper::getInstance()
-            ->get('https://downloads.mariadb.org/rest-api/mariadb/')
-            ->json();
+        $get = RequestHelper::getInstance()
+            ->get('https://downloads.mariadb.org/rest-api/mariadb/');
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $data = $get->json();
+        return is_array($data) ? $data : null;
     }
 
     /**
      * @param string $release_id
-     * @return array
+     * @return array|null
      * @throws ConnectionException
      */
-    private function getLatest(string $release_id): array
+    private function getLatest(string $release_id): ?array
     {
-        return RequestHelper::getInstance()
-            ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest")
-            ->json();
+        $get = RequestHelper::getInstance()
+            ->get("https://downloads.mariadb.org/rest-api/mariadb/$release_id/latest");
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $data = $get->json();
+        return is_array($data) ? $data : null;
     }
 }

@@ -53,9 +53,9 @@ class Software implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
     }
 }

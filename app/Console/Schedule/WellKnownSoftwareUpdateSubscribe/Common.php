@@ -50,11 +50,14 @@ class Common
     /**
      * 缓存HTTP响应中 <b>Last-Modified</b> 值
      * @param Software $software
-     * @param string $lastModified
+     * @param string|null $lastModified
      * @return bool
      */
-    public static function cacheLastModified(Software $software, string $lastModified): bool
+    public static function cacheLastModified(Software $software, ?string $lastModified): bool
     {
+        if ($lastModified === null || trim($lastModified) === '') {
+            return false;
+        }
         return Cache::put("Schedule::UpdateSubscribe::last_modified::$software->value", $lastModified, Carbon::now()->addMonths(3));
     }
 

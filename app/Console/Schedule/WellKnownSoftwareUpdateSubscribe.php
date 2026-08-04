@@ -86,8 +86,8 @@ class WellKnownSoftwareUpdateSubscribe extends Command
             $chat_id = $data['chat_id'];
             $version = $software->getInstance()->getVersion();
             $lastVersion = Common::getLastVersion($software);
-            self::info("$software->name Current:$version Latest:$lastVersion");
-            if ($version && $lastVersion != $version) {
+            self::info("$software->name Current:" . ($version ?? 'Unavailable') . " Latest:$lastVersion");
+            if ($version !== null && $lastVersion != $version) {
                 $message = $software->getInstance()->generateMessage($chat_id, $version);
                 $this->dispatch(new SendMessageJob($message, null, 0));
                 Common::setLastVersion($software, $version);

@@ -79,36 +79,45 @@ class KernelFeodra implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $baseurl = 'https://eu.edge.kernel.org/fedora/updates/42/Everything/x86_64/Packages/k/';
         $get = RequestHelper::getInstance()
             ->accept('text/html')
             ->get($baseurl);
+        if ($get->status() !== 200) {
+            return null;
+        }
         $html = $get->body();
-        $version = '0.0.0';
+        $version = null;
         try {
             $dom = new DOMDocument;
-            @$dom->loadHTML($html);
+            if (!@$dom->loadHTML($html)) {
+                return null;
+            }
             $xpath = new DOMXPath($dom);
             /** @var DOMNodeList $hrefs */
             $hrefs = $xpath->evaluate("/html/body//a");
+            if (!$hrefs instanceof DOMNodeList) {
+                return null;
+            }
             for ($i = 0; $i < $hrefs->length; $i++) {
                 /** @var DOMElement $href */
                 $href = $hrefs->item($i);
                 $url = $href->getAttribute('href');
                 if (str_starts_with($url, 'kernel-') && str_contains($url, 'core') && str_ends_with($url, '.rpm')) {
-                    $versionstring = explode('-', $url)[2];
-                    if ($version == '0.0.0' || version_compare($versionstring, $version, '>')) {
+                    $versionstring = explode('-', $url)[2] ?? null;
+                    if ($versionstring !== null && preg_match('/^\d+\.\d+\.\d+$/D', $versionstring) === 1 && ($version === null || version_compare($versionstring, $version, '>'))) {
                         $version = $versionstring;
                     }
                 }
             }
         } catch (Throwable $e) {
             ERR::log($e);
+            return null;
         }
         return $version;
     }

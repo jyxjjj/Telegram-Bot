@@ -34,7 +34,6 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
 use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
-use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -85,19 +84,22 @@ class VSCode implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $data = $this->getJson();
         if (!is_array($data)) {
-            return Common::getLastVersion(Software::VSCode);
+            return null;
         }
-        $version = '0.0.0';
+        $version = null;
         foreach ($data as $branch) {
+            if (!is_array($branch) || !isset($branch['tag_name']) || !is_string($branch['tag_name'])) {
+                continue;
+            }
             $versionstring = $branch['tag_name'];
-            if (version_compare($versionstring, $version, '>')) {
+            if (preg_match('/^\d+\.\d+\.\d+$/D', $versionstring) === 1 && ($version === null || version_compare($versionstring, $version, '>'))) {
                 $version = $versionstring;
             }
         }
@@ -105,18 +107,19 @@ class VSCode implements SoftwareInterface
     }
 
     /**
-     * @return array|int|false
+     * @return array|null
      * @throws ConnectionException
      */
-    private function getJson(): array|int|false
+    private function getJson(): ?array
     {
         $get = RequestHelper::getInstance()
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/microsoft/vscode/releases?per_page=5');
-        if ($get->status() == 200) {
-            return $get->json();
+        if ($get->status() !== 200) {
+            return null;
         }
-        return false;
+        $data = $get->json();
+        return is_array($data) ? $data : null;
     }
 }

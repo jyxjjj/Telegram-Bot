@@ -74,40 +74,37 @@ class OpenSSL implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $data = $this->getJson();
-        if (!is_array($data)) {
-            return Common::getLastVersion(Software::OpenSSL);
+        if ($data === 304) {
+            return Common::getLastVersion(Software::OpenSSL) ?: null;
         }
-        $major = 0;
-        $minor = 0;
-        $patch = 0;
+        if (!is_array($data)) {
+            return null;
+        }
+        $version = null;
         foreach ($data as $branch) {
-            if (preg_match('/^openssl-(3)\.(\d+)\.(\d+)$/i', $branch['name'], $matches)) {
-                if ($matches[1] > $major) {
-                    $major = $matches[1];
-                    $minor = $matches[2];
-                    $patch = $matches[3];
-                } elseif ($matches[1] == $major && $matches[2] > $minor) {
-                    $minor = $matches[2];
-                    $patch = $matches[3];
-                } elseif ($matches[1] == $major && $matches[2] == $minor && $matches[3] > $patch) {
-                    $patch = $matches[3];
+            if (!is_array($branch) || !isset($branch['name']) || !is_string($branch['name'])) {
+                continue;
+            }
+            if (preg_match('/^openssl-(3\.\d+\.\d+)$/D', $branch['name'], $matches) === 1) {
+                if ($version === null || version_compare($matches[1], $version, '>')) {
+                    $version = $matches[1];
                 }
             }
         }
-        return "$major.$minor.$patch";
+        return $version;
     }
 
     /**
-     * @return array|int|false
+     * @return array|int|null
      * @throws ConnectionException
      */
-    private function getJson(): array|int|false
+    private function getJson(): array|int|null
     {
         $last_modified = Common::getLastModified(Software::OpenSSL);
         if ($last_modified) {
@@ -118,14 +115,17 @@ class OpenSSL implements SoftwareInterface
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/openssl/openssl/tags?per_page=50');
-        $last_modified = $get->header('last-modified');
-        Common::cacheLastModified(Software::OpenSSL, $last_modified);
-        if ($get->status() == 200) {
-            return $get->json();
-        }
-        if ($get->status() == 304) {
+        if ($get->status() === 304) {
             return 304;
         }
-        return false;
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $data = $get->json();
+        if (!is_array($data)) {
+            return null;
+        }
+        Common::cacheLastModified(Software::OpenSSL, $get->header('last-modified'));
+        return $data;
     }
 }

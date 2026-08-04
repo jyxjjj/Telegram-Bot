@@ -50,7 +50,7 @@ interface SoftwareInterface
     public function generateMessage(int $chat_id, string $version): array;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getVersion(): string;
+    public function getVersion(): ?string;
 }

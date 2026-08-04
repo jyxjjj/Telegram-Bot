@@ -82,25 +82,29 @@ class FFmpeg implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         return $this->getVersionString();
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersionString(): string
+    public function getVersionString(): ?string
     {
         $get = RequestHelper::getInstance()
             ->get('https://www.gyan.dev/ffmpeg/builds/release-version');
-        if ($get->status() == 200) {
-            return $get->body();
+        if ($get->status() !== 200) {
+            return null;
         }
-        return '0.0.0';
+        $version = trim($get->body());
+        if (preg_match('/^\d+(?:\.\d+){1,2}$/D', $version) !== 1) {
+            return null;
+        }
+        return $version;
     }
 }

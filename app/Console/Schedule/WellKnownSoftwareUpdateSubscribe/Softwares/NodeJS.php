@@ -73,27 +73,20 @@ class NodeJS implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
-        $version = '0.0.0';
         $get = RequestHelper::getInstance()
             ->accept('text/plain')
             ->get('https://nodejs.org/dist/latest/SHASUMS256.txt');
-        if ($get->status() == 200) {
-            $data = $get->body();
-            $data = str_replace('  ', ' ', $data);
-            $data = explode("\n", $data);
-            foreach ($data as $item) {
-                $item = explode(' ', $item);
-                if (str_starts_with($item[1], 'node-v') && str_ends_with($item[1], '-linux-x64.tar.gz')) {
-                    $version = str_replace(['node-v', '-linux-x64.tar.gz'], '', $item[1]);
-                    break;
-                }
-            }
+        if ($get->status() !== 200) {
+            return null;
         }
-        return $version;
+        if (preg_match('/^[a-f0-9]{64}\s+node-v(\d+\.\d+\.\d+)-linux-x64\.tar\.gz$/mi', $get->body(), $matches) !== 1) {
+            return null;
+        }
+        return $matches[1];
     }
 }

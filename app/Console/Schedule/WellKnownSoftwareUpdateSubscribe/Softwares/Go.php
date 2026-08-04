@@ -34,7 +34,6 @@ namespace App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Softwares;
 
 use App\Common\RequestHelper;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Common;
-use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\Software;
 use App\Console\Schedule\WellKnownSoftwareUpdateSubscribe\SoftwareInterface;
 use Illuminate\Http\Client\ConnectionException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -86,51 +85,48 @@ EOF;
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $data = $this->getJson();
         if (!is_array($data)) {
-            dump($data);
-            return Common::getLastVersion(Software::Go);
+            return null;
         }
-        $major = 0;
-        $minor = 0;
-        $patch = 0;
-        $data = $data['data']['repository']['refs']['nodes'];
+        $data = $data['data']['repository']['refs']['nodes'] ?? null;
+        if (!is_array($data)) {
+            return null;
+        }
+        $version = null;
         foreach ($data as $branch) {
-            if (preg_match('/^go(\d+)\.(\d+)\.(\d+)$/i', $branch['name'], $matches)) {
-                if ($matches[1] > $major) {
-                    $major = $matches[1];
-                    $minor = $matches[2];
-                    $patch = $matches[3];
-                } elseif ($matches[1] == $major && $matches[2] > $minor) {
-                    $minor = $matches[2];
-                    $patch = $matches[3];
-                } elseif ($matches[1] == $major && $matches[2] == $minor && $matches[3] > $patch) {
-                    $patch = $matches[3];
+            if (!is_array($branch) || !isset($branch['name']) || !is_string($branch['name'])) {
+                continue;
+            }
+            if (preg_match('/^go(\d+\.\d+\.\d+)$/D', $branch['name'], $matches) === 1) {
+                if ($version === null || version_compare($matches[1], $version, '>')) {
+                    $version = $matches[1];
                 }
             }
         }
-        return "$major.$minor.$patch";
+        return $version;
     }
 
     /**
-     * @return array|false
+     * @return array|null
      * @throws ConnectionException
      */
-    private function getJson(): array|false
+    private function getJson(): ?array
     {
         $get = RequestHelper::getInstance()
             ->withToken(env('GITHUB_TOKEN'))
             ->post('https://api.github.com/graphql', [
                 'query' => self::GQL,
             ]);
-        if ($get->status() == 200) {
-            return $get->json();
+        if ($get->status() !== 200) {
+            return null;
         }
-        return false;
+        $data = $get->json();
+        return is_array($data) ? $data : null;
     }
 }

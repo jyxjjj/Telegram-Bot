@@ -70,19 +70,28 @@ class Laravel implements SoftwareInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws ConnectionException
      */
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         $data = $this->getJson();
-        if (!is_array($data)) {
-            return Common::getLastVersion(Software::Laravel);
+        if ($data === 304) {
+            return Common::getLastVersion(Software::Laravel) ?: null;
         }
-        $version = '0.0.0';
+        if (!is_array($data)) {
+            return null;
+        }
+        $version = null;
         foreach ($data as $branch) {
-            $versionstring = str_replace('v', '', $branch['name']);
-            if (version_compare($versionstring, $version, '>')) {
+            if (!is_array($branch) || !isset($branch['name']) || !is_string($branch['name'])) {
+                continue;
+            }
+            if (preg_match('/^v(\d+\.\d+\.\d+)$/D', $branch['name'], $matches) !== 1) {
+                continue;
+            }
+            $versionstring = $matches[1];
+            if ($version === null || version_compare($versionstring, $version, '>')) {
                 $version = $versionstring;
             }
         }
@@ -90,10 +99,10 @@ class Laravel implements SoftwareInterface
     }
 
     /**
-     * @return array|int|false
+     * @return array|int|null
      * @throws ConnectionException
      */
-    private function getJson(): array|int|false
+    private function getJson(): array|int|null
     {
         $last_modified = Common::getLastModified(Software::Laravel);
         if ($last_modified) {
@@ -104,12 +113,17 @@ class Laravel implements SoftwareInterface
             ->accept('application/vnd.github+json')
             ->withToken(env('GITHUB_TOKEN'))
             ->get('https://api.github.com/repos/laravel/framework/tags?per_page=5');
-        if ($get->status() == 200) {
-            return $get->json();
-        }
-        if ($get->status() == 304) {
+        if ($get->status() === 304) {
             return 304;
         }
-        return false;
+        if ($get->status() !== 200) {
+            return null;
+        }
+        $data = $get->json();
+        if (!is_array($data)) {
+            return null;
+        }
+        Common::cacheLastModified(Software::Laravel, $get->header('last-modified'));
+        return $data;
     }
 }
