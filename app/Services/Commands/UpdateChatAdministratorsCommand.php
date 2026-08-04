@@ -69,6 +69,7 @@ class UpdateChatAdministratorsCommand extends BaseCommand
         }
         $response = Request::getChatAdministrators([
             'chat_id' => $chatId,
+            'return_bots' => true,
         ]);
         /** @var ChatMember[] $admins */
         $admins = $response->getResult();

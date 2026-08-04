@@ -33,10 +33,14 @@
 namespace App\Services\Keywords;
 
 use App\Common\ERR;
+use App\Jobs\BanMemberJob;
+use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
+use App\Models\TChatAdmins;
 use App\Models\TChatKeywords;
 use App\Models\TChatKeywordsOperationEnum;
 use App\Models\TChatKeywordsTargetEnum;
+use App\Models\TChatKeywordsWhiteLists;
 use App\Services\Base\BaseKeyword;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -137,6 +141,14 @@ class KeywordDetectKeyword extends BaseKeyword
     ): void
     {
         switch ($operation) {
+            case TChatKeywordsOperationEnum::OPERATION_BAN:
+                $this->ban($message);
+                $this->stop = true;
+                break;
+            case TChatKeywordsOperationEnum::OPERATION_DELETE:
+                $this->delete($data, $message);
+                $this->stop = true;
+                break;
             case TChatKeywordsOperationEnum::OPERATION_FORWARD:
                 $this->forward($data, $message, $telegram, $updateId);
                 break;
@@ -146,6 +158,67 @@ class KeywordDetectKeyword extends BaseKeyword
             default:
                 break;
         }
+    }
+
+    private function delete(array $data, Message $message): void
+    {
+        if ($this->isProtected($message)) {
+            return;
+        }
+        if (!$this->deleteMessage($message)) {
+            return;
+        }
+        if (isset($data['text'])) {
+            $this->dispatch(new SendMessageJob([
+                'chat_id' => $message->getChat()->getId(),
+                'text' => $data['text'],
+            ]));
+        }
+    }
+
+    private function ban(Message $message): void
+    {
+        if ($this->isProtected($message, true)) {
+            return;
+        }
+        $cacheKey = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
+        $this->deleteMessage($message);
+        $this->dispatch(new BanMemberJob([
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+            'user_id' => $message->getFrom()->getId(),
+        ]));
+    }
+
+    private function deleteMessage(Message $message): bool
+    {
+        $cacheKey = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
+        if (Cache::has($cacheKey)) {
+            return false;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
+        $this->dispatch(new DeleteMessageJob([
+            'chat_id' => $message->getChat()->getId(),
+            'message_id' => $message->getMessageId(),
+        ], 0));
+        return true;
+    }
+
+    private function isProtected(Message $message, bool $includeAdmins = false): bool
+    {
+        $chatId = $message->getChat()->getId();
+        $userId = $message->getFrom()->getId();
+        if ($userId === 777000) {
+            return true;
+        }
+        if ($includeAdmins && in_array($userId, TChatAdmins::getChatAdmins($chatId), true)) {
+            return true;
+        }
+        return in_array($userId, TChatKeywordsWhiteLists::getChatWhiteLists($chatId), true);
     }
 
     private function forward(array $data, Message $message, Telegram $telegram, int $updateId): void
