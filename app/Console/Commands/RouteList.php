@@ -87,6 +87,7 @@ class RouteList extends RouteListCommand
         return [
             ['json', null, InputOption::VALUE_NONE, 'Output the route list as JSON'],
             ['method', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by method'],
+            ['action', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by action'],
             ['name', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by name'],
             ['domain', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by domain'],
             ['middleware', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by middleware'],
