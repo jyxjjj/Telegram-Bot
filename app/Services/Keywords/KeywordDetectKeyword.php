@@ -62,6 +62,10 @@ class KeywordDetectKeyword extends BaseKeyword
     {
         /** @var Collection<TChatKeywords> $keywords */
         $keywords = TChatKeywords::getKeywords($message->getChat()->getId());
+        $keywords = $keywords->sortBy(
+            static fn(TChatKeywords $keyword): int =>
+                $keyword->operation === TChatKeywordsOperationEnum::OPERATION_BAN ? 0 : 1
+        );
         foreach ($keywords as $keyword) {
             try {
                 $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
@@ -142,7 +146,7 @@ class KeywordDetectKeyword extends BaseKeyword
     {
         switch ($operation) {
             case TChatKeywordsOperationEnum::OPERATION_BAN:
-                $this->ban($message);
+                $this->ban($data, $message);
                 $this->stop = true;
                 break;
             case TChatKeywordsOperationEnum::OPERATION_DELETE:
@@ -168,15 +172,10 @@ class KeywordDetectKeyword extends BaseKeyword
         if (!$this->deleteMessage($message)) {
             return;
         }
-        if (isset($data['text'])) {
-            $this->dispatch(new SendMessageJob([
-                'chat_id' => $message->getChat()->getId(),
-                'text' => $data['text'],
-            ]));
-        }
+        $this->sendOperationMessage($data, $message);
     }
 
-    private function ban(Message $message): void
+    private function ban(array $data, Message $message): void
     {
         if ($this->isProtected($message, true)) {
             return;
@@ -192,6 +191,34 @@ class KeywordDetectKeyword extends BaseKeyword
             'message_id' => $message->getMessageId(),
             'user_id' => $message->getFrom()->getId(),
         ]));
+        $this->sendOperationMessage($data, $message);
+    }
+
+    private function sendOperationMessage(array $data, Message $message): void
+    {
+        if (!isset($data['text']) || !is_string($data['text'])) {
+            return;
+        }
+        $this->dispatch(new SendMessageJob([
+            'chat_id' => $message->getChat()->getId(),
+            'text' => $this->renderTemplate($data['text'], $message),
+        ], null, 0));
+    }
+
+    private function renderTemplate(string $template, Message $message): string
+    {
+        $from = $message->getFrom();
+        $userId = $from->getId();
+        $name = trim(($from->getFirstName() ?? '') . ($from->getLastName() ?? ''));
+        $maskedName = mb_substr($name, 0, 1, 'UTF-8')
+            . '***'
+            . mb_substr($name, -1, 1, 'UTF-8');
+        $maskedName = htmlspecialchars($maskedName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        return strtr($template, [
+            '{{userlink}}' => "<a href=\"tg://user?id=$userId\">$maskedName</a>",
+            '{{userid}}' => (string)$userId,
+        ]);
     }
 
     private function deleteMessage(Message $message): bool
@@ -288,7 +315,7 @@ class KeywordDetectKeyword extends BaseKeyword
                 if (!isset($data['text'])) {
                     return;
                 }
-                $sender['text'] = $data['text'];
+                $sender['text'] = $this->renderTemplate($data['text'], $message);
                 if (isset($data['button'])) {
                     $sender['reply_markup'] = new InlineKeyboard([]);
 //                    $data['button'] = [
