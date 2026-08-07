@@ -26,6 +26,9 @@ class GitHubWebHookController extends BaseController
                 return $this->json(['code' => 400]);
             }
             $secret = (string)env('GITHUB_WEBHOOK_SECRET_' . strtoupper($org));
+            if ($secret === '') {
+                return $this->json(['code' => 403]);
+            }
             $this->chatId = (int)env('GITHUB_WEBHOOK_CHAT_ID_' . strtoupper($org), env('TELEGRAM_ADMIN_USER_ID'));
             $signature = (string)$request->header('X-Hub-Signature-256');
             $body = $request->getContent();

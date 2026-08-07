@@ -57,7 +57,7 @@ class IndexController extends BaseController
     {
         $request_token = $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
-        if ($request_token == $origin_token) {
+        if (is_string($origin_token) && $origin_token !== '' && $request_token == $origin_token) {
             $data = [
                 'chat_id' => env('TELEGRAM_ADMIN_USER_ID'),
                 'text' => $request->post('text'),
@@ -90,7 +90,7 @@ class IndexController extends BaseController
     {
         $request_token = $request->server('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
         $origin_token = env('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN');
-        if ($request_token == $origin_token) {
+        if (is_string($origin_token) && $origin_token !== '' && $request_token == $origin_token) {
             $telegram = BotCommon::getTelegram();
             $update = new Update($request->all(), $telegram->getBotUsername());
             $updateId = $update->getUpdateId();
