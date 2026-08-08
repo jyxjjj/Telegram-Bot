@@ -32,6 +32,7 @@
 namespace App\Services\Keywords;
 
 use App\Common\ERR;
+use App\Common\Texts\ObfuscatedTextNormalizer;
 use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
 use App\Jobs\SendMessageJob;
@@ -62,12 +63,11 @@ class KeywordDetectKeyword extends BaseKeyword
         /** @var Collection<TChatKeywords> $keywords */
         $keywords = TChatKeywords::getKeywords($message->getChat()->getId());
         $keywords = $keywords->sortBy(
-            static fn(TChatKeywords $keyword): int =>
-                $keyword->operation === TChatKeywordsOperationEnum::OPERATION_BAN ? 0 : 1
+            static fn(TChatKeywords $keyword): int => $keyword->operation === TChatKeywordsOperationEnum::OPERATION_BAN ? 0 : 1
         );
         foreach ($keywords as $keyword) {
             try {
-                $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message, $telegram, $updateId);
+                $this->handle($keyword->keyword, $keyword->target, $keyword->operation, $keyword->data, $message);
             } catch (Throwable $e) {
                 ERR::log($e);
             }
@@ -87,43 +87,43 @@ class KeywordDetectKeyword extends BaseKeyword
         TChatKeywordsTargetEnum    $target,
         TChatKeywordsOperationEnum $operation,
         array                      $data,
-        Message                    $message, Telegram $telegram, int $updateId
+        Message                    $message
     ): void
     {
         switch ($target) {
             case TChatKeywordsTargetEnum::TARGET_CHATID:
                 $chatId = $message->getChat()->getId();
                 if ($chatId == $keyword) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    $this->runOperation($operation, $data, $message);
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_USERID:
                 $userId = $message->getFrom()->getId();
                 if ($userId == $keyword) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                    $this->runOperation($operation, $data, $message);
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_NAME:
-                $name = strtoupper(($message->getFrom()->getFirstName() ?? '') . ($message->getFrom()->getLastName() ?? ''));
-                if (str_contains($name, $keyword)) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
+            case TChatKeywordsTargetEnum::TARGET_TEXT:
+                $value = match ($target) {
+                    TChatKeywordsTargetEnum::TARGET_NAME =>
+                        ($message->getFrom()->getFirstName() ?? '') . ($message->getFrom()->getLastName() ?? ''),
+                    TChatKeywordsTargetEnum::TARGET_TEXT =>
+                        $message->getText() ?? $message->getCaption() ?? '',
+                    default => '',
+                };
+                if (ObfuscatedTextNormalizer::matches($value, $keyword)) {
+                    $this->runOperation($operation, $data, $message);
                 }
                 break;
             case TChatKeywordsTargetEnum::TARGET_FROMNAME:
-                break;
             case TChatKeywordsTargetEnum::TARGET_TITLE:
-                break;
-            case TChatKeywordsTargetEnum::TARGET_TEXT:
-                $text = strtoupper($message->getText() ?? $message->getCaption() ?? '');
-                if (str_contains($text, $keyword)) {
-                    $this->runOperation($operation, $data, $message, $telegram, $updateId);
-                }
                 break;
             case TChatKeywordsTargetEnum::TARGET_DICE:
                 if ($message->getDice()) {
                     $text = $message->getDice()->getEmoji() ?? '';
                     if (strtoupper(bin2hex($text)) == strtoupper($keyword)) {
-                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                        $this->runOperation($operation, $data, $message);
                     }
                 }
                 break;
@@ -131,7 +131,7 @@ class KeywordDetectKeyword extends BaseKeyword
                 if ($message->getSticker()) {
                     $fileUniqueId = $message->getSticker()->getFileUniqueId() ?? '';
                     if ($fileUniqueId == $keyword) {
-                        $this->runOperation($operation, $data, $message, $telegram, $updateId);
+                        $this->runOperation($operation, $data, $message);
                     }
                 }
         }
@@ -140,7 +140,7 @@ class KeywordDetectKeyword extends BaseKeyword
     private function runOperation(
         TChatKeywordsOperationEnum $operation,
         array                      $data,
-        Message                    $message, Telegram $telegram, int $updateId
+        Message                    $message
     ): void
     {
         switch ($operation) {
@@ -153,10 +153,10 @@ class KeywordDetectKeyword extends BaseKeyword
                 $this->stop = true;
                 break;
             case TChatKeywordsOperationEnum::OPERATION_FORWARD:
-                $this->forward($data, $message, $telegram, $updateId);
+                $this->forward($data, $message);
                 break;
             case TChatKeywordsOperationEnum::OPERATION_REPLY:
-                $this->reply($data, $message, $telegram, $updateId);
+                $this->reply($data, $message);
                 break;
             default:
                 break;
@@ -247,13 +247,21 @@ class KeywordDetectKeyword extends BaseKeyword
         return in_array($userId, TChatKeywordsWhiteLists::getChatWhiteLists($chatId), true);
     }
 
-    private function forward(array $data, Message $message, Telegram $telegram, int $updateId): void
+    private function hasBlockingOperation(Message $message): bool
     {
-        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+        $chatId = $message->getChat()->getId();
+        $userId = $message->getFrom()->getId();
+        $messageId = $message->getMessageId();
+
+        return Cache::has("Keyword::WARN::$chatId::$userId") ||
+            Cache::has("Keyword::RESTRICT::$chatId::$userId") ||
+            Cache::has("Keyword::BAN::$chatId::$userId") ||
+            Cache::has("Keyword::DELETE::$chatId::$userId::$messageId");
+    }
+
+    private function forward(array $data, Message $message): void
+    {
+        if ($this->hasBlockingOperation($message)) {
             return;
         }
         $cacheKey = "Keyword::FORWARD::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
@@ -288,13 +296,9 @@ class KeywordDetectKeyword extends BaseKeyword
         count($forwarder) == 2 && $this->dispatch(new SendMessageJob($forwarder, null, 0));
     }
 
-    private function reply(array $data, Message $message, Telegram $telegram, int $updateId): void
+    private function reply(array $data, Message $message): void
     {
-        $cacheKey1 = "Keyword::WARN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey2 = "Keyword::RESTRICT::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey3 = "Keyword::BAN::{$message->getChat()->getId()}::{$message->getFrom()->getId()}";
-        $cacheKey4 = "Keyword::DELETE::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
-        if (Cache::has($cacheKey1) || Cache::has($cacheKey2) || Cache::has($cacheKey3) || Cache::has($cacheKey4)) {
+        if ($this->hasBlockingOperation($message)) {
             return;
         }
         $cacheKey = "Keyword::REPLY::{$message->getChat()->getId()}::{$message->getFrom()->getId()}::{$message->getMessageId()}";
