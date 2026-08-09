@@ -204,24 +204,9 @@ class KeywordDetectKeyword extends BaseKeyword
             return;
         }
 
-        $delete = true;
-        $time = 86400;
-        $text = null;
-        foreach ($data as $item) {
-            switch ($item['type']) {
-                case 'delete':
-                    $delete = $item['delete'];
-                    break;
-                case 'text':
-                    $text = $item['text'];
-                    break;
-                case 'time':
-                    $time = $item['time'];
-                    break;
-                default:
-                    throw new \UnexpectedValueException("Unknown RESTRICT data type: {$item['type']}");
-            }
-        }
+        $delete = $data['delete'] ?? true;
+        $time = $data['time'] ?? 86400;
+        $text = $data['text'] ?? null;
 
         $chatId = $message->getChat()->getId();
         $userId = $message->getFrom()->getId();
@@ -351,61 +336,27 @@ class KeywordDetectKeyword extends BaseKeyword
             return;
         }
         Cache::put($cacheKey, 1, Carbon::now()->addMinute());
-        if (!isset($data['type'])) {
-            return;
-        }
-        $sender = [
-            'chat_id' => $message->getChat()->getId(),
-            'reply_to_message_id' => $message->getMessageId(),
-        ];
-        switch ($data['type']) {
-            case 'text':
-                if (!isset($data['text'])) {
-                    return;
-                }
-                $sender['text'] = $this->renderTemplate($data['text'], $message);
-                if (isset($data['button'])) {
-                    $sender['reply_markup'] = new InlineKeyboard([]);
-//                    $data['button'] = [
-//                        [
-//                            [
-//                                'text' => 'text',
-//                                'url' => 'url',
-//                            ],
-//                            [
-//                                'text' => 'text',
-//                                'url' => 'url',
-//                            ],
-//                        ],
-//                        [
-//                            [
-//                                'text' => 'text',
-//                                'url' => 'url',
-//                            ],
-//                            [
-//                                'text' => 'text',
-//                                'url' => 'url',
-//                            ],
-//                        ],
-//                    ];
-                    foreach ($data['button'] as $row) {
-                        $buttons = [];
-                        foreach ($row as $button) {
-                            $buttons[] = new InlineKeyboardButton([
-                                'text' => $button['text'],
-                                'url' => $button['url'],
-                            ]);
-                        }
-                        $sender['reply_markup']->addRow(...$buttons);
+
+        if (isset($data['text'])) {
+            $sender = [
+                'chat_id' => $message->getChat()->getId(),
+                'reply_to_message_id' => $message->getMessageId(),
+                'text' => $this->renderTemplate($data['text'], $message),
+            ];
+            if (isset($data['button'])) {
+                $sender['reply_markup'] = new InlineKeyboard([]);
+                foreach ($data['button'] as $row) {
+                    $buttons = [];
+                    foreach ($row as $button) {
+                        $buttons[] = new InlineKeyboardButton([
+                            'text' => $button['text'],
+                            'url' => $button['url'],
+                        ]);
                     }
+                    $sender['reply_markup']->addRow(...$buttons);
                 }
-                $this->dispatch(new SendMessageJob($sender, null, 0));
-                break;
-            case 'sticker':
-                if (!isset($data['sticker'])) {
-                    return;
-                }
-                break;
+            }
+            $this->dispatch(new SendMessageJob($sender, null, 0));
         }
     }
 }
