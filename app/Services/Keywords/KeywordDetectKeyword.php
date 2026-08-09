@@ -35,6 +35,7 @@ use App\Common\ERR;
 use App\Common\Texts\ObfuscatedTextNormalizer;
 use App\Jobs\BanMemberJob;
 use App\Jobs\DeleteMessageJob;
+use App\Jobs\RestrictMemberJob;
 use App\Jobs\SendMessageJob;
 use App\Models\TChatAdmins;
 use App\Models\TChatKeywords;
@@ -158,6 +159,10 @@ class KeywordDetectKeyword extends BaseKeyword
             case TChatKeywordsOperationEnum::OPERATION_REPLY:
                 $this->reply($data, $message);
                 break;
+            case TChatKeywordsOperationEnum::OPERATION_RESTRICT:
+                $this->restrict($data, $message);
+                $this->stop = true;
+                break;
             default:
                 break;
         }
@@ -193,6 +198,52 @@ class KeywordDetectKeyword extends BaseKeyword
         $this->sendOperationMessage($data, $message);
     }
 
+    private function restrict(array $data, Message $message): void
+    {
+        if ($this->isProtected($message, true)) {
+            return;
+        }
+
+        $delete = true;
+        $time = 86400;
+        $text = null;
+        foreach ($data as $item) {
+            switch ($item['type']) {
+                case 'delete':
+                    $delete = $item['delete'];
+                    break;
+                case 'text':
+                    $text = $item['text'];
+                    break;
+                case 'time':
+                    $time = $item['time'];
+                    break;
+                default:
+                    throw new \UnexpectedValueException("Unknown RESTRICT data type: {$item['type']}");
+            }
+        }
+
+        $chatId = $message->getChat()->getId();
+        $userId = $message->getFrom()->getId();
+        $cacheKey = "Keyword::RESTRICT::$chatId::$userId";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+        Cache::put($cacheKey, 1, Carbon::now()->addMinute());
+
+        if ($delete) {
+            $this->deleteMessage($message);
+        }
+        $this->dispatch(new RestrictMemberJob([
+            'chat_id' => $chatId,
+            'user_id' => $userId,
+            'until_date' => Carbon::now()->addSeconds($time)->timestamp,
+        ]));
+        if ($text !== null) {
+            $this->sendOperationMessage(['text' => $text], $message);
+        }
+    }
+
     private function sendOperationMessage(array $data, Message $message): void
     {
         if (!isset($data['text']) || !is_string($data['text'])) {
@@ -206,16 +257,10 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function renderTemplate(string $template, Message $message): string
     {
-        $from = $message->getFrom();
-        $userId = $from->getId();
-        $name = trim(($from->getFirstName() ?? '') . ($from->getLastName() ?? ''));
-        $maskedName = mb_substr($name, 0, 1, 'UTF-8')
-            . '***'
-            . mb_substr($name, -1, 1, 'UTF-8');
-        $maskedName = htmlspecialchars($maskedName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $userId = $message->getFrom()->getId();
 
         return strtr($template, [
-            '{{userlink}}' => "<a href=\"tg://user?id=$userId\">$maskedName</a>",
+            '{{userlink}}' => "<a href=\"tg://user?id=$userId\">$userId</a>",
             '{{userid}}' => (string)$userId,
         ]);
     }
