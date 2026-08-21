@@ -170,7 +170,7 @@ class KeywordDetectKeyword extends BaseKeyword
 
     private function delete(array $data, Message $message): void
     {
-        if ($this->isProtected($message)) {
+        if ($this->isProtected($message, true)) {
             return;
         }
         if (!$this->deleteMessage($message)) {
