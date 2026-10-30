@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Services\Commands;
+
+use App\Jobs\RequestModelJob;
+use App\Jobs\SendMessageJob;
+use App\Services\Base\BaseCommand;
+use DESMG\RFC6986\Hash;
+use Longman\TelegramBot\Entities\Message;
+use Longman\TelegramBot\Telegram;
+
+class ChatCommand extends BaseCommand
+{
+    public string $name = 'chat';
+    public string $description = 'Chat with an AI model';
+    public string $usage = '/chat {text}';
+
+    public function execute(Message $message, Telegram $telegram, int $updateId): void
+    {
+        if (!in_array($message->getChat()->getId(), [-4971290320, -1001391154172], true)) {
+            return;
+        }
+        $data = [
+            'chat_id' => $message->getChat()->getId(),
+            'reply_to_message_id' => $message->getMessageId(),
+            'parse_mode' => '',
+        ];
+        $prompt = $message->getText(true);
+        if ($prompt === '') {
+            $data['text'] = 'Usage: /chat {text}';
+            SendMessageJob::dispatch($data);
+            return;
+        }
+        if (!config('openai.api_key') || !config('openai.model')) {
+            $data['text'] = 'API key or model not configured.';
+            SendMessageJob::dispatch($data);
+            return;
+        }
+        RequestModelJob::dispatch($data, $prompt, $updateId, Hash::sha256((string) $message->getFrom()->getId()));
+    }
+}

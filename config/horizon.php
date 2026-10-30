@@ -36,6 +36,8 @@ return [
     'middleware' => [],
     'waits' => [
         'redis:default' => 60,
+        'redis:model' => 60,
+        'redis:model-messages' => 60,
     ],
     'trim' => [
         'recent' => 360,
@@ -72,6 +74,28 @@ return [
             'timeout' => 1800,
             'sleep' => 0.05,
             'nice' => 0,
+        ],
+        'model' => [
+            'connection' => 'redis',
+            'queue' => ['model'],
+            'balance' => false,
+            'minProcesses' => 1,
+            'maxProcesses' => 1,
+            'maxTime' => 1800,
+            'tries' => 1,
+            'timeout' => 300,
+            'sleep' => 0.05,
+        ],
+        'model-messages' => [
+            'connection' => 'redis',
+            'queue' => ['model-messages'],
+            'balance' => false,
+            'minProcesses' => 1,
+            'maxProcesses' => 1,
+            'maxTime' => 1800,
+            'tries' => 1,
+            'timeout' => 300,
+            'sleep' => 0.05,
         ],
     ],
     'environments' => [
