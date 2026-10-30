@@ -85,7 +85,10 @@ class RequestModelJob extends BaseQueue
             $inputTokens = $result['usage']['input_tokens'] ?? '未提供';
             $outputTokens = $result['usage']['output_tokens'] ?? '未提供';
             $totalTokens = $result['usage']['total_tokens'] ?? '未提供';
+            $cacheHitTokens = $result['usage']['prompt_cache_hit_tokens'] ?? '未提供';
+            $cacheMissTokens = $result['usage']['prompt_cache_miss_tokens'] ?? '未提供';
             $text .= "\n\nTokens：输入 $inputTokens / 输出 $outputTokens / 合计 $totalTokens";
+            $text .= "\n缓存 Tokens：命中 $cacheHitTokens / 未命中 $cacheMissTokens";
             $text .= "\n请求耗时：" . number_format($elapsed, 2) . ' 秒';
             $text .= "\n上下文：" . count($history) . "/5 轮，$length/512 字符";
             $text .= "\n到期：" . $expiresAt->format('Y-m-d H:i:s');
