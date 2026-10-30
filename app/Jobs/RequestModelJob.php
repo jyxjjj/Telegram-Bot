@@ -25,10 +25,10 @@ class RequestModelJob extends BaseQueue
             $input[] = ['role' => 'assistant', 'content' => $round['assistant']];
         }
         $input[] = ['role' => 'user', 'content' => $this->prompt];
-        $startedAt = hrtime(true);
+        $start = Carbon::now();
         try {
             $response = RequestHelper::getInstance(timeout: 60, retry: 1)
-                ->baseUrl(rtrim(config('openai.base_url'), '/') . '/')
+                ->baseUrl(config('openai.base_url'))
                 ->withToken(config('openai.api_key'))
                 ->post('responses', [
                     'model' => config('openai.model'),
@@ -42,7 +42,7 @@ class RequestModelJob extends BaseQueue
         } catch (Throwable) {
             $response = null;
         }
-        $elapsed = (hrtime(true) - $startedAt) / 1_000_000_000;
+        $end = Carbon::now();
         if ($response === null || !$response->successful()) {
             $this->data['text'] = 'Model request failed.';
             EditMessageTextWithKeyJob::dispatch($this->data, $this->key)->onQueue('model-messages');
@@ -50,20 +50,17 @@ class RequestModelJob extends BaseQueue
         }
         $result = $response->json();
         $text = '';
-        $completed = ($result['status'] ?? '') === 'completed'
-            || (($result['status'] ?? '') === 'incomplete'
-                && ($result['incomplete_details']['reason'] ?? '') === 'max_output_tokens');
-        if ($completed) {
+        if (($result['status'] ?? '') === 'completed' || (($result['status'] ?? '') === 'incomplete' && ($result['incomplete_details']['reason'] ?? '') === 'max_output_tokens')) {
             foreach ($result['output'] ?? [] as $item) {
                 if (($item['type'] ?? '') !== 'message') {
                     continue;
                 }
                 foreach ($item['content'] ?? [] as $content) {
-                    if (($content['type'] ?? '') === 'output_text') {
-                        $text .= $content['text'];
-                    } elseif (($content['type'] ?? '') === 'refusal') {
-                        $text .= $content['refusal'];
-                    }
+                    $text .= match ($content['type'] ?? '') {
+                        'output_text' => $content['text'],
+                        'refusal' => $content['refusal'],
+                        default => '',
+                    };
                 }
             }
         }
@@ -82,16 +79,19 @@ class RequestModelJob extends BaseQueue
             }
             $expiresAt = Carbon::now(config('app.timezone'))->addMinutes(10);
             Cache::put($historyKey, $history, $expiresAt);
-            $inputTokens = $result['usage']['input_tokens'] ?? '未提供';
-            $outputTokens = $result['usage']['output_tokens'] ?? '未提供';
-            $totalTokens = $result['usage']['total_tokens'] ?? '未提供';
-            $cacheHitTokens = $result['usage']['prompt_cache_hit_tokens'] ?? '未提供';
-            $cacheMissTokens = $result['usage']['prompt_cache_miss_tokens'] ?? '未提供';
-            $text .= "\n\nTokens：输入 $inputTokens / 输出 $outputTokens / 合计 $totalTokens";
-            $text .= "\n缓存 Tokens：命中 $cacheHitTokens / 未命中 $cacheMissTokens";
-            $text .= "\n请求耗时：" . number_format($elapsed, 2) . ' 秒';
-            $text .= "\n上下文：" . count($history) . "/5 轮，$length/512 字符";
-            $text .= "\n到期：" . $expiresAt->format('Y-m-d H:i:s');
+            $inputTokens = $result['usage']['input_tokens'] ?? '-';
+            $outputTokens = $result['usage']['output_tokens'] ?? '-';
+            $totalTokens = $result['usage']['total_tokens'] ?? '-';
+            $cacheHitTokens = $result['usage']['input_tokens_details']['cached_tokens'] ?? $result['usage']['prompt_cache_hit_tokens'] ?? '-';
+            $cacheMissTokens = $result['usage']['prompt_cache_miss_tokens'] ?? ($inputTokens !== '-' && $cacheHitTokens !== '-' ? $inputTokens - $cacheHitTokens : '-');
+            $duration = number_format($start->diffInSeconds($end), 2);
+            $rounds = count($history);
+            $expires = $expiresAt->format('Y-m-d H:i:s');
+            $text .= "\n\nToken 用量：输入 $inputTokens / 输出 $outputTokens / 合计 $totalTokens";
+            $text .= "\nToken 缓存：命中 $cacheHitTokens / 未命中 $cacheMissTokens";
+            $text .= "\n请求耗时：$duration 秒";
+            $text .= "\n上下文：$rounds/5 轮，$length/512 字符";
+            $text .= "\n到期：$expires";
         }
         $this->data['text'] = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         EditMessageTextWithKeyJob::dispatch($this->data, $this->key)->onQueue('model-messages');

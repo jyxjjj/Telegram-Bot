@@ -18,7 +18,7 @@ class ChatCommand extends BaseCommand
 
     public function execute(Message $message, Telegram $telegram, int $updateId): void
     {
-        if (!in_array($message->getChat()->getId(), [-4971290320, -1001391154172], true)) {
+        if (!in_array($message->getChat()->getId(), [(int) env('TELEGRAM_ADMIN_USER_ID'), -4971290320, -1001391154172], true)) {
             return;
         }
         $data = [
