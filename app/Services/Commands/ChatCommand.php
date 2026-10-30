@@ -4,6 +4,7 @@ namespace App\Services\Commands;
 
 use App\Jobs\RequestModelJob;
 use App\Jobs\SendMessageJob;
+use App\Jobs\SendMessageWithKeyJob;
 use App\Services\Base\BaseCommand;
 use DESMG\RFC6986\Hash;
 use Longman\TelegramBot\Entities\Message;
@@ -31,11 +32,19 @@ class ChatCommand extends BaseCommand
             SendMessageJob::dispatch($data);
             return;
         }
+        if (mb_strlen($prompt) > 128) {
+            $data['text'] = '输入不能超过128个字符';
+            SendMessageJob::dispatch($data);
+            return;
+        }
         if (!config('openai.api_key') || !config('openai.model')) {
             $data['text'] = 'API key or model not configured.';
             SendMessageJob::dispatch($data);
             return;
         }
-        RequestModelJob::dispatch($data, $prompt, $updateId, Hash::sha256((string) $message->getFrom()->getId()));
+        $key = "AI_Chat_Message_{$data['chat_id']}_$updateId";
+        $data['text'] = '正在思考';
+        SendMessageWithKeyJob::dispatch($data, $key)->onQueue('model-messages');
+        RequestModelJob::dispatch($data, $prompt, $key, Hash::sha256((string) $message->getFrom()->getId()));
     }
 }
